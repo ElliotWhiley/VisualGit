@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+    <title>VisualGit</title>
+  </head>
+
+  <script src="../scripts/github-metrics.js"></script>
+
+  <body>
+    <h1>VisualGit v.0.0.1</h1>
+    We are using node <script>document.write(process.versions.node)</script>,
+    Chromium <script>document.write(process.versions.chrome)</script>,
+    and Electron <script>document.write(process.versions.electron)</script>.
+  </body>
+  <div>
+    <p>Username: </p>
+    <textarea id="username"></textarea>
+    <button onclick="getFollowers()">How many followers do you have??!</button>
+  </div>
+  <br />
+  <br />
+  <div>
+    <p>
+      <span id="numFollowers">Loading...</span>
+      <br />
+      <span id="followers"></span>
+    </p>
+  </div>
+</html>
