@@ -20,13 +20,57 @@
     <title>VisualGit</title>
   </head>
 
-  <script src="../scripts/github-metrics.js"></script>
 
   <body>
     <h1>VisualGit v.0.0.1</h1>
     We are using node <script>document.write(process.versions.node)</script>,
     Chromium <script>document.write(process.versions.chrome)</script>,
     and Electron <script>document.write(process.versions.electron)</script>.
+
+    <script>
+    var gitgraph = new GitGraph({
+      template: "metro",
+      orientation: "vertical",
+      mode: "compact"
+    });
+
+    var master = gitgraph.branch("master");
+    master.commit("Initial commit by ylee");
+    master.commit({
+      message: "I forgot to fix this typo8",
+      author: "Herpvey <harveyr@puha.com>",
+      onClick: function(commit) {
+        console.log("Oh, you clicked my commit?! Good for you!", commit);
+      }
+    });
+    master.commit("filler");
+
+    var develop = gitgraph.branch("develop");    // New branch from HEAD
+    develop.commit({
+      message: "I forgot to fix this typo8 again. oops",
+      author: "Elliot <wewhi@puha.com>",
+      tag: "",
+      onClick: function(commit) {
+        console.log("Oh, you clicked my commit?! Good for you!", commit);
+      }
+    });
+    master.commit("filler");
+    develop.commit("filler");
+    master.commit("filler");
+    develop.merge(master);
+
+    var myfeature = develop.branch("myfeature"); // New branch from develop
+
+    console.log("hey there");
+    // Well, if you need to go deeper…
+
+    var hotfix = gitgraph.branch({
+      parentBranch: develop,
+      name: "hotfix",
+      column: 2             // which column index it should be displayed in
+    });
+    </script>
+
   </body>
   <div>
     <p>Username: </p>
