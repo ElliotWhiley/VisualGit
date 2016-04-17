@@ -3,10 +3,10 @@
 var GitHubApi = require('github');
 
 var branchNames = [];
-var branches = [];
+var repoBranches = [];
 var commits;
 var gitUser = 'Puhapig';
-var gitRepo = 'git-history-template';
+var gitRepo = 'test';
 
 var github = new GitHubApi({
   version: '3.0.0',
@@ -44,22 +44,33 @@ document.addEventListener( 'DOMContentLoaded', function createLabelledCommits() 
       repo: gitRepo,
       sha: branchName
     }, function(err, res) {
-      branches[index] = res;
+      repoBranches[index] = res;
     });
   }
 
   function labelCommit(commit, index, array) {
-      for (var i = 0; i < branches.length; i++) {
-        var branch = branches[i];
-        for (var j = 0; j < branch.length; j++) {
-          var branchCommit = branch[j];
-          if (commit.sha === branchCommit.sha) {
-            commit['branch'] = branchNames[i];
-            break;
-          }
+    for (var i = 0; i < repoBranches.length; i++) {
+      var branch = repoBranches[i];
+      for (var j = 0; j < branch.length; j++) {
+        var branchCommit = branch[j];
+        if (commit.sha === branchCommit.sha) {
+          commit['branch'] = branchNames[i];
+          break;
         }
+      }
+    }
   }
-}
+
+  function labelParents(commit, index, array) {
+    commit['parentBranches'] = [];
+    for (var i = 0; i < commit.parents.length; i++) {
+      for (var j = 0; j < commits.length; j++) {
+        if (commit.parents[i].sha == commits[j].sha) {
+          commit['parentBranches'].push(commits[j].branch);
+        }
+      }
+    }
+  }
 
 function authenticate() {
   github.authenticate({
@@ -92,11 +103,10 @@ function getCommits() {
       commits = res;
       //Label each commit with a branch name
       commits.forEach(labelCommit);
-      console.log(commits);
+      commits.forEach(labelParents);
+      plotGraph(commits);
     });
   }, 5000);
 }
-
-
 
 , false);

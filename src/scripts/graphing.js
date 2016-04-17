@@ -94,19 +94,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
     network = new vis.Network(container, data, options);
-    commit(['master'], 'master');
-    commit(['master'], 'master');
-    commit(['master'], 'master');
-    commit(['master'], 'master');
-    branch('master', 'develop');
-    commit(['develop'], 'develop');
-    commit(['develop'], 'develop');
-    commit(['develop'], 'develop');
-    merge('develop', 'master', false);
-    commit(['master'], 'master');
-    commit(['master'], 'master');
-    commit(['develop'], 'develop');
-    merge('develop', 'master', false);
 }, false);
 function commit(parentBranches, branch) {
     var id = incrementAndGetId();
@@ -114,8 +101,8 @@ function commit(parentBranches, branch) {
     var fixed = (id == 1);
     var positionX = 0;
     var positionY = -id * 100;
-    if (branch == 'develop') {
-        positionX = 100;
+    if (branch == 'feature') {
+        positionX = -100;
     }
     nodes.add({
         id: id,
@@ -144,11 +131,9 @@ function merge(sourceBranch, destBranch, rebase) {
 }
 function branch(sourceBranch, destBranch) {
     var sourceParent = getLatestCommit(sourceBranch);
-    console.log(branches);
     if (sourceParent != null) {
         commit([sourceBranch], destBranch);
     }
-    console.log(branches);
 }
 function getLatestCommit(branch) {
     if (branches[branch] != null && branches[branch].length != 0) {
@@ -168,4 +153,12 @@ function commitToBranch(branchName, commitId) {
 }
 function incrementAndGetId() {
     return nodeId++;
+}
+function plotGraph(commits) {
+    console.log(commits);
+    for (var i = commits.length - 1; i >= 0; i--) {
+        console.log(commits[i].parentBranches);
+        console.log(commits[i].branch);
+        commit(commits[i].parentBranches, commits[i].branch);
+    }
 }
