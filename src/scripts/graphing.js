@@ -3,6 +3,9 @@ var vis = require('vis');
 var nodeId = 1;
 var nodes, edges, network;
 var branches = {};
+var branchPriorities = [];
+var spacingX = 100;
+var spacingY = -100;
 var tmpImage = 'http://blogprofitmedia.com/wp-content/themes/blogprofitmedia/tools/dragon-drop/images/dragon01.png';
 document.addEventListener('DOMContentLoaded', function () {
     nodes = new vis.DataSet([]);
@@ -26,6 +29,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 nodeDistance: 120,
                 damping: 0.09
             },
+        },
+        nodes: {
+            borderWidth: 2,
+            shadow: true,
         },
         edges: {
             arrows: {
@@ -79,17 +86,11 @@ document.addEventListener('DOMContentLoaded', function () {
             },
             selectionWidth: 1,
             selfReferenceSize: 20,
-            shadow: {
-                enabled: false,
-                color: 'rgba(0,0,0,0.5)',
-                size: 10,
-                x: 5,
-                y: 5
-            },
+            shadow: true,
             smooth: {
                 enabled: true,
                 type: "cubicBezier",
-                roundness: 0.5
+                roundness: 0.7
             },
         }
     };
@@ -99,11 +100,12 @@ function commit(parentBranches, branch) {
     var id = incrementAndGetId();
     var name = 'Node ' + id;
     var fixed = (id == 1);
-    var positionX = 0;
-    var positionY = -id * 100;
-    if (branch == 'feature') {
-        positionX = -100;
+    var positionX;
+    var positionY = id * spacingY;
+    if (branchPriorities.indexOf(branch) == -1) {
+        branchPriorities.push(branch);
     }
+    positionX = branchPriorities.indexOf(branch) * spacingX;
     nodes.add({
         id: id,
         label: name,
@@ -127,6 +129,10 @@ function merge(sourceBranch, destBranch, rebase) {
     var destParent = getLatestCommit(destBranch);
     if (sourceParent != null && destParent != null) {
         commit([destBranch, sourceBranch], destBranch);
+    }
+    if (branchPriorities.indexOf(sourceBranch) != -1) {
+        var index = branchPriorities.indexOf(sourceBranch);
+        branchPriorities.splice(index, 1);
     }
 }
 function branch(sourceBranch, destBranch) {
@@ -155,10 +161,15 @@ function incrementAndGetId() {
     return nodeId++;
 }
 function plotGraph(commits) {
-    console.log(commits);
-    for (var i = commits.length - 1; i >= 0; i--) {
-        console.log(commits[i].parentBranches);
-        console.log(commits[i].branch);
-        commit(commits[i].parentBranches, commits[i].branch);
-    }
+    commit(['master'], 'master');
+    branch('master', 'feature1');
+    commit(['feature1'], 'feature1');
+    commit(['feature1'], 'feature1');
+    branch('feature1', 'feature2');
+    commit(['feature2'], 'feature2');
+    merge('feature1', 'master', false);
+    commit(['feature2'], 'feature2');
+    commit(['feature2'], 'feature2');
+    merge('feature2', 'master', false);
+    commit(['feature1'], 'feature1');
 }

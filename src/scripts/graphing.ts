@@ -5,6 +5,10 @@ var vis = require('vis');
 var nodeId = 1;
 var nodes, edges, network;
 var branches = {};
+var branchPriorities = [];
+
+var spacingX = 100;
+var spacingY = -100; //Down-Up
 var tmpImage = 'http://blogprofitmedia.com/wp-content/themes/blogprofitmedia/tools/dragon-drop/images/dragon01.png';
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -33,8 +37,11 @@ document.addEventListener('DOMContentLoaded', function() {
       damping: 0.09
     },
   },
-
-  edges:{
+  nodes: {
+    borderWidth: 2,
+    shadow: true,
+  },
+  edges: {
       arrows: {
         to:     {enabled: true, scaleFactor:1},
         middle: {enabled: false, scaleFactor:1},
@@ -86,44 +93,28 @@ document.addEventListener('DOMContentLoaded', function() {
       },
       selectionWidth: 1,
       selfReferenceSize:20,
-      shadow:{
-        enabled: false,
-        color: 'rgba(0,0,0,0.5)',
-        size:10,
-        x:5,
-        y:5
-      },
+      shadow: true,
       smooth: {
         enabled: true,
         type: "cubicBezier",
-        roundness: 0.5
+        roundness: 0.7
       },
     }
   }
   network = new vis.Network(container, data, options);
-  // commit(['master'], 'master');
-  // commit(['master'], 'master');
-  // commit(['master'], 'master');
-  // commit(['master'], 'master');
-  // branch('master', 'develop');
-  // commit(['develop'], 'develop');
-  // commit(['develop'], 'develop');
-  // commit(['develop'], 'develop');
-  // merge('develop', 'master', false);
-  // commit(['master'], 'master');
-  // commit(['master'], 'master');
-  // commit(['develop'], 'develop');
-  // merge('develop', 'master', false);
 }, false);
 
 function commit(parentBranches, branch) {
   var id = incrementAndGetId();
   var name = 'Node ' + id;
   var fixed = (id == 1);
-  var positionX = 0;
-  var positionY = -id * 100;
+  var positionX;
+  var positionY = id * spacingY;
 
-  if (branch == 'second-feature') { positionX = -100; } //WIP
+  if (branchPriorities.indexOf(branch) == -1) {
+    branchPriorities.push(branch);
+  }
+  positionX = branchPriorities.indexOf(branch) * spacingX;
 
   nodes.add({
     id: id,
@@ -151,6 +142,11 @@ function merge(sourceBranch, destBranch, rebase) {
 
   if (sourceParent != null && destParent != null) {
     commit([destBranch, sourceBranch], destBranch);
+  }
+
+  if (branchPriorities.indexOf(sourceBranch) != -1) {
+    var index = branchPriorities.indexOf(sourceBranch);
+    branchPriorities.splice(index, 1);
   }
 }
 
@@ -183,17 +179,29 @@ function incrementAndGetId() {
 }
 
 function plotGraph(commits) {
+  commit(['master'], 'master');
+  branch('master', 'feature1');
+  commit(['feature1'], 'feature1');
+  commit(['feature1'], 'feature1');
+  branch('feature1', 'feature2');
+  commit(['feature2'], 'feature2');
+  merge('feature1', 'master', false);
+  commit(['feature2'], 'feature2');
+  commit(['feature2'], 'feature2');
+  merge('feature2', 'master', false);
+  commit(['feature1'], 'feature1');
+
   //array[commit1, commit2, commit3....]
   //commit1.branch
   //commit1.author.avatar_url
   //commit1.author.login
   //commit1.commit.message
   //commit1.parents
-  console.log(commits);
+  /*console.log(commits);
   for (var i = commits.length - 1; i >= 0; i--) {
     //Build up repo tree
     console.log(commits[i].parentBranches);
     console.log(commits[i].branch);
     commit(commits[i].parentBranches, commits[i].branch);
-  }
+  }*/
 }
