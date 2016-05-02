@@ -4,6 +4,7 @@ var GitHubApi = require('github');
 
 var branchNames = [];
 var repoBranches = [];
+var repoCommits = [];
 var commits;
 var gitUser = 'Puhapig';
 var gitRepo = 'test';
@@ -32,7 +33,7 @@ document.addEventListener( 'DOMContentLoaded', function createLabelledCommits() 
   //Get latest _____ commits from specified repo and label each with its corresponding branch
   authenticate();
   getBranchNames();
-  getCommits();
+  //getCommits();
 
   function setBranchName(branch, index, array) {
     branchNames[index] = branch.name;
@@ -44,7 +45,7 @@ document.addEventListener( 'DOMContentLoaded', function createLabelledCommits() 
       repo: gitRepo,
       sha: branchName
     }, function(err, res) {
-      repoBranches[index] = res;
+      repoBranches[index] = res
     });
   }
 
@@ -90,6 +91,34 @@ function getBranchNames() {
     res.forEach(setBranchName);
     //Get commits for each branch
     branchNames.forEach(getBranchCommits);
+    setTimeout(function(){
+      //combine repoBranches array into 1 array
+      console.log('repoBranches: ', repoBranches);
+      for (var i = 0; i < repoBranches.length; i++) {
+        var branch = repoBranches[i];
+        for (var j = 0; j < branch.length; j++) {
+          var commit = branch[j];
+          if (!(commit.sha in repoCommits)) {
+            repoCommits[commit.sha] = commit;
+          }
+        }
+      }
+      //sort by time
+      for (var i = 0; i < repoCommits.length; i++) {
+
+      }
+      // var date = repoCommits['1db1a0d8fd69257120ffd98171e48a05dc5f852f'].commit.committer.date;
+      // console.log('date', date);
+      console.log('repoCommits unsorted: ', repoCommits);
+      repoCommits.sort(function (a, b) {
+        //return new Date(a.commit.committer.date) - new Date(b.commit.committer.date);
+        //return a.commit.committer.date - b.commit.committer.date;
+        return new Date(a.commit.committer.date) > new Date(b.commit.committer.date);
+      });
+      console.log('repoCommits sorted: ', repoCommits);
+      //plot graph
+      plotGraph(repoCommits);
+    }, 5000);
   });
 }
 

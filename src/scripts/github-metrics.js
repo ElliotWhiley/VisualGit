@@ -2,6 +2,7 @@
 var GitHubApi = require('github');
 var branchNames = [];
 var repoBranches = [];
+var repoCommits = [];
 var commits;
 var gitUser = 'Puhapig';
 var gitRepo = 'test';
@@ -24,7 +25,6 @@ function getFollowers() {
 document.addEventListener('DOMContentLoaded', function createLabelledCommits() {
     authenticate();
     getBranchNames();
-    getCommits();
     function setBranchName(branch, index, array) {
         branchNames[index] = branch.name;
     }
@@ -73,6 +73,26 @@ document.addEventListener('DOMContentLoaded', function createLabelledCommits() {
         }, function (err, res) {
             res.forEach(setBranchName);
             branchNames.forEach(getBranchCommits);
+            setTimeout(function () {
+                console.log('repoBranches: ', repoBranches);
+                for (var i = 0; i < repoBranches.length; i++) {
+                    var branch = repoBranches[i];
+                    for (var j = 0; j < branch.length; j++) {
+                        var commit = branch[j];
+                        if (!(commit.sha in repoCommits)) {
+                            repoCommits[commit.sha] = commit;
+                        }
+                    }
+                }
+                for (var i = 0; i < repoCommits.length; i++) {
+                }
+                console.log('repoCommits unsorted: ', repoCommits);
+                repoCommits.sort(function (a, b) {
+                    return new Date(a.commit.committer.date) > new Date(b.commit.committer.date);
+                });
+                console.log('repoCommits sorted: ', repoCommits);
+                plotGraph(repoCommits);
+            }, 5000);
         });
     }
     function getCommits() {

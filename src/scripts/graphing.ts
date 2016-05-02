@@ -179,29 +179,19 @@ function incrementAndGetId() {
 }
 
 function plotGraph(commits) {
-  commit(['master'], 'master');
-  branch('master', 'feature1');
-  commit(['feature1'], 'feature1');
-  commit(['feature1'], 'feature1');
-  branch('feature1', 'feature2');
-  commit(['feature2'], 'feature2');
-  merge('feature1', 'master', false);
-  commit(['feature2'], 'feature2');
-  commit(['feature2'], 'feature2');
-  merge('feature2', 'master', false);
-  commit(['feature1'], 'feature1');
 
-  //array[commit1, commit2, commit3....]
-  //commit1.branch
-  //commit1.author.avatar_url
-  //commit1.author.login
-  //commit1.commit.message
-  //commit1.parents
-  /*console.log(commits);
-  for (var i = commits.length - 1; i >= 0; i--) {
-    //Build up repo tree
-    console.log(commits[i].parentBranches);
-    console.log(commits[i].branch);
-    commit(commits[i].parentBranches, commits[i].branch);
-  }*/
+  for (var i = 0; i < commits.length; i++) {
+    var commit = commits[i];
+
+    var id = incrementAndGetId();
+    var name = 'Node ' + id;
+
+    nodes.add({
+      id: id,
+      label: name,
+      shape: 'circularImage',
+      image: tmpImage,
+      fixed: (id == 1)
+    });
+  }
 }
