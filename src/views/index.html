@@ -2,45 +2,47 @@
 <!DOCTYPE html><html>
   <head>
     <meta charset="UTF-8">
-
     <script src="../scripts/github-metrics.js"></script>
     <script src="../scripts/graphing.js"></script>
-
     <link href="../../node_modules/vis/dist/vis.css" rel="stylesheet" type="text/css">
-
-    <style type="text/css">
-      #mynetwork {
-        width: 600px;
-        height: 400px;
-        border: 1px solid lightgray;
-      }
-    </style>
-
     <link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css">
     <title>VisualGit</title>
   </head>
+
   <body>
-    <h1>VisualGit v.0.0.1</h1>
-    We are using node <script>document.write(process.versions.node)</script>,
-    Chromium <script>document.write(process.versions.chrome)</script>,
-    and Electron <script>document.write(process.versions.electron)</script>.
-  </body>
-  <div>
-    <p>Username: </p>
-    <textarea id="username"></textarea>
-    <button onclick="getFollowers()">How many followers do you have??!</button>
-  </div>
-  <div id="mynetwork">
-    <div class="vis-network" tabindex="900" style="position: relative; overflow: hidden; touch-action: pan-y; -webkit-user-select: none;      -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); width: 100%; height: 100%;">
-      <canvas width="1600" height="1300" style="position: relative; touch-action: none; -webkit-user-select: none; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); width: 100%; height: 100%;"></canvas>
+    <div class="header">
+      <p>VisualGit</p>
+      <p>master</p>
     </div>
-  </div>
-  <div>
-    <p>
-      <span id="numFollowers">Loading...</span>
-      <br />
-      <span id="followers"></span>
-    </p>
-  </div>
-  <canvas id="gitGraph"></canvas>
+
+    <div class="left-panel">
+      <div class="file">
+        <p>src/views/cool-website.html</p>
+      </div>
+      <div class="file">
+        <p>src/stylesheets/super-styles.css</p>
+      </div>
+      <div class="file">
+        <p>src/scripts/main.js</p>
+      </div>
+    </div>
+
+    <div class="graph-panel">
+
+    </div>
+
+    <div class="footer">
+      <p>Command Line</p>
+    </div>
+
+
+    <!-- <div id="mynetwork">
+      <div class="vis-network" tabindex="900" style="position: relative; overflow: hidden; touch-action: pan-y; -webkit-user-select: none;      -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); width: 100%; height: 100%;">
+        <canvas width="1600" height="1300" style="position: relative; touch-action: none; -webkit-user-select: none; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); width: 100%; height: 100%;"></canvas>
+      </div>
+    </div>
+    <canvas id="gitGraph"></canvas> -->
+  </body>
 </html>
