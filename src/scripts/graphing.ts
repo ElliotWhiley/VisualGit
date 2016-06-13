@@ -102,7 +102,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
   network = new vis.Network(container, data, options);
+  plotGraph();
 }, false);
+
 
 function commit(parentBranches, branch) {
   var id = incrementAndGetId();
@@ -178,20 +180,16 @@ function incrementAndGetId() {
   return nodeId++;
 }
 
-function plotGraph(commits) {
-
-  for (var i = 0; i < commits.length; i++) {
-    var commit = commits[i];
-
-    var id = incrementAndGetId();
-    var name = 'Node ' + id;
-
-    nodes.add({
-      id: id,
-      label: name,
-      shape: 'circularImage',
-      image: tmpImage,
-      fixed: (id == 1)
-    });
-  }
+function plotGraph() {
+  commit(['master'], 'master');
+  branch('master', 'feature1');
+  commit(['feature1'], 'feature1');
+  commit(['feature1'], 'feature1');
+  branch('feature1', 'feature2');
+  commit(['feature2'], 'feature2');
+  merge('feature1', 'master', false);
+  commit(['feature2'], 'feature2');
+  commit(['feature2'], 'feature2');
+  merge('feature2', 'master', false);
+  commit(['feature1'], 'feature1');
 }

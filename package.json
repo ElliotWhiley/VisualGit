@@ -23,7 +23,8 @@
   },
   "homepage": "https://github.com/atom/electron-quick-start#readme",
   "dependencies": {
-    "vis": "~4.16.0"
+    "vis": "~4.16.0",
+    "nodegit": "~0.13.2"
   },
   "devDependencies": {
     "electron-prebuilt": "^0.36.0"
