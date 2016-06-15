@@ -3,12 +3,13 @@
 var vis = require('vis');
 
 var nodeId = 1;
-var nodes, edges, network;
-var branches = {};
-var branchPriorities = [];
+var options, nodes, edges, network;
+var commitHistory = [];
+var commitList = [];
+var spacingY = 100;
+var spacingX = 80;
+var parentCount = {};
 
-var spacingX = 100;
-var spacingY = -100; //Down-Up
 var tmpImage = 'http://blogprofitmedia.com/wp-content/themes/blogprofitmedia/tools/dragon-drop/images/dragon01.png';
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -22,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
     edges: edges
   };
 
-  var options = {
+  options = {
     layout:{
       randomSeed: 1,
       improvedLayout:true,
@@ -102,19 +103,68 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
   network = new vis.Network(container, data, options);
+
+  var repository = "/Users/harveyr/uni/project/git-history-template";
+  getAllCommits(repository, function(commits) {
+    populateCommits(commits);
+  });
+
 }, false);
 
-function commit(parentBranches, branch) {
-  var id = incrementAndGetId();
-  var name = 'Node ' + id;
-  var fixed = (id == 1);
-  var positionX;
-  var positionY = id * spacingY;
+function populateCommits(commits) {
+  // Sort
+  commitHistory = commits.sort(function(a, b) {
+    return a.timeMs() - b.timeMs();
+  });
 
-  if (branchPriorities.indexOf(branch) == -1) {
-    branchPriorities.push(branch);
+  for (var i = 0; i < commitHistory.length; i++) {
+    var parents = commitHistory[i].parents();
+    var column = 1;
+
+    for (var j = 0; j < parents.length; j++) {
+      var parent = parents[j];
+      if (!(parent in parentCount)) {
+        parentCount[parent] = 1;
+        column = 1;
+      } else {
+        parentCount[parent]++;
+        column = parentCount[parent];
+      }
+    }
+
+    makeNode(commitHistory[i], column);
   }
-  positionX = branchPriorities.indexOf(branch) * spacingX;
+  console.log(parentCount);
+
+  // Add edges
+  for (var i = 0; i < commitHistory.length; i++) {
+    addEdges(commitHistory[i]);
+  }
+
+  commitList = commitList.sort(timeCompare);
+
+  console.log(commitList);
+}
+
+function timeCompare(a, b) {
+  return a.time - b.time;
+}
+
+function addEdges(c) {
+  var parents = c.parents();
+
+  if (parents.length != 0) {
+    parents.forEach(function(parentSha) {
+      var sha = c.sha();
+
+      makeEdge(sha, parentSha);
+    });
+  }
+}
+
+function makeNode(c, column) {
+  var id = nodeId++;
+  var name = 'Node ' + id;
 
   nodes.add({
     id: id,
@@ -122,76 +172,34 @@ function commit(parentBranches, branch) {
     shape: 'circularImage',
     image: tmpImage,
     physics: false,
-    fixed: fixed,
-    x: positionX,
-    y: positionY
+    fixed: (id == 1),
+    x: (column-1) * spacingX,
+    y: (id-1)* spacingY,
   });
 
-  if (id != 1) {
-    for (var i = 0; i < parentBranches.length; i++) {
-      var latestCommit = getLatestCommit(parentBranches[i]);
-      edges.add({from: latestCommit, to: id})
+  commitList.push({
+    sha: c.sha(),
+    id: id,
+    time: c.timeMs(),
+    column: column,
+  });
+}
+
+function makeEdge(sha, parentSha) {
+  var fromNode = getNodeId(parentSha.toString());
+  var toNode = getNodeId(sha);
+
+  edges.add({
+    from: fromNode,
+    to: toNode
+  })
+}
+
+function getNodeId(sha) {
+  for (var i = 0; i < commitList.length; i++) {
+    var c = commitList[i];
+    if (c["sha"] === sha) {
+      return c["id"];
     }
-  }
-  commitToBranch(branch, id);
-}
-
-function merge(sourceBranch, destBranch, rebase) {
-  var sourceParent = getLatestCommit(sourceBranch);
-  var destParent = getLatestCommit(destBranch);
-
-  if (sourceParent != null && destParent != null) {
-    commit([destBranch, sourceBranch], destBranch);
-  }
-
-  if (branchPriorities.indexOf(sourceBranch) != -1) {
-    var index = branchPriorities.indexOf(sourceBranch);
-    branchPriorities.splice(index, 1);
-  }
-}
-
-function branch(sourceBranch, destBranch) {
-  var sourceParent = getLatestCommit(sourceBranch);
-
-  if (sourceParent != null) {
-    commit([sourceBranch], destBranch);
-  }
-}
-
-function getLatestCommit(branch) {
-  if (branches[branch] != null && branches[branch].length != 0) {
-    return branches[branch][(branches[branch].length - 1)];
-  } else {
-    console.log("Trying to get latest commit for invalid branch '" + branch + "'");
-  }
-}
-
-function commitToBranch(branchName, commitId) {
-  if (branches[branchName] == null) {
-    branches[branchName] = [commitId];
-  } else {
-    branches[branchName].push(commitId);
-  }
-}
-
-function incrementAndGetId() {
-  return nodeId++;
-}
-
-function plotGraph(commits) {
-
-  for (var i = 0; i < commits.length; i++) {
-    var commit = commits[i];
-
-    var id = incrementAndGetId();
-    var name = 'Node ' + id;
-
-    nodes.add({
-      id: id,
-      label: name,
-      shape: 'circularImage',
-      image: tmpImage,
-      fixed: (id == 1)
-    });
   }
 }
