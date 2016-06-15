@@ -4,6 +4,9 @@ var nodeId = 1;
 var options, nodes, edges, network;
 var commitHistory = [];
 var commitList = [];
+var spacingY = 100;
+var spacingX = 80;
+var parentCount = {};
 var tmpImage = 'http://blogprofitmedia.com/wp-content/themes/blogprofitmedia/tools/dragon-drop/images/dragon01.png';
 document.addEventListener('DOMContentLoaded', function () {
     nodes = new vis.DataSet([]);
@@ -99,14 +102,34 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 }, false);
 function populateCommits(commits) {
-    commitHistory = commits;
+    commitHistory = commits.sort(function (a, b) {
+        return a.timeMs() - b.timeMs();
+    });
     for (var i = 0; i < commitHistory.length; i++) {
-        makeNode(commitHistory[i]);
+        var parents = commitHistory[i].parents();
+        var column = 1;
+        for (var j = 0; j < parents.length; j++) {
+            var parent = parents[j];
+            if (!(parent in parentCount)) {
+                parentCount[parent] = 1;
+                column = 1;
+            }
+            else {
+                parentCount[parent]++;
+                column = parentCount[parent];
+            }
+        }
+        makeNode(commitHistory[i], column);
     }
+    console.log(parentCount);
     for (var i = 0; i < commitHistory.length; i++) {
         addEdges(commitHistory[i]);
     }
+    commitList = commitList.sort(timeCompare);
     console.log(commitList);
+}
+function timeCompare(a, b) {
+    return a.time - b.time;
 }
 function addEdges(c) {
     var parents = c.parents();
@@ -117,7 +140,7 @@ function addEdges(c) {
         });
     }
 }
-function makeNode(c) {
+function makeNode(c, column) {
     var id = nodeId++;
     var name = 'Node ' + id;
     nodes.add({
@@ -125,11 +148,16 @@ function makeNode(c) {
         label: name,
         shape: 'circularImage',
         image: tmpImage,
-        physics: true,
+        physics: false,
+        fixed: (id == 1),
+        x: (column - 1) * spacingX,
+        y: (id - 1) * spacingY,
     });
     commitList.push({
         sha: c.sha(),
         id: id,
+        time: c.timeMs(),
+        column: column,
     });
 }
 function makeEdge(sha, parentSha) {
