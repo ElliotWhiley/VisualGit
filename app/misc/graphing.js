@@ -96,7 +96,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
     network = new vis.Network(container, data, options);
-    var repository = "/Users/harveyr/uni/project/git-history-template";
+    var repository = "/Users/Elliot/Documents/electron-boilerplate";
     getAllCommits(repository, function (commits) {
         populateCommits(commits);
     });

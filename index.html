@@ -1,0 +1,75 @@
+<!doctype html>
+
+<html>
+  <head>
+    <title>Angular 2 QuickStart</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="app/misc/git.js"></script>
+    <script src="app/misc/graphing.js"></script>
+    <script src="app/misc/repo.js"></script>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+
+    <!-- 1. Load libraries -->
+     <!-- Polyfill(s) for older browsers -->
+    <script src="node_modules/core-js/client/shim.min.js"></script>
+    <script src="node_modules/zone.js/dist/zone.js"></script>
+    <script src="node_modules/reflect-metadata/Reflect.js"></script>
+    <script src="node_modules/systemjs/dist/system.src.js"></script>
+
+    <!-- 2. Configure SystemJS -->
+    <script src="systemjs.config.js"></script>
+    <script>
+      System.import('app').catch(function(err){ console.error(err); });
+    </script>
+
+  </head>
+  <body>
+    <my-app>
+      Loading...
+      <div>
+        <script>
+          // var test = new Test('Elliot');
+          // console.log(test.name);
+        </script>
+        {{name}}
+      </div>
+    </my-app>
+
+
+
+    <div class="header">
+      <button onclick="downloadRepo()">+</button>
+      <p>VisualGit</p>
+      <p>master</p>
+    </div>
+
+    <div class="left-panel">
+      <div class="file">
+        <p>src/views/cool-website.html</p>
+      </div>
+      <div class="file">
+        <p>src/stylesheets/super-styles.css</p>
+      </div>
+      <div class="file">
+        <p>src/scripts/main.js</p>
+      </div>
+    </div>
+
+    <div class="graph-panel">
+      <div id="mynetwork">
+        <div class="vis-network" tabindex="900" style="position: relative; overflow: hidden; touch-action: pan-y; -webkit-user-select: none;      -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); width: 100%; height: 100%;">
+          <canvas width="1600" height="1300" style="position: relative; touch-action: none; -webkit-user-select: none; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); width: 100%; height: 100%;"></canvas>
+        </div>
+      </div>
+    </div>
+    <canvas id="gitGraph"></canvas>
+
+    <div class="footer">
+      <p>Command Line</p>
+    </div>
+
+
+
+  </body>
+</html>

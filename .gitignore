@@ -1,3 +1,4 @@
 node_modules
-src/stylesheets/variables.css
+stylesheets/variables.css
+/dist
 npm-debug.log
