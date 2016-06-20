@@ -1,4 +1,5 @@
 node_modules
+typings
 stylesheets/variables.css
 /dist
 npm-debug.log

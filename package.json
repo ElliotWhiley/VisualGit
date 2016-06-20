@@ -8,7 +8,8 @@
   },
   "scripts": {
     "start": "electron index.js",
-    "build": "electron-packager . --out=dist --app-version=$npm_package_version --prune --asar --overwrite --all"
+    "build": "electron-packager . --out=dist --app-version=$npm_package_version --prune --asar --overwrite --all",
+    "postinstall": "typings install"
   },
   "keywords": [
     "VisualGit",
