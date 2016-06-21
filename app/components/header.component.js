@@ -18,6 +18,7 @@ var HeaderComponent = (function () {
     }
     HeaderComponent.prototype.promptUserToAddRepository = function () {
         console.log('test!!');
+        console.log(document.getElementById("add-repository"));
     };
     HeaderComponent = __decorate([
         core_1.Component({

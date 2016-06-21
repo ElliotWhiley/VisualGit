@@ -8,11 +8,8 @@ import { AddRepositoryComponent } from './add.repository.component';
   template: `
     <app-header></app-header>
 
-    <h1>Angular Is Working!!</h1>
-    <files></files>
-    <add-repository id="add-repository"></add-repository>
+
   `,
-  // templateUrl: 'index.html',
   directives: [FilesComponent, HeaderComponent, AddRepositoryComponent]
 })
 

@@ -27,6 +27,7 @@ export class HeaderComponent   {
 
   promptUserToAddRepository(): void {
     console.log('test!!');
+    console.log(document.getElementById("add-repository"));
   }
 
 }

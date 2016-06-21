@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", function() {
   edges = new vis.DataSet([]);
 
   // create a network
-  let container = document.getElementById("mynetwork");
+  let container = document.getElementById("my-network");
   let data = {
     nodes: nodes,
     edges: edges

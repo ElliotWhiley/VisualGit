@@ -3,10 +3,12 @@ p {
   font-family: 'Montserrat', sans-serif;
 }
 
-#mynetwork {
-  width: 600px;
-  height: 400px;
+.network {
+  width: 100%;
+  height: 80vh;
   border: 1px solid lightgray;
+  margin: 0;
+  padding: 0;
 }
 
 body {
@@ -59,9 +61,14 @@ body .left-panel .file :hover {
 }
 
 body .graph-panel {
-  width: 80%;
-  height: 82.7%;
+  width: 79%;
+  height: 80%;
   float: right;
+}
+
+body .graph-panel network canvas {
+  width: 100%;
+  height: 100%;
 }
 
 body .footer {

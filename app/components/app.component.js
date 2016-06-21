@@ -18,7 +18,7 @@ var AppComponent = (function () {
     AppComponent = __decorate([
         core_1.Component({
             selector: 'my-app',
-            template: "\n    <app-header></app-header>\n\n    <h1>Angular Is Working!!</h1>\n    <files></files>\n    <add-repository id=\"add-repository\"></add-repository>\n  ",
+            template: "\n    <app-header></app-header>\n\n\n  ",
             directives: [files_component_1.FilesComponent, header_component_1.HeaderComponent, add_repository_component_1.AddRepositoryComponent]
         }), 
         __metadata('design:paramtypes', [])

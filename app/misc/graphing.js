@@ -11,7 +11,7 @@ var tmpImage = "http://blogprofitmedia.com/wp-content/themes/blogprofitmedia/too
 document.addEventListener("DOMContentLoaded", function () {
     nodes = new vis.DataSet([]);
     edges = new vis.DataSet([]);
-    var container = document.getElementById("mynetwork");
+    var container = document.getElementById("my-network");
     var data = {
         nodes: nodes,
         edges: edges
