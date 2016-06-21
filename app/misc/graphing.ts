@@ -115,28 +115,59 @@ function process(commits: nodegit.Commit[]) {
   populateCommits(commits);
 }
 
-function populateCommits(commits: any) {
+function populateCommits(commits) {
   // Sort
-  commitHistory = commits.sort(function(a: any, b: any) {
+  commitHistory = commits.sort(function(a, b) {
     return a.timeMs() - b.timeMs();
   });
 
+  let columns: boolean[] = [];
+  // Plot the graph
   for (let i = 0; i < commitHistory.length; i++) {
-    let parents = commitHistory[i].parents();
-    let column = 1;
+    let parents: string[] = commitHistory[i].parents();
+    let nodeColumn = 0;
+    let desiredColumn: number = 0;
 
     for (let j = 0; j < parents.length; j++) {
       let parent = parents[j];
       if (!(parent in parentCount)) {
         parentCount[parent] = 1;
-        column = 1;
       } else {
         parentCount[parent]++;
-        column = parentCount[parent];
       }
     }
 
-    makeNode(commitHistory[i], column);
+    console.log(parents.length);
+    if (parents.length === 0) {
+      // no parents means first commit so assign the first column
+      columns[0] = true;
+    } else {
+      if (parents.length === 1) {
+        console.log("has 1 parents");
+        let parentId = getNodeId(parents[0].toString());
+        if (parentCount[parents[0].toString()] === 1) {
+          desiredColumn = commitList[parentId - 1]["column"];
+        } else {
+          desiredColumn = commitList[parentId - 1]["column"] + parentCount[parents[0].toString()];
+        }
+      } else for (let j = 0; j < parents.length; j++) {
+        let parent: string = parents[j];
+        let parentId = getNodeId(parent.toString());
+        let proposedColumn = commitList[parentId - 1]["column"];
+
+        if (desiredColumn > proposedColumn) {
+          desiredColumn = proposedColumn;
+        }
+        while (columns[desiredColumn] === true) {
+          desiredColumn++;
+        }
+      }
+      nodeColumn = desiredColumn;
+      columns[nodeColumn] = true;
+      console.log("wants " + desiredColumn);
+    }
+
+    makeNode(commitHistory[i], nodeColumn);
   }
   console.log(parentCount);
 
@@ -146,8 +177,6 @@ function populateCommits(commits: any) {
   }
 
   commitList = commitList.sort(timeCompare);
-
-  console.log(commitList);
 }
 
 function timeCompare(a, b) {
@@ -158,15 +187,16 @@ function addEdges(c) {
   let parents = c.parents();
 
   if (parents.length !== 0) {
-    parents.forEach(function(parentSha) {
-      let sha = c.sha();
+    parents.forEach(function(parent) {
+      let sha: string = c.sha();
+      let parentSha: string = parent.toString();
 
       makeEdge(sha, parentSha);
     });
   }
 }
 
-function makeNode(c, column) {
+function makeNode(c, column: number) {
   let id = nodeId++;
   let name = "Node " + id;
 
@@ -189,7 +219,7 @@ function makeNode(c, column) {
   });
 }
 
-function makeEdge(sha, parentSha) {
+function makeEdge(sha: string, parentSha: string) {
   let fromNode = getNodeId(parentSha.toString());
   let toNode = getNodeId(sha);
 
@@ -199,7 +229,7 @@ function makeEdge(sha, parentSha) {
   });
 }
 
-function getNodeId(sha) {
+function getNodeId(sha: string) {
   for (let i = 0; i < commitList.length; i++) {
     let c = commitList[i];
     if (c["sha"] === sha) {
