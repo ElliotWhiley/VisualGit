@@ -1,5 +1,5 @@
-'use strict';
-var vis = require('vis');
+"use strict";
+var vis = require("vis");
 var nodeId = 1;
 var options, nodes, edges, network;
 var commitHistory = [];
@@ -7,11 +7,11 @@ var commitList = [];
 var spacingY = 100;
 var spacingX = 80;
 var parentCount = {};
-var tmpImage = 'http://blogprofitmedia.com/wp-content/themes/blogprofitmedia/tools/dragon-drop/images/dragon01.png';
-document.addEventListener('DOMContentLoaded', function () {
+var tmpImage = "http://blogprofitmedia.com/wp-content/themes/blogprofitmedia/tools/dragon-drop/images/dragon01.png";
+document.addEventListener("DOMContentLoaded", function () {
     nodes = new vis.DataSet([]);
     edges = new vis.DataSet([]);
-    var container = document.getElementById('mynetwork');
+    var container = document.getElementById("mynetwork");
     var data = {
         nodes: nodes,
         edges: edges
@@ -43,21 +43,21 @@ document.addEventListener('DOMContentLoaded', function () {
             },
             arrowStrikethrough: true,
             color: {
-                color: '#848484',
-                highlight: '#848484',
-                hover: '#848484',
-                inherit: 'from',
+                color: "#848484",
+                highlight: "#848484",
+                hover: "#848484",
+                inherit: "from",
                 opacity: 1.0
             },
             dashes: false,
             font: {
-                color: '#343434',
+                color: "#343434",
                 size: 14,
-                face: 'arial',
-                background: 'none',
+                face: "arial",
+                background: "none",
                 strokeWidth: 2,
-                strokeColor: '#ffffff',
-                align: 'horizontal'
+                strokeColor: "#ffffff",
+                align: "horizontal"
             },
             hidden: false,
             hoverWidth: 1.5,
@@ -101,6 +101,9 @@ document.addEventListener('DOMContentLoaded', function () {
         populateCommits(commits);
     });
 }, false);
+function process(commits) {
+    populateCommits(commits);
+}
 function populateCommits(commits) {
     commitHistory = commits.sort(function (a, b) {
         return a.timeMs() - b.timeMs();
@@ -109,14 +112,14 @@ function populateCommits(commits) {
         var parents = commitHistory[i].parents();
         var column = 1;
         for (var j = 0; j < parents.length; j++) {
-            var parent = parents[j];
-            if (!(parent in parentCount)) {
-                parentCount[parent] = 1;
+            var parent_1 = parents[j];
+            if (!(parent_1 in parentCount)) {
+                parentCount[parent_1] = 1;
                 column = 1;
             }
             else {
-                parentCount[parent]++;
-                column = parentCount[parent];
+                parentCount[parent_1]++;
+                column = parentCount[parent_1];
             }
         }
         makeNode(commitHistory[i], column);
@@ -133,7 +136,7 @@ function timeCompare(a, b) {
 }
 function addEdges(c) {
     var parents = c.parents();
-    if (parents.length != 0) {
+    if (parents.length !== 0) {
         parents.forEach(function (parentSha) {
             var sha = c.sha();
             makeEdge(sha, parentSha);
@@ -142,14 +145,14 @@ function addEdges(c) {
 }
 function makeNode(c, column) {
     var id = nodeId++;
-    var name = 'Node ' + id;
+    var name = "Node " + id;
     nodes.add({
         id: id,
         label: name,
-        shape: 'circularImage',
+        shape: "circularImage",
         image: tmpImage,
         physics: false,
-        fixed: (id == 1),
+        fixed: (id === 1),
         x: (column - 1) * spacingX,
         y: (id - 1) * spacingY,
     });

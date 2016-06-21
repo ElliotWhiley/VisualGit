@@ -1,3 +1,4 @@
+"use strict";
 var Git = require("nodegit");
 function getAllCommits(repository, callback) {
     Git.Repository.open(repository)

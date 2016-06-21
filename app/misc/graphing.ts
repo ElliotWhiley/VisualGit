@@ -1,34 +1,34 @@
-'use strict';
+import * as nodegit from "git";
 
-var vis = require('vis');
+let vis = require("vis");
 
-var nodeId = 1;
-var options, nodes, edges, network;
-var commitHistory = [];
-var commitList = [];
-var spacingY = 100;
-var spacingX = 80;
-var parentCount = {};
+let nodeId = 1;
+let options, nodes, edges, network;
+let commitHistory = [];
+let commitList = [];
+let spacingY = 100;
+let spacingX = 80;
+let parentCount = {};
 
-var tmpImage = 'http://blogprofitmedia.com/wp-content/themes/blogprofitmedia/tools/dragon-drop/images/dragon01.png';
+let tmpImage = "http://blogprofitmedia.com/wp-content/themes/blogprofitmedia/tools/dragon-drop/images/dragon01.png";
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener("DOMContentLoaded", function() {
   nodes = new vis.DataSet([]);
   edges = new vis.DataSet([]);
 
   // create a network
-  var container = document.getElementById('mynetwork');
-  var data = {
+  let container = document.getElementById("mynetwork");
+  let data = {
     nodes: nodes,
     edges: edges
   };
 
   options = {
-    layout:{
+    layout: {
       randomSeed: 1,
-      improvedLayout:true,
+      improvedLayout: true,
     },
-    physics:{
+    physics: {
     enabled: true,
     hierarchicalRepulsion: {
       centralGravity: 0,
@@ -44,27 +44,27 @@ document.addEventListener('DOMContentLoaded', function() {
   },
   edges: {
       arrows: {
-        to:     {enabled: true, scaleFactor:1},
-        middle: {enabled: false, scaleFactor:1},
-        from:   {enabled: false, scaleFactor:1}
+        to:     {enabled: true, scaleFactor: 1},
+        middle: {enabled: false, scaleFactor: 1},
+        from:   {enabled: false, scaleFactor: 1}
       },
       arrowStrikethrough: true,
       color: {
-        color:'#848484',
-        highlight:'#848484',
-        hover: '#848484',
-        inherit: 'from',
-        opacity:1.0
+        color: "#848484",
+        highlight: "#848484",
+        hover: "#848484",
+        inherit: "from",
+        opacity: 1.0
       },
       dashes: false,
       font: {
-        color: '#343434',
+        color: "#343434",
         size: 14, // px
-        face: 'arial',
-        background: 'none',
+        face: "arial",
+        background: "none",
         strokeWidth: 2, // px
-        strokeColor: '#ffffff',
-        align:'horizontal'
+        strokeColor: "#ffffff",
+        align: "horizontal"
       },
       hidden: false,
       hoverWidth: 1.5,
@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function() {
       labelHighlightBold: true,
       length: undefined,
       physics: true,
-      scaling:{
+      scaling: {
         min: 1,
         max: 15,
         label: {
@@ -82,18 +82,18 @@ document.addEventListener('DOMContentLoaded', function() {
           maxVisible: 30,
           drawThreshold: 5
         },
-        customScalingFunction: function (min,max,total,value) {
+        customScalingFunction: function (min: number, max: number, total: number, value: number) {
           if (max === min) {
             return 0.5;
           }
           else {
-            var scale = 1 / (max - min);
-            return Math.max(0,(value - min)*scale);
+            let scale = 1 / (max - min);
+            return Math.max(0, (value - min) * scale);
           }
         }
       },
       selectionWidth: 1,
-      selfReferenceSize:20,
+      selfReferenceSize: 20,
       shadow: true,
       smooth: {
         enabled: true,
@@ -101,29 +101,32 @@ document.addEventListener('DOMContentLoaded', function() {
         roundness: 0.7
       },
     }
-  }
+  };
   network = new vis.Network(container, data, options);
 
-  //var repository = "/Users/Elliot/Documents/electron-boilerplate";
-  var repository = "tmp";
+  let repository = "tmp";
   getAllCommits(repository, function(commits) {
     populateCommits(commits);
   });
 
 }, false);
 
-function populateCommits(commits) {
+function process(commits: nodegit.Commit[]) {
+  populateCommits(commits);
+}
+
+function populateCommits(commits: any) {
   // Sort
-  commitHistory = commits.sort(function(a, b) {
+  commitHistory = commits.sort(function(a: any, b: any) {
     return a.timeMs() - b.timeMs();
   });
 
-  for (var i = 0; i < commitHistory.length; i++) {
-    var parents = commitHistory[i].parents();
-    var column = 1;
+  for (let i = 0; i < commitHistory.length; i++) {
+    let parents = commitHistory[i].parents();
+    let column = 1;
 
-    for (var j = 0; j < parents.length; j++) {
-      var parent = parents[j];
+    for (let j = 0; j < parents.length; j++) {
+      let parent = parents[j];
       if (!(parent in parentCount)) {
         parentCount[parent] = 1;
         column = 1;
@@ -138,7 +141,7 @@ function populateCommits(commits) {
   console.log(parentCount);
 
   // Add edges
-  for (var i = 0; i < commitHistory.length; i++) {
+  for (let i = 0; i < commitHistory.length; i++) {
     addEdges(commitHistory[i]);
   }
 
@@ -152,11 +155,11 @@ function timeCompare(a, b) {
 }
 
 function addEdges(c) {
-  var parents = c.parents();
+  let parents = c.parents();
 
-  if (parents.length != 0) {
+  if (parents.length !== 0) {
     parents.forEach(function(parentSha) {
-      var sha = c.sha();
+      let sha = c.sha();
 
       makeEdge(sha, parentSha);
     });
@@ -164,18 +167,18 @@ function addEdges(c) {
 }
 
 function makeNode(c, column) {
-  var id = nodeId++;
-  var name = 'Node ' + id;
+  let id = nodeId++;
+  let name = "Node " + id;
 
   nodes.add({
     id: id,
     label: name,
-    shape: 'circularImage',
+    shape: "circularImage",
     image: tmpImage,
     physics: false,
-    fixed: (id == 1),
-    x: (column-1) * spacingX,
-    y: (id-1)* spacingY,
+    fixed: (id === 1),
+    x: (column - 1) * spacingX,
+    y: (id - 1) * spacingY,
   });
 
   commitList.push({
@@ -187,18 +190,18 @@ function makeNode(c, column) {
 }
 
 function makeEdge(sha, parentSha) {
-  var fromNode = getNodeId(parentSha.toString());
-  var toNode = getNodeId(sha);
+  let fromNode = getNodeId(parentSha.toString());
+  let toNode = getNodeId(sha);
 
   edges.add({
     from: fromNode,
     to: toNode
-  })
+  });
 }
 
 function getNodeId(sha) {
-  for (var i = 0; i < commitList.length; i++) {
-    var c = commitList[i];
+  for (let i = 0; i < commitList.length; i++) {
+    let c = commitList[i];
     if (c["sha"] === sha) {
       return c["id"];
     }

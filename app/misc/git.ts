@@ -1,4 +1,6 @@
-var Git = require("nodegit");
+import * as nodegit from "git";
+
+let Git = require("nodegit");
 
 function getAllCommits(repository, callback) {
   Git.Repository.open(repository)
@@ -6,7 +8,7 @@ function getAllCommits(repository, callback) {
     return repo.getMasterCommit();
   })
   .then(function(firstCommitOnMaster){
-    var history = firstCommitOnMaster.history(Git.Revwalk.SORT.Time);
+    let history = firstCommitOnMaster.history(Git.Revwalk.SORT.Time);
 
     history.on("end", function(commits) {
       callback(commits);
