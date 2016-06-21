@@ -104,7 +104,8 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   network = new vis.Network(container, data, options);
 
-  var repository = "/Users/Elliot/Documents/electron-boilerplate";
+  //var repository = "/Users/Elliot/Documents/electron-boilerplate";
+  var repository = "tmp";
   getAllCommits(repository, function(commits) {
     populateCommits(commits);
   });

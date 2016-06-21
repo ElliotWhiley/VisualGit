@@ -9,19 +9,20 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
-var files_component_1 = require('./files.component');
-var header_component_1 = require('./header.component');
-var AppComponent = (function () {
-    function AppComponent() {
+var repo_service_1 = require('../services/repo.service');
+var HeaderComponent = (function () {
+    function HeaderComponent() {
+        this.repoName = 'Repo name';
+        this.repoBranch = 'Repo branch';
     }
-    AppComponent = __decorate([
+    HeaderComponent = __decorate([
         core_1.Component({
-            selector: 'my-app',
-            template: "\n    <app-header></app-header>\n\n    <h1>Angular Is Working!!</h1>\n    <files></files>\n  ",
-            directives: [files_component_1.FilesComponent, header_component_1.HeaderComponent]
+            selector: 'app-header',
+            template: "\n    <div class=\"header\">\n      <button onclick=\"downloadRepo()\">+</button>\n      <p>{{repoName}}</p>\n      <p>{{repoBranch}}</p>\n    </div>\n  ",
+            providers: [repo_service_1.RepoService]
         }), 
         __metadata('design:paramtypes', [])
-    ], AppComponent);
-    return AppComponent;
+    ], HeaderComponent);
+    return HeaderComponent;
 }());
-exports.AppComponent = AppComponent;
+exports.HeaderComponent = HeaderComponent;

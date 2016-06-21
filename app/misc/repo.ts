@@ -21,7 +21,7 @@ function downloadRepo() {
 
   // Using the `clone` method from the `Git.Clone` module, bring down the NodeGit
   // test repository from GitHub.
-  var cloneURL = "https://github.com/nodegit/test";
+  var cloneURL = "https://github.com/Puhapig/git-history-template.git";
 
   // Ensure that the `tmp` directory is local to this file and not the CWD.
   var localPath = require("path").join(__dirname, "tmp");
@@ -51,7 +51,18 @@ function downloadRepo() {
   cloneRepository.catch(errorAndAttemptOpen)
     .then(function(repository) {
       // Access any repository methods here.
-      console.log("Is the repository bare? %s", Boolean(repository.isBare()));
+      console.log('downloaded repo!');
+      console.log('Repo: ' + repository.getNameSpace);
+      console.log('Branch: ' + repository.getCurrentBranch);
+      console.log('Path: ' + repository.path);
+      console.log('Reference Names: ', repository.getReferenceNames);
+      return repository.getReferenceNames;
+
+      //console.log("Is the repository bare? %s", Boolean(repository.isBare()));
+    })
+    .then(function(referenceNames) {
+      console.log(referenceNames);
     });
+
 
 }
