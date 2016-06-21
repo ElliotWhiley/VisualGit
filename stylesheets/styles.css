@@ -10,6 +10,7 @@ p {
 }
 
 body {
+  margin: 0;
   background-color: white;
   width: 100vw;
   height: 100vh;
@@ -22,6 +23,7 @@ body .header {
 }
 
 body .header p {
+  margin: 0;
   line-height: 10vh;
   padding-left: 40px;
   font-size: 25px;
@@ -48,6 +50,7 @@ body .left-panel .file {
 }
 
 body .left-panel .file p {
+  margin: 0;
   padding: 6% 4%;
 }
 

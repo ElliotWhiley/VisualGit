@@ -7,7 +7,7 @@ import { RepoService } from '../services/repo.service';
   selector: 'app-header',
   template: `
     <div class="header">
-      <button onclick="downloadRepo()">+</button>
+      <button (click)="promptUserToAddRepository()">+</button>
       <p>{{repoName}}</p>
       <p>{{repoBranch}}</p>
     </div>
@@ -20,8 +20,13 @@ export class HeaderComponent   {
   repoBranch: string = 'Repo branch';
   repository: any;
 
-  // constructor(private repoService: RepoService) {
+  constructor(private repoService: RepoService) {
   //   this.repoName = repoService.getRepoName();
   //   this.repoBranch = repoService.getCurrentBranch();
-  // }
+  }
+
+  promptUserToAddRepository(): void {
+    console.log('test!!');
+  }
+
 }

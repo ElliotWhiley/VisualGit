@@ -12,6 +12,7 @@ p {
 }
 
 body {
+  margin: 0;
   background-color:  white;
   width: 100vw;
   height: 100vh;
@@ -26,6 +27,7 @@ body {
       //font-size: 100%;
       //vertical-align: middle;
       //line-height: 100%;
+      margin: 0;
       line-height: 10vh;
       padding-left: 40px;
       font-size: 25px;
@@ -58,6 +60,7 @@ body {
         // width: 50%;
         // margin: -15% 0 0 -25%;
         // overflow: hidden;
+        margin: 0;
         padding: 6% 4%;
 
       }
@@ -81,6 +84,5 @@ body {
     position: fixed;
     bottom: 0;
   }
-
 
 }
