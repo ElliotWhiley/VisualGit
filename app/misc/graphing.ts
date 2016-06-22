@@ -137,13 +137,11 @@ function populateCommits(commits) {
       }
     }
 
-    console.log(parents.length);
     if (parents.length === 0) {
       // no parents means first commit so assign the first column
       columns[0] = true;
     } else {
       if (parents.length === 1) {
-        console.log("has 1 parents");
         let parentId = getNodeId(parents[0].toString());
         if (parentCount[parents[0].toString()] === 1) {
           desiredColumn = commitList[parentId - 1]["column"];
@@ -164,12 +162,10 @@ function populateCommits(commits) {
       }
       nodeColumn = desiredColumn;
       columns[nodeColumn] = true;
-      console.log("wants " + desiredColumn);
     }
 
     makeNode(commitHistory[i], nodeColumn);
   }
-  console.log(parentCount);
 
   // Add edges
   for (let i = 0; i < commitHistory.length; i++) {
