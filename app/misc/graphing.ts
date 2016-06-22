@@ -3,118 +3,11 @@ import * as nodegit from "git";
 let vis = require("vis");
 
 let nodeId = 1;
-let options, nodes, edges, network;
 let commitHistory = [];
 let commitList = [];
 let spacingY = 100;
 let spacingX = 80;
 let parentCount = {};
-
-let tmpImage = "http://blogprofitmedia.com/wp-content/themes/blogprofitmedia/tools/dragon-drop/images/dragon01.png";
-
-document.addEventListener("DOMContentLoaded", function() {
-  nodes = new vis.DataSet([]);
-  edges = new vis.DataSet([]);
-
-  // create a network
-  let container = document.getElementById("my-network");
-  let data = {
-    nodes: nodes,
-    edges: edges
-  };
-
-  options = {
-    layout: {
-      randomSeed: 1,
-      improvedLayout: true,
-    },
-    physics: {
-    enabled: true,
-    hierarchicalRepulsion: {
-      centralGravity: 0,
-      springLength: 100,
-      springConstant: 0.01,
-      nodeDistance: 120,
-      damping: 0.09
-    },
-  },
-  nodes: {
-    borderWidth: 2,
-    shadow: true,
-  },
-  edges: {
-      arrows: {
-        to:     {enabled: true, scaleFactor: 1},
-        middle: {enabled: false, scaleFactor: 1},
-        from:   {enabled: false, scaleFactor: 1}
-      },
-      arrowStrikethrough: true,
-      color: {
-        color: "#848484",
-        highlight: "#848484",
-        hover: "#848484",
-        inherit: "from",
-        opacity: 1.0
-      },
-      dashes: false,
-      font: {
-        color: "#343434",
-        size: 14, // px
-        face: "arial",
-        background: "none",
-        strokeWidth: 2, // px
-        strokeColor: "#ffffff",
-        align: "horizontal"
-      },
-      hidden: false,
-      hoverWidth: 1.5,
-      label: undefined,
-      labelHighlightBold: true,
-      length: undefined,
-      physics: true,
-      scaling: {
-        min: 1,
-        max: 15,
-        label: {
-          enabled: true,
-          min: 14,
-          max: 30,
-          maxVisible: 30,
-          drawThreshold: 5
-        },
-        customScalingFunction: function (min: number, max: number, total: number, value: number) {
-          if (max === min) {
-            return 0.5;
-          }
-          else {
-            let scale = 1 / (max - min);
-            return Math.max(0, (value - min) * scale);
-          }
-        }
-      },
-      selectionWidth: 1,
-      selfReferenceSize: 20,
-      shadow: true,
-      smooth: {
-        enabled: true,
-        type: "cubicBezier",
-        roundness: 0.7
-      },
-    }
-  };
-  network = new vis.Network(container, data, options);
-
-  let repository = "tmp";
-  getAllCommits(repository, function(commits) {
-    populateCommits(commits);
-  });
-
-// Basic move to set up the history location
-network.moveTo({
-  position: {x: 0, y: 200},
-  offset: {x: 0, y: 0}
-});
-}, false);
 
 function process(commits: nodegit.Commit[]) {
   populateCommits(commits);
@@ -178,6 +71,7 @@ function populateCommits(commits) {
   }
 
   commitList = commitList.sort(timeCompare);
+  reCenter();
 }
 
 function timeCompare(a, b) {
@@ -201,11 +95,15 @@ function makeNode(c, column: number) {
   let id = nodeId++;
   let name = "Node " + id;
 
+  let stringer = c.author().toString().replace(/</, "%").replace(/>/, "%");
+  let email = stringer.split("%")[1];
+  let title = "author: " + email + "<br>" + "message: " + c.message();
+
   nodes.add({
     id: id,
-    label: name,
     shape: "circularImage",
-    image: tmpImage,
+    title: title,
+    image: imageForUser(email),
     physics: false,
     fixed: (id === 1),
     x: (column - 1) * spacingX,
@@ -217,6 +115,7 @@ function makeNode(c, column: number) {
     id: id,
     time: c.timeMs(),
     column: column,
+    email: email,
   });
 }
 
@@ -237,4 +136,17 @@ function getNodeId(sha: string) {
       return c["id"];
     }
   }
+}
+
+function reCenter() {
+  let moveOptions = {
+    offset: {x: -150, y: 200},
+    scale: 1,
+    animation: {
+      duration: 1000,
+      easingFunction: "easeInOutQuad",
+    }
+  };
+
+  network.focus(commitList[commitList.length - 1]["id"], moveOptions);
 }

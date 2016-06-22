@@ -1,110 +1,11 @@
 "use strict";
 var vis = require("vis");
 var nodeId = 1;
-var options, nodes, edges, network;
 var commitHistory = [];
 var commitList = [];
 var spacingY = 100;
 var spacingX = 80;
 var parentCount = {};
-var tmpImage = "http://blogprofitmedia.com/wp-content/themes/blogprofitmedia/tools/dragon-drop/images/dragon01.png";
-document.addEventListener("DOMContentLoaded", function () {
-    nodes = new vis.DataSet([]);
-    edges = new vis.DataSet([]);
-    var container = document.getElementById("my-network");
-    var data = {
-        nodes: nodes,
-        edges: edges
-    };
-    options = {
-        layout: {
-            randomSeed: 1,
-            improvedLayout: true,
-        },
-        physics: {
-            enabled: true,
-            hierarchicalRepulsion: {
-                centralGravity: 0,
-                springLength: 100,
-                springConstant: 0.01,
-                nodeDistance: 120,
-                damping: 0.09
-            },
-        },
-        nodes: {
-            borderWidth: 2,
-            shadow: true,
-        },
-        edges: {
-            arrows: {
-                to: { enabled: true, scaleFactor: 1 },
-                middle: { enabled: false, scaleFactor: 1 },
-                from: { enabled: false, scaleFactor: 1 }
-            },
-            arrowStrikethrough: true,
-            color: {
-                color: "#848484",
-                highlight: "#848484",
-                hover: "#848484",
-                inherit: "from",
-                opacity: 1.0
-            },
-            dashes: false,
-            font: {
-                color: "#343434",
-                size: 14,
-                face: "arial",
-                background: "none",
-                strokeWidth: 2,
-                strokeColor: "#ffffff",
-                align: "horizontal"
-            },
-            hidden: false,
-            hoverWidth: 1.5,
-            label: undefined,
-            labelHighlightBold: true,
-            length: undefined,
-            physics: true,
-            scaling: {
-                min: 1,
-                max: 15,
-                label: {
-                    enabled: true,
-                    min: 14,
-                    max: 30,
-                    maxVisible: 30,
-                    drawThreshold: 5
-                },
-                customScalingFunction: function (min, max, total, value) {
-                    if (max === min) {
-                        return 0.5;
-                    }
-                    else {
-                        var scale = 1 / (max - min);
-                        return Math.max(0, (value - min) * scale);
-                    }
-                }
-            },
-            selectionWidth: 1,
-            selfReferenceSize: 20,
-            shadow: true,
-            smooth: {
-                enabled: true,
-                type: "cubicBezier",
-                roundness: 0.7
-            },
-        }
-    };
-    network = new vis.Network(container, data, options);
-    var repository = "tmp";
-    getAllCommits(repository, function (commits) {
-        populateCommits(commits);
-    });
-    network.moveTo({
-        position: { x: 0, y: 200 },
-        offset: { x: 0, y: 0 }
-    });
-}, false);
 function process(commits) {
     populateCommits(commits);
 }
@@ -160,6 +61,7 @@ function populateCommits(commits) {
         addEdges(commitHistory[i]);
     }
     commitList = commitList.sort(timeCompare);
+    reCenter();
 }
 function timeCompare(a, b) {
     return a.time - b.time;
@@ -177,11 +79,14 @@ function addEdges(c) {
 function makeNode(c, column) {
     var id = nodeId++;
     var name = "Node " + id;
+    var stringer = c.author().toString().replace(/</, "%").replace(/>/, "%");
+    var email = stringer.split("%")[1];
+    var title = "author: " + email + "<br>" + "message: " + c.message();
     nodes.add({
         id: id,
-        label: name,
         shape: "circularImage",
-        image: tmpImage,
+        title: title,
+        image: imageForUser(email),
         physics: false,
         fixed: (id === 1),
         x: (column - 1) * spacingX,
@@ -192,6 +97,7 @@ function makeNode(c, column) {
         id: id,
         time: c.timeMs(),
         column: column,
+        email: email,
     });
 }
 function makeEdge(sha, parentSha) {
@@ -209,4 +115,15 @@ function getNodeId(sha) {
             return c["id"];
         }
     }
+}
+function reCenter() {
+    var moveOptions = {
+        offset: { x: -150, y: 200 },
+        scale: 1,
+        animation: {
+            duration: 1000,
+            easingFunction: "easeInOutQuad",
+        }
+    };
+    network.focus(commitList[commitList.length - 1]["id"], moveOptions);
 }
