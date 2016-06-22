@@ -9,21 +9,16 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
-var header_component_1 = require('./header.component');
-var file_panel_component_1 = require('./file.panel.component');
-var graph_panel_component_1 = require('./graph.panel.component');
-var add_repository_component_1 = require('./add.repository.component');
-var AppComponent = (function () {
-    function AppComponent() {
+var GraphPanelComponent = (function () {
+    function GraphPanelComponent() {
     }
-    AppComponent = __decorate([
+    GraphPanelComponent = __decorate([
         core_1.Component({
-            selector: 'my-app',
-            template: "\n    <app-header></app-header>\n    <file-panel></file-panel>\n    <graph-panel></graph-panel>\n  ",
-            directives: [header_component_1.HeaderComponent, file_panel_component_1.FilePanelComponent, graph_panel_component_1.GraphPanelComponent, add_repository_component_1.AddRepositoryComponent]
+            selector: 'graph-panel',
+            template: "\n  <div class=\"graph-panel\">\n    <div class=\"network\" id=\"my-network\">\n    </div>\n  </div>\n  "
         }), 
         __metadata('design:paramtypes', [])
-    ], AppComponent);
-    return AppComponent;
+    ], GraphPanelComponent);
+    return GraphPanelComponent;
 }());
-exports.AppComponent = AppComponent;
+exports.GraphPanelComponent = GraphPanelComponent;

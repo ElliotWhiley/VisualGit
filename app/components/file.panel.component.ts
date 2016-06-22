@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { FileService } from '../services/file.service';
 
 @Component({
-  selector: 'files',
+  selector: 'file-panel',
   template: `
   <div class="left-panel">
     <div class="file" *ngFor="let file of files">
@@ -13,7 +13,7 @@ import { FileService } from '../services/file.service';
   providers: [FileService]
 })
 
-export class FilePanelComponent   {
+export class FilePanelComponent {
   title: string = 'Files in project:';
   files: string[];
 

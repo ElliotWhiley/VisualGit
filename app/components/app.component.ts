@@ -1,15 +1,17 @@
 import { Component } from '@angular/core';
-import { FilePanelComponent } from './file.panel.component';
 import { HeaderComponent } from './header.component';
+import { FilePanelComponent } from './file.panel.component';
+import { GraphPanelComponent } from './graph.panel.component';
 import { AddRepositoryComponent } from './add.repository.component';
 
 @Component({
   selector: 'my-app',
   template: `
     <app-header></app-header>
-    <files></files>
+    <file-panel></file-panel>
+    <graph-panel></graph-panel>
   `,
-  directives: [FilePanelComponent, HeaderComponent, AddRepositoryComponent]
+  directives: [HeaderComponent, FilePanelComponent, GraphPanelComponent, AddRepositoryComponent]
 })
 
 export class AppComponent { }

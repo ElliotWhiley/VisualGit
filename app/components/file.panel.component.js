@@ -18,7 +18,7 @@ var FilePanelComponent = (function () {
     }
     FilePanelComponent = __decorate([
         core_1.Component({
-            selector: 'files',
+            selector: 'file-panel',
             template: "\n  <div class=\"left-panel\">\n    <div class=\"file\" *ngFor=\"let file of files\">\n      <p>{{file}}</p>\n    </div>\n  </div>\n  ",
             providers: [file_service_1.FileService]
         }), 

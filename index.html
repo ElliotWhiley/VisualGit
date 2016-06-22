@@ -15,17 +15,19 @@
     <script src="node_modules/systemjs/dist/system.src.js"></script>
     <script src="systemjs.config.js"></script>
     <script>
-      System.import('app').catch(function(err){ console.error(err); });
+      System.import('app').catch(function(error) {
+        console.error(error);
+      });
     </script>
   </head>
 
   <body>
     <my-app></my-app>
 
-    <div class="graph-panel">
+    <!-- <div class="graph-panel">
       <div class="network" id="my-network">
       </div>
-    </div>
+    </div> -->
 
     <div class="footer">
       <p>Command Line</p>

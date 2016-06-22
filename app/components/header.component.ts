@@ -1,18 +1,17 @@
 import { Component } from '@angular/core';
-import { RepoService } from '../services/repo.service';
-
-// var NodeGit = require("nodegit");
+import { RepositoryService } from '../services/repository.service';
+import { GraphService } from '../services/graph.service';
 
 @Component({
   selector: 'app-header',
   template: `
     <div class="header">
-      <button (click)="promptUserToAddRepository()">+</button>
+      <button (click)="cloneRepository()">+</button>
       <p>{{repoName}}</p>
       <p>{{repoBranch}}</p>
     </div>
   `,
-  providers: [RepoService]
+  providers: [RepositoryService, GraphService]
 })
 
 export class HeaderComponent   {
@@ -20,14 +19,18 @@ export class HeaderComponent   {
   repoBranch: string = 'Repo branch';
   repository: any;
 
-  constructor(private repoService: RepoService) {
-  //   this.repoName = repoService.getRepoName();
-  //   this.repoBranch = repoService.getCurrentBranch();
+  constructor(private repositoryService: RepositoryService, private graphService: GraphService) {
+  //   this.repoName = repositoryService.getRepoName();
+  //   this.repoBranch = repositoryService.getCurrentBranch();
   }
 
-  promptUserToAddRepository(): void {
+  cloneRepository(): void {
     console.log('test!!');
-    console.log(document.getElementById("add-repository"));
+    //this.graphService.drawGraph();
+    drawGraph();
+
+    this.repoName = this.repositoryService.getRepoName();
+    this.repoBranch = this.repositoryService.getCurrentBranch();
   }
 
 }

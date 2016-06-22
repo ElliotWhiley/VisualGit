@@ -12,7 +12,8 @@ let parentCount = {};
 
 let tmpImage = "http://blogprofitmedia.com/wp-content/themes/blogprofitmedia/tools/dragon-drop/images/dragon01.png";
 
-document.addEventListener("DOMContentLoaded", function() {
+// document.addEventListener("DOMContentLoaded", function() {
+function drawGraph() {
   nodes = new vis.DataSet([]);
   edges = new vis.DataSet([]);
 

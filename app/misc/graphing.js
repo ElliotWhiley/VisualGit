@@ -8,7 +8,7 @@ var spacingY = 100;
 var spacingX = 80;
 var parentCount = {};
 var tmpImage = "http://blogprofitmedia.com/wp-content/themes/blogprofitmedia/tools/dragon-drop/images/dragon01.png";
-document.addEventListener("DOMContentLoaded", function () {
+function drawGraph() {
     nodes = new vis.DataSet([]);
     edges = new vis.DataSet([]);
     var container = document.getElementById("my-network");
@@ -104,7 +104,9 @@ document.addEventListener("DOMContentLoaded", function () {
         position: { x: 0, y: 200 },
         offset: { x: 0, y: 0 }
     });
-}, false);
+}
+false;
+;
 function process(commits) {
     populateCommits(commits);
 }
