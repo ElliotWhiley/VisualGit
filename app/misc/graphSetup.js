@@ -1,6 +1,6 @@
 var vis = require("vis");
 var options, nodes, edges, network;
-document.addEventListener("DOMContentLoaded", function () {
+function drawGraph() {
     nodes = new vis.DataSet([]);
     edges = new vis.DataSet([]);
     var container = document.getElementById("my-network");
@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 middle: false,
                 from: false,
             },
-            color: "2B7CE9",
+            color: "#0097A7",
             hoverWidth: 0,
             physics: false,
             selectionWidth: 0,
@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 forceDirection: "horizontal",
                 roundness: 1
             },
-            width: 4,
+            width: 3,
         },
         groups: {},
         interaction: {
@@ -70,8 +70,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 shape: "dot",
                 size: 6,
                 color: {
-                    background: "#ff0000",
-                    border: "#3c3c3c",
+                    background: "#0097A7",
+                    border: "#0097A7",
                     highlight: {
                         background: "#07f968",
                         border: "#3c3c3c"
@@ -82,10 +82,10 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         },
         nodes: {
-            borderWidth: 4,
-            borderWidthSelected: 4,
+            borderWidth: 8,
+            borderWidthSelected: 8,
             color: {
-                border: "#2B7CE9",
+                border: "#0097A7",
                 background: "#FFF",
                 highlight: {
                     border: "#FF0",
@@ -111,4 +111,6 @@ document.addEventListener("DOMContentLoaded", function () {
         position: { x: 0, y: 200 },
         offset: { x: 0, y: 0 }
     });
-}, false);
+}
+false;
+;

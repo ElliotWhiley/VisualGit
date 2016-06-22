@@ -9,21 +9,21 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
-var files_service_1 = require('../services/files.service');
-var FilesComponent = (function () {
-    function FilesComponent(filesService) {
-        this.filesService = filesService;
+var file_service_1 = require('../services/file.service');
+var FilePanelComponent = (function () {
+    function FilePanelComponent(fileService) {
+        this.fileService = fileService;
         this.title = 'Files in project:';
-        this.files = filesService.getFiles();
+        this.files = fileService.getFiles();
     }
-    FilesComponent = __decorate([
+    FilePanelComponent = __decorate([
         core_1.Component({
-            selector: 'files',
-            template: "\n    <h2>FILES</h2>\n    {{title}}\n    <ul>\n      {{<li *ngFor=\"let file of files\">\n        {{file}}\n      </li>}}\n    </ul>\n  ",
-            providers: [files_service_1.FilesService]
+            selector: 'file-panel',
+            template: "\n  <div class=\"file-panel\">\n    <div class=\"file\" *ngFor=\"let file of files\">\n      <p>{{file}}</p>\n    </div>\n  </div>\n  ",
+            providers: [file_service_1.FileService]
         }), 
-        __metadata('design:paramtypes', [files_service_1.FilesService])
-    ], FilesComponent);
-    return FilesComponent;
+        __metadata('design:paramtypes', [file_service_1.FileService])
+    ], FilePanelComponent);
+    return FilePanelComponent;
 }());
-exports.FilesComponent = FilesComponent;
+exports.FilePanelComponent = FilePanelComponent;
