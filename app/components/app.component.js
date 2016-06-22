@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
-var files_component_1 = require('./files.component');
+var file_panel_component_1 = require('./file.panel.component');
 var header_component_1 = require('./header.component');
 var add_repository_component_1 = require('./add.repository.component');
 var AppComponent = (function () {
@@ -18,8 +18,8 @@ var AppComponent = (function () {
     AppComponent = __decorate([
         core_1.Component({
             selector: 'my-app',
-            template: "\n    <app-header></app-header>\n\n\n  ",
-            directives: [files_component_1.FilesComponent, header_component_1.HeaderComponent, add_repository_component_1.AddRepositoryComponent]
+            template: "\n    <app-header></app-header>\n    <files></files>\n  ",
+            directives: [file_panel_component_1.FilePanelComponent, header_component_1.HeaderComponent, add_repository_component_1.AddRepositoryComponent]
         }), 
         __metadata('design:paramtypes', [])
     ], AppComponent);

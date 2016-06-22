@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FilesComponent } from './files.component';
+import { FilePanelComponent } from './file.panel.component';
 import { HeaderComponent } from './header.component';
 import { AddRepositoryComponent } from './add.repository.component';
 
@@ -7,10 +7,9 @@ import { AddRepositoryComponent } from './add.repository.component';
   selector: 'my-app',
   template: `
     <app-header></app-header>
-
-
+    <files></files>
   `,
-  directives: [FilesComponent, HeaderComponent, AddRepositoryComponent]
+  directives: [FilePanelComponent, HeaderComponent, AddRepositoryComponent]
 })
 
 export class AppComponent { }
