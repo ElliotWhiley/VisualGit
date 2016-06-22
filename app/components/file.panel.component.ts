@@ -4,7 +4,7 @@ import { FileService } from '../services/file.service';
 @Component({
   selector: 'file-panel',
   template: `
-  <div class="left-panel">
+  <div class="file-panel">
     <div class="file" *ngFor="let file of files">
       <p>{{file}}</p>
     </div>

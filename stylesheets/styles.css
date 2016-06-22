@@ -28,25 +28,25 @@ body .header button {
   margin-left: 40px;
 }
 
-body .left-panel {
+body .file-panel {
   width: 20%;
   height: 80vh;
   background-color: #282828;
   float: left;
 }
 
-body .left-panel :hover {
+body .file-panel :hover {
   background-color: #555;
 }
 
-body .left-panel .file {
+body .file-panel .file {
   width: 99%;
   height: 10%;
   position: relative;
   overflow: hidden;
 }
 
-body .left-panel .file p {
+body .file-panel .file p {
   display: inline-block;
   vertical-align: middle;
   margin-left: 10px;
