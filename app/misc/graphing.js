@@ -100,6 +100,10 @@ document.addEventListener("DOMContentLoaded", function () {
     getAllCommits(repository, function (commits) {
         populateCommits(commits);
     });
+    network.moveTo({
+        position: { x: 0, y: 200 },
+        offset: { x: 0, y: 0 }
+    });
 }, false);
 function process(commits) {
     populateCommits(commits);

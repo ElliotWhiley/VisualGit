@@ -109,6 +109,11 @@ document.addEventListener("DOMContentLoaded", function() {
     populateCommits(commits);
   });
 
+// Basic move to set up the history location
+network.moveTo({
+  position: {x: 0, y: 200},
+  offset: {x: 0, y: 0}
+});
 }, false);
 
 function process(commits: nodegit.Commit[]) {
