@@ -17,8 +17,7 @@ function onClosed() {
 
 function createMainWindow() {
 	const win = new electron.BrowserWindow({
-		width: 1300,
-		height: 700
+		backgroundColor: "#000"
 	});
 
 	win.maximize();
