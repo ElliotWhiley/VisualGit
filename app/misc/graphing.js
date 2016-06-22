@@ -51,7 +51,7 @@ document.addEventListener("DOMContentLoaded", function () {
             },
             dashes: false,
             font: {
-                color: "#343434",
+                color: "#fffff",
                 size: 14,
                 face: "arial",
                 background: "none",
