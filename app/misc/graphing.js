@@ -6,18 +6,21 @@ var commitList = [];
 var spacingY = 100;
 var spacingX = 80;
 var parentCount = {};
+var columns = [];
 function process(commits) {
     populateCommits(commits);
 }
 function populateCommits(commits) {
+    nodeId = 1;
+    commitList = [];
+    parentCount = {};
+    columns = [];
     commitHistory = commits.sort(function (a, b) {
         return a.timeMs() - b.timeMs();
     });
-    var columns = [];
     for (var i = 0; i < commitHistory.length; i++) {
         var parents = commitHistory[i].parents();
-        var nodeColumn = 0;
-        var desiredColumn = 0;
+        var nodeColumn = void 0;
         for (var j = 0; j < parents.length; j++) {
             var parent_1 = parents[j];
             if (!(parent_1 in parentCount)) {
@@ -29,31 +32,45 @@ function populateCommits(commits) {
         }
         if (parents.length === 0) {
             columns[0] = true;
+            nodeColumn = 0;
+        }
+        else if (parents.length === 1) {
+            var parent_2 = parents[0];
+            var parentId = getNodeId(parents.toString());
+            var parentColumn = commitList[parentId - 1]["column"];
+            if (parentCount[parent_2] === 1) {
+                nodeColumn = parentColumn;
+            }
+            else {
+                nodeColumn = nextFreeColumn(parentColumn);
+            }
         }
         else {
-            if (parents.length === 1) {
-                var parentId = getNodeId(parents[0].toString());
-                if (parentCount[parents[0].toString()] === 1) {
-                    desiredColumn = commitList[parentId - 1]["column"];
+            var desiredColumn = -1;
+            var desiredParent = "";
+            var freeableColumns = [];
+            for (var j = 0; j < parents.length; j++) {
+                var parent_3 = parents[j];
+                var parentId = getNodeId(parent_3.toString());
+                var proposedColumn = commitList[parentId - 1]["column"];
+                if (desiredColumn === -1 || desiredColumn > proposedColumn) {
+                    desiredColumn = proposedColumn;
+                    desiredParent = parent_3;
                 }
                 else {
-                    desiredColumn = commitList[parentId - 1]["column"] + parentCount[parents[0].toString()];
+                    freeableColumns.push(proposedColumn);
                 }
             }
-            else
-                for (var j = 0; j < parents.length; j++) {
-                    var parent_2 = parents[j];
-                    var parentId = getNodeId(parent_2.toString());
-                    var proposedColumn = commitList[parentId - 1]["column"];
-                    if (desiredColumn > proposedColumn) {
-                        desiredColumn = proposedColumn;
-                    }
-                    while (columns[desiredColumn] === true) {
-                        desiredColumn++;
-                    }
-                }
-            nodeColumn = desiredColumn;
-            columns[nodeColumn] = true;
+            for (var i_1 = 0; i_1 < freeableColumns.length; i_1++) {
+                var index = freeableColumns[i_1];
+                columns[index] = false;
+            }
+            if (parentCount[desiredParent] === 1) {
+                nodeColumn = desiredColumn;
+            }
+            else {
+                nodeColumn = nextFreeColumn(desiredColumn);
+            }
         }
         makeNode(commitHistory[i], nodeColumn);
     }
@@ -65,6 +82,12 @@ function populateCommits(commits) {
 }
 function timeCompare(a, b) {
     return a.time - b.time;
+}
+function nextFreeColumn(column) {
+    while (columns[column] === true) {
+        column++;
+    }
+    return column;
 }
 function addEdges(c) {
     var parents = c.parents();

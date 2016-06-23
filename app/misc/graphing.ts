@@ -8,23 +8,28 @@ let commitList = [];
 let spacingY = 100;
 let spacingX = 80;
 let parentCount = {};
+let columns: boolean[] = [];
 
 function process(commits: nodegit.Commit[]) {
   populateCommits(commits);
 }
 
 function populateCommits(commits) {
+  // reset variables for idempotency, shouldn't be needed when a class is created instead
+  nodeId = 1;
+  commitList = [];
+  parentCount = {};
+  columns = [];
+
   // Sort
   commitHistory = commits.sort(function(a, b) {
     return a.timeMs() - b.timeMs();
   });
 
-  let columns: boolean[] = [];
   // Plot the graph
   for (let i = 0; i < commitHistory.length; i++) {
     let parents: string[] = commitHistory[i].parents();
-    let nodeColumn = 0;
-    let desiredColumn: number = 0;
+    let nodeColumn;
 
     for (let j = 0; j < parents.length; j++) {
       let parent = parents[j];
@@ -38,28 +43,46 @@ function populateCommits(commits) {
     if (parents.length === 0) {
       // no parents means first commit so assign the first column
       columns[0] = true;
+      nodeColumn = 0;
+    } else if (parents.length === 1) {
+      let parent = parents[0];
+      let parentId = getNodeId(parents.toString());
+      let parentColumn = commitList[parentId - 1]["column"];
+
+      if (parentCount[parent] === 1) {
+        // first child
+        nodeColumn = parentColumn;
+      } else {
+        nodeColumn = nextFreeColumn(parentColumn);
+      }
     } else {
-      if (parents.length === 1) {
-        let parentId = getNodeId(parents[0].toString());
-        if (parentCount[parents[0].toString()] === 1) {
-          desiredColumn = commitList[parentId - 1]["column"];
-        } else {
-          desiredColumn = commitList[parentId - 1]["column"] + parentCount[parents[0].toString()];
-        }
-      } else for (let j = 0; j < parents.length; j++) {
+      let desiredColumn: number = -1;
+      let desiredParent: string = "";
+      let freeableColumns: number[] = [];
+
+      for (let j = 0; j < parents.length; j++) {
         let parent: string = parents[j];
         let parentId = getNodeId(parent.toString());
         let proposedColumn = commitList[parentId - 1]["column"];
 
-        if (desiredColumn > proposedColumn) {
+        if (desiredColumn === -1 || desiredColumn > proposedColumn) {
           desiredColumn = proposedColumn;
+          desiredParent = parent;
+        } else {
+          freeableColumns.push(proposedColumn);
         }
-        while (columns[desiredColumn] === true) {
-          desiredColumn++;
-        }
+
       }
-      nodeColumn = desiredColumn;
-      columns[nodeColumn] = true;
+      for (let i = 0; i < freeableColumns.length; i++) {
+        let index = freeableColumns[i];
+        columns[index] = false;
+      }
+      if (parentCount[desiredParent] === 1) {
+        // first child
+        nodeColumn = desiredColumn;
+      } else {
+        nodeColumn = nextFreeColumn(desiredColumn);
+      }
     }
 
     makeNode(commitHistory[i], nodeColumn);
@@ -76,6 +99,13 @@ function populateCommits(commits) {
 
 function timeCompare(a, b) {
   return a.time - b.time;
+}
+
+function nextFreeColumn(column: number) {
+  while (columns[column] === true) {
+    column++;
+  }
+  return column;
 }
 
 function addEdges(c) {
