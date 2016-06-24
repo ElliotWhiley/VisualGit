@@ -11,6 +11,7 @@ import { AddRepositoryComponent } from './add.repository.component';
     <app-header></app-header>
     <file-panel></file-panel>
     <graph-panel></graph-panel>
+    <add-repository-panel></add-repository-panel>
     <app-footer></app-footer>
   `,
   directives: [HeaderComponent, FilePanelComponent, GraphPanelComponent, FooterComponent, AddRepositoryComponent]

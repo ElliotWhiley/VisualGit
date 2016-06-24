@@ -20,7 +20,7 @@ var AppComponent = (function () {
     AppComponent = __decorate([
         core_1.Component({
             selector: 'my-app',
-            template: "\n    <app-header></app-header>\n    <file-panel></file-panel>\n    <graph-panel></graph-panel>\n    <app-footer></app-footer>\n  ",
+            template: "\n    <app-header></app-header>\n    <file-panel></file-panel>\n    <graph-panel></graph-panel>\n    <add-repository-panel></add-repository-panel>\n    <app-footer></app-footer>\n  ",
             directives: [header_component_1.HeaderComponent, file_panel_component_1.FilePanelComponent, graph_panel_component_1.GraphPanelComponent, footer_component_1.FooterComponent, add_repository_component_1.AddRepositoryComponent]
         }), 
         __metadata('design:paramtypes', [])
