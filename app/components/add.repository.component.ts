@@ -1,4 +1,3 @@
-t
 import { Component } from '@angular/core';
 import { RepositoryService } from '../services/repository.service';
 
