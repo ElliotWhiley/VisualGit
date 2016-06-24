@@ -36,8 +36,8 @@ function drawGraph() {
       smooth: {
         enabled: true,
         type: "cubicBezier",
-        forceDirection: "horizontal",
-        roundness: 1
+        // forceDirection: "horizontal",
+        roundness: 0.5
       },
       width: 3,
     },
@@ -122,9 +122,22 @@ function drawGraph() {
   getAllCommits(repository, function(commits) {
     populateCommits(commits);
   });
-// Basic move to set up the history location
-network.moveTo({
-  position: {x: 0, y: 200},
-  offset: {x: 0, y: 0}
-});
+
+  network.on("doubleClick", function(callback) {
+    let nodeId: number = callback.nodes[0];
+    if (nodeId === undefined) {
+      return;
+    }
+
+    let moveOptions = {
+      offset: {x: 0, y: 0},
+      scale: 1,
+      animation: {
+        duration: 1000,
+        easingFunction: "easeInOutQuad",
+      }
+    };
+
+    network.focus(callback.nodes[0], moveOptions);
+  });
 }, false);
