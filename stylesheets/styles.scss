@@ -1,6 +1,6 @@
 @import "variables.scss";
 
-p {
+p, h1 {
   color: $light-grey;
   font-family: 'Montserrat', sans-serif;
 }
@@ -68,6 +68,43 @@ body {
       margin: 0;
       padding: 0;
       background-color: $darker-grey;
+    }
+  }
+
+  .add-repository-panel {
+    position: absolute;
+    height: 80vh;
+    width: 100%;
+    background-color: $darker-grey;
+    padding-left: 110px;
+    z-index: -10;
+    box-sizing: border-box;
+
+    h1 {
+      color: white;
+    }
+
+    p {
+      display: inline-block;
+      margin-right: 20px;
+    }
+
+    input {
+      display: inline-block;
+      margin-right: 20px;
+      border-radius: 10px;
+      border: 0;
+      height: 10px;
+      padding: 10px;
+    }
+
+    button {
+      display: inline-block;
+      height: 30px;
+      border-radius: 10px;
+      border: 0;
+      padding: 0 15px;
+      background-color: $green;
     }
   }
 
