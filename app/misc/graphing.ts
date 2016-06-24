@@ -127,7 +127,7 @@ function makeNode(c, column: number) {
 
   let stringer = c.author().toString().replace(/</, "%").replace(/>/, "%");
   let email = stringer.split("%")[1];
-  let title = "author: " + email + "<br>" + "message: " + c.message();
+  let title = "Author: " + email + "<br>" + "Message: " + c.message();
 
   nodes.add({
     id: id,

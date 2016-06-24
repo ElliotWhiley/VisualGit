@@ -104,7 +104,7 @@ function makeNode(c, column) {
     var name = "Node " + id;
     var stringer = c.author().toString().replace(/</, "%").replace(/>/, "%");
     var email = stringer.split("%")[1];
-    var title = "author: " + email + "<br>" + "message: " + c.message();
+    var title = "Author: " + email + "<br>" + "Message: " + c.message();
     nodes.add({
         id: id,
         shape: "circularImage",
