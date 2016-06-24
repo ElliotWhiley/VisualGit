@@ -6,7 +6,7 @@ import { GraphService } from '../services/graph.service';
   selector: 'app-header',
   template: `
     <div class="header">
-      <button (click)="cloneRepository()">+</button>
+      <button (click)="promptUserToAddRepository()">+</button>
       <p>{{repoName}}</p>
       <p>{{repoBranch}}</p>
     </div>
@@ -19,18 +19,8 @@ export class HeaderComponent   {
   repoBranch: string = 'Repo branch';
   repository: any;
 
-  constructor(private repositoryService: RepositoryService, private graphService: GraphService) {
-  //   this.repoName = repositoryService.getRepoName();
-  //   this.repoBranch = repositoryService.getCurrentBranch();
+  promptUserToAddRepository(): void {
+    console.log('switching to add repo panel!!');
+    switchToAddRepositoryPanel();
   }
-
-  cloneRepository(): void {
-    console.log('test!!');
-    //this.graphService.drawGraph();
-    drawGraph();
-
-    this.repoName = this.repositoryService.getRepoName();
-    this.repoBranch = this.repositoryService.getCurrentBranch();
-  }
-
 }

@@ -15,7 +15,7 @@ var GraphPanelComponent = (function () {
     GraphPanelComponent = __decorate([
         core_1.Component({
             selector: 'graph-panel',
-            template: "\n  <div class=\"graph-panel\">\n    <div class=\"network\" id=\"my-network\">\n    </div>\n  </div>\n  "
+            template: "\n  <div class=\"graph-panel\" id=\"graph-panel\">\n    <div class=\"network\" id=\"my-network\">\n    </div>\n  </div>\n  "
         }), 
         __metadata('design:paramtypes', [])
     ], GraphPanelComponent);

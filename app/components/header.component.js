@@ -12,25 +12,21 @@ var core_1 = require('@angular/core');
 var repository_service_1 = require('../services/repository.service');
 var graph_service_1 = require('../services/graph.service');
 var HeaderComponent = (function () {
-    function HeaderComponent(repositoryService, graphService) {
-        this.repositoryService = repositoryService;
-        this.graphService = graphService;
+    function HeaderComponent() {
         this.repoName = 'Repo name';
         this.repoBranch = 'Repo branch';
     }
-    HeaderComponent.prototype.cloneRepository = function () {
-        console.log('test!!');
-        drawGraph();
-        this.repoName = this.repositoryService.getRepoName();
-        this.repoBranch = this.repositoryService.getCurrentBranch();
+    HeaderComponent.prototype.promptUserToAddRepository = function () {
+        console.log('switching to add repo panel!!');
+        switchToAddRepositoryPanel();
     };
     HeaderComponent = __decorate([
         core_1.Component({
             selector: 'app-header',
-            template: "\n    <div class=\"header\">\n      <button (click)=\"cloneRepository()\">+</button>\n      <p>{{repoName}}</p>\n      <p>{{repoBranch}}</p>\n    </div>\n  ",
+            template: "\n    <div class=\"header\">\n      <button (click)=\"promptUserToAddRepository()\">+</button>\n      <p>{{repoName}}</p>\n      <p>{{repoBranch}}</p>\n    </div>\n  ",
             providers: [repository_service_1.RepositoryService, graph_service_1.GraphService]
         }), 
-        __metadata('design:paramtypes', [repository_service_1.RepositoryService, graph_service_1.GraphService])
+        __metadata('design:paramtypes', [])
     ], HeaderComponent);
     return HeaderComponent;
 }());

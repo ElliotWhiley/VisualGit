@@ -1,5 +1,5 @@
-p {
-  color: #adafb2;
+p, h1 {
+  color: #ccc;
   font-family: 'Montserrat', sans-serif;
 }
 
@@ -68,6 +68,43 @@ body .graph-panel .network {
   margin: 0;
   padding: 0;
   background-color: #181818;
+}
+
+body .add-repository-panel {
+  position: absolute;
+  height: 80vh;
+  width: 100%;
+  background-color: #181818;
+  padding-left: 110px;
+  z-index: -10;
+  box-sizing: border-box;
+}
+
+body .add-repository-panel h1 {
+  color: white;
+}
+
+body .add-repository-panel p {
+  display: inline-block;
+  margin-right: 20px;
+}
+
+body .add-repository-panel input {
+  display: inline-block;
+  margin-right: 20px;
+  border-radius: 10px;
+  border: 0;
+  height: 10px;
+  padding: 10px;
+}
+
+body .add-repository-panel button {
+  display: inline-block;
+  height: 30px;
+  border-radius: 10px;
+  border: 0;
+  padding: 0 15px;
+  background-color: #84db00;
 }
 
 body .footer {
