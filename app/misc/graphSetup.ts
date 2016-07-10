@@ -124,9 +124,10 @@ function drawGraph() {
   });
 
   network.on("doubleClick", function(callback) {
-    let nodeId: number = callback.nodes[0];
-    if (nodeId === undefined) {
+    if (callback.nodes[0] === undefined) {
       return;
+    } else {
+      let nodeId: number = callback.nodes[0];
     }
 
     let moveOptions = {
