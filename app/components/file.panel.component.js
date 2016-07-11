@@ -8,17 +8,17 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var core_1 = require('@angular/core');
-var file_service_1 = require('../services/file.service');
+var core_1 = require("@angular/core");
+var file_service_1 = require("../services/file.service");
 var FilePanelComponent = (function () {
     function FilePanelComponent(fileService) {
         this.fileService = fileService;
-        this.title = 'Files in project:';
+        this.title = "Files in project:";
         this.files = fileService.getFiles();
     }
     FilePanelComponent = __decorate([
         core_1.Component({
-            selector: 'file-panel',
+            selector: "file-panel",
             template: "\n  <div class=\"file-panel\" id=\"file-panel\">\n    <div class=\"file\" *ngFor=\"let file of files\">\n      <p>{{file}}</p>\n    </div>\n  </div>\n  ",
             providers: [file_service_1.FileService]
         }), 

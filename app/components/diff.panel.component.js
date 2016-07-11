@@ -9,16 +9,16 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require("@angular/core");
-var FooterComponent = (function () {
-    function FooterComponent() {
+var DiffPanelComponent = (function () {
+    function DiffPanelComponent() {
     }
-    FooterComponent = __decorate([
+    DiffPanelComponent = __decorate([
         core_1.Component({
-            selector: "app-footer",
-            template: "\n  <div class=\"footer\">\n    <p>Command Line</p>\n  </div>\n  "
+            selector: "diff-panel",
+            template: "\n  <div class=\"diff-panel\" id=\"diff-panel\">\n    <h1>hello</h1>\n  </div>\n  "
         }), 
         __metadata('design:paramtypes', [])
-    ], FooterComponent);
-    return FooterComponent;
+    ], DiffPanelComponent);
+    return DiffPanelComponent;
 }());
-exports.FooterComponent = FooterComponent;
+exports.DiffPanelComponent = DiffPanelComponent;

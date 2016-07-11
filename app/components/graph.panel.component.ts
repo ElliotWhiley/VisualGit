@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
+import { Component } from "@angular/core";
 
 @Component({
-  selector: 'graph-panel',
+  selector: "graph-panel",
   template: `
   <div class="graph-panel" id="graph-panel">
     <div class="network" id="my-network">

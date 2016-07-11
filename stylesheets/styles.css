@@ -56,13 +56,25 @@ body .file-panel .file p {
   width: 90%;
 }
 
-body .graph-panel {
+body .body-panel {
   width: 80%;
   height: 80%;
   float: right;
 }
 
-body .graph-panel .network {
+body .body-panel .diff-panel {
+  width: 50%;
+  height: 100%;
+  float: left;
+  background-color: #fff;
+}
+
+body .body-panel .graph-panel {
+  width: 50%;
+  float: right;
+}
+
+body .body-panel .graph-panel .network {
   width: 100%;
   height: 80vh;
   margin: 0;

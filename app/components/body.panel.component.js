@@ -9,16 +9,19 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require("@angular/core");
-var FooterComponent = (function () {
-    function FooterComponent() {
+var diff_panel_component_1 = require("./diff.panel.component");
+var graph_panel_component_1 = require("./graph.panel.component");
+var BodyPanelComponent = (function () {
+    function BodyPanelComponent() {
     }
-    FooterComponent = __decorate([
+    BodyPanelComponent = __decorate([
         core_1.Component({
-            selector: "app-footer",
-            template: "\n  <div class=\"footer\">\n    <p>Command Line</p>\n  </div>\n  "
+            selector: "body-panel",
+            template: "\n  <div class=\"body-panel\" id=\"body-panel\">\n    <diff-panel></diff-panel>\n    <graph-panel></graph-panel>\n  </div>\n  ",
+            directives: [diff_panel_component_1.DiffPanelComponent, graph_panel_component_1.GraphPanelComponent]
         }), 
         __metadata('design:paramtypes', [])
-    ], FooterComponent);
-    return FooterComponent;
+    ], BodyPanelComponent);
+    return BodyPanelComponent;
 }());
-exports.FooterComponent = FooterComponent;
+exports.BodyPanelComponent = BodyPanelComponent;
