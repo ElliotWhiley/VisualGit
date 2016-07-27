@@ -15,7 +15,7 @@ var DiffPanelComponent = (function () {
     DiffPanelComponent = __decorate([
         core_1.Component({
             selector: "diff-panel",
-            template: "\n  <div class=\"diff-panel\" id=\"diff-panel\">\n    <h1>hello</h1>\n  </div>\n  "
+            template: "\n  <div class=\"diff-panel\" id=\"diff-panel\">\n    <div class=\"body\"></div>\n  </div>\n  "
         }), 
         __metadata('design:paramtypes', [])
     ], DiffPanelComponent);

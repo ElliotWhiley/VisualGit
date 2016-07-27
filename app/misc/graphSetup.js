@@ -107,9 +107,11 @@ function drawGraph() {
         populateCommits(commits);
     });
     network.on("doubleClick", function (callback) {
-        var nodeId = callback.nodes[0];
-        if (nodeId === undefined) {
+        if (callback.nodes[0] === undefined) {
             return;
+        }
+        else {
+            var nodeId = callback.nodes[0];
         }
         var moveOptions = {
             offset: { x: 0, y: 0 },
