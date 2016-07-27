@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
-import { RepositoryService } from '../services/repository.service';
+import { Component } from "@angular/core";
+import { RepositoryService } from "../services/repository.service";
 
 @Component({
-  selector: 'add-repository-panel',
+  selector: "add-repository-panel",
   template: `
     <div class="add-repository-panel" id="add-repository-panel">
       <h1>Clone Repository</h1>
@@ -17,7 +17,7 @@ export class AddRepositoryComponent {
   repositoryUrl: string;
 
   addRepository(): void {
-    console.log('adding repository!!');
+    console.log("adding repository!!");
     downloadRepository();
     switchToMainPanel();
   }

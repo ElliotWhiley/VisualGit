@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
+import { Component } from "@angular/core";
 
 @Component({
-  selector: 'app-footer',
+  selector: "app-footer",
   template: `
   <div class="footer">
     <p>Command Line</p>

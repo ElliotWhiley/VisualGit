@@ -1,9 +1,9 @@
-import { Component } from '@angular/core';
-import { RepositoryService } from '../services/repository.service';
-import { GraphService } from '../services/graph.service';
+import { Component } from "@angular/core";
+import { RepositoryService } from "../services/repository.service";
+import { GraphService } from "../services/graph.service";
 
 @Component({
-  selector: 'app-header',
+  selector: "app-header",
   template: `
     <div class="header">
       <button (click)="promptUserToAddRepository()">+</button>
@@ -15,12 +15,12 @@ import { GraphService } from '../services/graph.service';
 })
 
 export class HeaderComponent   {
-  repoName: string = 'Repo name';
-  repoBranch: string = 'Repo branch';
+  repoName: string = "Repo name";
+  repoBranch: string = "Repo branch";
   repository: any;
 
   promptUserToAddRepository(): void {
-    console.log('switching to add repo panel!!');
+    console.log("switching to add repo panel!!");
     switchToAddRepositoryPanel();
   }
 }

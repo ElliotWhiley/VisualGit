@@ -3,10 +3,10 @@ var RepositoryService = (function () {
     function RepositoryService() {
     }
     RepositoryService.prototype.getRepoName = function () {
-        return 'Nice Repo';
+        return "Nice Repo";
     };
     RepositoryService.prototype.getCurrentBranch = function () {
-        return 'Nice Branch';
+        return "Nice Branch";
     };
     return RepositoryService;
 }());

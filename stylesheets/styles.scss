@@ -57,17 +57,29 @@ body {
     }
   }
 
-  .graph-panel {
+  .body-panel {
     width: 80%;
     height: 80%;
     float: right;
 
-    .network {
-      width: 100%;
-      height: 80vh;
-      margin: 0;
-      padding: 0;
-      background-color: $darker-grey;
+    .diff-panel {
+      width: 50%;
+      height: 100%;
+      float: left;
+      background-color: $white;
+    }
+
+    .graph-panel {
+      width: 50%;
+      float: right;
+
+      .network {
+        width: 100%;
+        height: 80vh;
+        margin: 0;
+        padding: 0;
+        background-color: $darker-grey;
+      }
     }
   }
 

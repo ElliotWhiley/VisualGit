@@ -8,13 +8,13 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var core_1 = require('@angular/core');
+var core_1 = require("@angular/core");
 var DiffPanelComponent = (function () {
     function DiffPanelComponent() {
     }
     DiffPanelComponent = __decorate([
         core_1.Component({
-            selector: 'diff-panel',
+            selector: "diff-panel",
             template: "\n  <div class=\"diff-panel\" id=\"diff-panel\">\n    <div class=\"body\"></div>\n  </div>\n  "
         }), 
         __metadata('design:paramtypes', [])

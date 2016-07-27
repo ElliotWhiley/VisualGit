@@ -8,18 +8,18 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var core_1 = require('@angular/core');
+var core_1 = require("@angular/core");
 var AddRepositoryComponent = (function () {
     function AddRepositoryComponent() {
     }
     AddRepositoryComponent.prototype.addRepository = function () {
-        console.log('adding repository!!');
+        console.log("adding repository!!");
         downloadRepository();
         switchToMainPanel();
     };
     AddRepositoryComponent = __decorate([
         core_1.Component({
-            selector: 'add-repository-panel',
+            selector: "add-repository-panel",
             template: "\n    <div class=\"add-repository-panel\" id=\"add-repository-panel\">\n      <h1>Clone Repository</h1>\n      <p>URL</p>\n      <input type=\"text\" name=\"repositoryUrl\" size=\"50\" id=\"repository-url\"/>\n      <button (click)=\"addRepository()\">Clone</button>\n    </div>\n  "
         }), 
         __metadata('design:paramtypes', [])

@@ -1,19 +1,19 @@
 function downloadRepository() {
-  // Require in NodeGit, since we want to use the local copy, we're using a
+  // Require in NodeGit, since we want to use the local copy, we"re using a
   // relative path.  In your project, you will use:
   //
-  var NodeGit = require("nodegit");
+  let NodeGit = require("nodegit");
 
   // Using the `clone` method from the `Git.Clone` module, bring down the NodeGit
   // test repository from GitHub.
-  var repositoryUrl = document.getElementById('repository-url').value;
-  var cloneURL = repositoryUrl;
+  let repositoryUrl = document.getElementById("repository-url").value;
+  let cloneURL = repositoryUrl;
 
   // Ensure that the `tmp` directory is local to this file and not the CWD.
-  var localPath = require("path").join(__dirname, "tmp");
+  let localPath = require("path").join(__dirname, "tmp");
 
   // Simple object to store clone options.
-  var cloneOptions = {};
+  let cloneOptions = {};
 
   // This is a required callback for OS X machines.  There is a known issue
   // with libgit2 being able to verify certificates from GitHub.
@@ -24,11 +24,11 @@ function downloadRepository() {
   };
 
   // Invoke the clone operation and store the returned Promise.
-  var cloneRepository = NodeGit.Clone(cloneURL, localPath, cloneOptions);
+  let cloneRepository = NodeGit.Clone(cloneURL, localPath, cloneOptions);
 
   // If the repository already exists, the clone above will fail.  You can simply
   // open the repository in this case to continue execution.
-  var errorAndAttemptOpen = function() {
+  let errorAndAttemptOpen = function() {
     return NodeGit.Repository.open(localPath);
   };
 
@@ -40,11 +40,11 @@ function downloadRepository() {
       drawGraph();
 
       // Access any repository methods here.
-      console.log('downloaded repo!');
-      console.log('Repo: ' + repository.getNameSpace);
-      console.log('Branch: ' + repository.getCurrentBranch);
-      console.log('Path: ' + repository.path);
-      console.log('Reference Names: ', repository.getReferenceNames);
+      console.log("downloaded repo!");
+      console.log("Repo: " + repository.getNameSpace);
+      console.log("Branch: " + repository.getCurrentBranch);
+      console.log("Path: " + repository.path);
+      console.log("Reference Names: ", repository.getReferenceNames);
       return repository.getReferenceNames;
     })
     .then(function(referenceNames) {

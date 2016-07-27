@@ -1,11 +1,11 @@
 export class RepositoryService {
 
   getRepoName(): string {
-      return 'Nice Repo';
+      return "Nice Repo";
   }
 
   getCurrentBranch(): string {
-      return 'Nice Branch';
+      return "Nice Branch";
   }
 
 }

@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
-import { FileService } from '../services/file.service';
+import { Component } from "@angular/core";
+import { FileService } from "../services/file.service";
 
 @Component({
-  selector: 'file-panel',
+  selector: "file-panel",
   template: `
   <div class="file-panel" id="file-panel">
     <div class="file" *ngFor="let file of files">
@@ -14,7 +14,7 @@ import { FileService } from '../services/file.service';
 })
 
 export class FilePanelComponent {
-  title: string = 'Files in project:';
+  title: string = "Files in project:";
   files: string[];
 
   constructor(private fileService: FileService) {
