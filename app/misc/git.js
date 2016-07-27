@@ -1,7 +1,7 @@
 "use strict";
 var Git = require("nodegit");
-function getAllCommits(repository, callback) {
-    Git.Repository.open(repository)
+function getAllCommits(repoPath, callback) {
+    Git.Repository.open(repoPath)
         .then(function (repo) {
         return repo.getMasterCommit();
     })
@@ -11,6 +11,35 @@ function getAllCommits(repository, callback) {
             callback(commits);
         });
         history.start();
+    });
+}
+function getRepoStatus(repoPath) {
+    Git.Repository.open(repoPath)
+        .then(function (repo) {
+        repo.getStatus().then(function (statuses) {
+            function statusToText(status) {
+                var words = [];
+                if (status.isNew()) {
+                    words.push("NEW");
+                }
+                if (status.isModified()) {
+                    words.push("MODIFIED");
+                }
+                if (status.isTypechange()) {
+                    words.push("TYPECHANGE");
+                }
+                if (status.isRenamed()) {
+                    words.push("RENAMED");
+                }
+                if (status.isIgnored()) {
+                    words.push("IGNORED");
+                }
+                return words.join(" ");
+            }
+            statuses.forEach(function (file) {
+                console.log(file.path() + " " + statusToText(file));
+            });
+        });
     });
 }
 function getDiffForCommit(commit) {
