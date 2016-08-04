@@ -30,3 +30,12 @@
     <my-app></my-app>
   </body>
 </html>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Update modified files on left file panel every X seconds
+  setInterval(function() {
+    displayModifiedFiles('./tmp');
+  }, 3000);
+}, false);
+</script>
