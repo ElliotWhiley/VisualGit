@@ -16,7 +16,7 @@ var FilePanelComponent = (function () {
     FilePanelComponent = __decorate([
         core_1.Component({
             selector: "file-panel",
-            template: "\n  <div class=\"file-panel\" id=\"file-panel\">\n    <div class=\"file\" *ngFor=\"let file of files\">\n      <p>{{file}}</p>\n    </div>\n  </div>\n  ",
+            template: "\n  <div class=\"file-panel\" id=\"file-panel\">\n    <p class=\"modified-files-message\">Your modified files will appear here</p>\n    <div class=\"file\" *ngFor=\"let file of files\">\n      <p>{{file}}</p>\n    </div>\n  </div>\n  ",
             providers: [file_service_1.FileService]
         }), 
         __metadata('design:paramtypes', [])
