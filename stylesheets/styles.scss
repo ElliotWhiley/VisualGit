@@ -35,8 +35,12 @@ body {
     background-color: $dark-grey;
     float: left;
 
+    .modified-files-message {
+      padding: 20px;
+    }
+
     :hover {
-      background-color: #555;
+      opacity: 0.8;
     }
 
     .file {
@@ -44,8 +48,10 @@ body {
       height: 10%;
       position: relative;
       overflow: hidden;
+      border: 1px solid $white;
 
       p {
+        color: $white;
         display: inline-block;
         vertical-align: middle;
         margin-left: 10px;
@@ -117,6 +123,7 @@ body {
       border: 0;
       padding: 0 15px;
       background-color: $green;
+      color: $white;
     }
   }
 
@@ -137,4 +144,16 @@ body {
       margin: 10px;
     }
   }
+}
+
+.file-created {
+  background-color: $file-created;
+}
+
+.file-modified {
+  background-color: $file-modified;
+}
+
+.file-deleted {
+  background-color: $file-deleted;
 }

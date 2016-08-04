@@ -19,7 +19,9 @@ function displayModifiedFiles(repoPath) {
         .then(function (repo) {
         repo.getStatus().then(function (statuses) {
             statuses.forEach(addModifiedFile);
-            clearModifiedFilesList();
+            if (modifiedFiles.length !== 0) {
+                clearModifiedFilesList();
+            }
             modifiedFiles.forEach(displayModifiedFile);
             function addModifiedFile(file) {
                 var path = file.path();
@@ -30,11 +32,15 @@ function displayModifiedFiles(repoPath) {
                 });
             }
             function calculateModification(status) {
+                console.log(status);
                 if (status.isNew()) {
                     return "NEW";
                 }
                 else if (status.isModified()) {
                     return "MODIFIED";
+                }
+                else if (status.isDeleted()) {
+                    return "DELETED";
                 }
                 else if (status.isTypechange()) {
                     return "TYPECHANGE";
@@ -56,7 +62,18 @@ function displayModifiedFiles(repoPath) {
                 var filePath = document.createElement("p");
                 filePath.innerHTML = file.filePath;
                 var fileElement = document.createElement("div");
-                fileElement.className = "file";
+                if (file.fileModification == "NEW") {
+                    fileElement.className = "file file-created";
+                }
+                else if (file.fileModification == "MODIFIED") {
+                    fileElement.className = "file file-modified";
+                }
+                else if (file.fileModification == "DELETED") {
+                    fileElement.className = "file file-deleted";
+                }
+                else {
+                    fileElement.className = "file";
+                }
                 fileElement.appendChild(filePath);
                 document.getElementById('file-panel').appendChild(fileElement);
             }

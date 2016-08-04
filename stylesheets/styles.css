@@ -35,8 +35,12 @@ body .file-panel {
   float: left;
 }
 
+body .file-panel .modified-files-message {
+  padding: 20px;
+}
+
 body .file-panel :hover {
-  background-color: #555;
+  opacity: 0.8;
 }
 
 body .file-panel .file {
@@ -44,9 +48,11 @@ body .file-panel .file {
   height: 10%;
   position: relative;
   overflow: hidden;
+  border: 1px solid #fff;
 }
 
 body .file-panel .file p {
+  color: #fff;
   display: inline-block;
   vertical-align: middle;
   margin-left: 10px;
@@ -117,6 +123,7 @@ body .add-repository-panel button {
   border: 0;
   padding: 0 15px;
   background-color: #84db00;
+  color: #fff;
 }
 
 body .footer {
@@ -134,4 +141,16 @@ body .footer p {
 
 body .footer .git-command {
   margin: 10px;
+}
+
+.file-created {
+  background-color: #84db00;
+}
+
+.file-modified {
+  background-color: #ff7514;
+}
+
+.file-deleted {
+  background-color: #ff2448;
 }

@@ -27,7 +27,9 @@ function displayModifiedFiles(repoPath) {
     repo.getStatus().then(function(statuses) {
 
       statuses.forEach(addModifiedFile);
-      clearModifiedFilesList();
+      if (modifiedFiles.length !== 0) {
+        clearModifiedFilesList();
+      }
       modifiedFiles.forEach(displayModifiedFile);
 
       // Add modified file to array of modified files 'modifiedFiles'
@@ -42,10 +44,13 @@ function displayModifiedFiles(repoPath) {
 
       // Find HOW the file has been modified
       function calculateModification(status) {
+        console.log(status);
         if (status.isNew()) {
           return "NEW";
         } else if (status.isModified()) {
           return "MODIFIED";
+        } else if (status.isDeleted()) {
+          return "DELETED";
         } else if (status.isTypechange()) {
           return "TYPECHANGE";
         } else if (status.isRenamed()) {
@@ -68,7 +73,17 @@ function displayModifiedFiles(repoPath) {
         let filePath = document.createElement("p");
         filePath.innerHTML = file.filePath;
         let fileElement = document.createElement("div");
-        fileElement.className = "file";
+        // TODO - change color of modified file
+        if (file.fileModification == "NEW") {
+          fileElement.className = "file file-created";
+        } else if (file.fileModification == "MODIFIED") {
+          fileElement.className = "file file-modified";
+        } else if (file.fileModification == "DELETED") {
+          fileElement.className = "file file-deleted";
+        } else {
+          fileElement.className = "file";
+        }
+
         fileElement.appendChild(filePath);
         document.getElementById('file-panel').appendChild(fileElement);
       }
