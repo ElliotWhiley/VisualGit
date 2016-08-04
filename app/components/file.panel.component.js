@@ -11,10 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require("@angular/core");
 var file_service_1 = require("../services/file.service");
 var FilePanelComponent = (function () {
-    function FilePanelComponent(fileService) {
-        this.fileService = fileService;
-        this.title = "Files in project:";
-        this.files = fileService.getFiles();
+    function FilePanelComponent() {
     }
     FilePanelComponent = __decorate([
         core_1.Component({
@@ -22,7 +19,7 @@ var FilePanelComponent = (function () {
             template: "\n  <div class=\"file-panel\" id=\"file-panel\">\n    <div class=\"file\" *ngFor=\"let file of files\">\n      <p>{{file}}</p>\n    </div>\n  </div>\n  ",
             providers: [file_service_1.FileService]
         }), 
-        __metadata('design:paramtypes', [file_service_1.FileService])
+        __metadata('design:paramtypes', [])
     ], FilePanelComponent);
     return FilePanelComponent;
 }());

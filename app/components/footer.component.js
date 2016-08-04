@@ -15,7 +15,7 @@ var FooterComponent = (function () {
     FooterComponent = __decorate([
         core_1.Component({
             selector: "app-footer",
-            template: "\n  <div class=\"footer\">\n    <p>Command Line</p>\n  </div>\n  "
+            template: "\n  <div class=\"footer\">\n    <p>Git Commands</p>\n    <div class=\"git-command\">\n      <p id=\"git-command\">test</p>\n    </div>\n  </div>\n  "
         }), 
         __metadata('design:paramtypes', [])
     ], FooterComponent);

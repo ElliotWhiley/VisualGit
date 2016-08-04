@@ -14,10 +14,5 @@ import { FileService } from "../services/file.service";
 })
 
 export class FilePanelComponent {
-  title: string = "Files in project:";
-  files: string[];
 
-  constructor(private fileService: FileService) {
-    this.files = fileService.getFiles();
-  }
 }
