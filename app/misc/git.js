@@ -13,32 +13,53 @@ function getAllCommits(repoPath, callback) {
         history.start();
     });
 }
-function getRepoStatus(repoPath) {
+function displayModifiedFiles(repoPath) {
+    var modifiedFiles = [];
     Git.Repository.open(repoPath)
         .then(function (repo) {
         repo.getStatus().then(function (statuses) {
-            function statusToText(status) {
-                var words = [];
-                if (status.isNew()) {
-                    words.push("NEW");
-                }
-                if (status.isModified()) {
-                    words.push("MODIFIED");
-                }
-                if (status.isTypechange()) {
-                    words.push("TYPECHANGE");
-                }
-                if (status.isRenamed()) {
-                    words.push("RENAMED");
-                }
-                if (status.isIgnored()) {
-                    words.push("IGNORED");
-                }
-                return words.join(" ");
+            statuses.forEach(addModifiedFile);
+            clearModifiedFilesList();
+            modifiedFiles.forEach(displayModifiedFile);
+            function addModifiedFile(file) {
+                var path = file.path();
+                var modification = calculateModification(file);
+                modifiedFiles.push({
+                    filePath: path,
+                    fileModification: modification
+                });
             }
-            statuses.forEach(function (file) {
-                console.log(file.path() + " " + statusToText(file));
-            });
+            function calculateModification(status) {
+                if (status.isNew()) {
+                    return "NEW";
+                }
+                else if (status.isModified()) {
+                    return "MODIFIED";
+                }
+                else if (status.isTypechange()) {
+                    return "TYPECHANGE";
+                }
+                else if (status.isRenamed()) {
+                    return "RENAMED";
+                }
+                else if (status.isIgnored()) {
+                    return "IGNORED";
+                }
+            }
+            function clearModifiedFilesList() {
+                var filePanel = document.getElementById('file-panel');
+                while (filePanel.firstChild) {
+                    filePanel.removeChild(filePanel.firstChild);
+                }
+            }
+            function displayModifiedFile(file) {
+                var filePath = document.createElement("p");
+                filePath.innerHTML = file.filePath;
+                var fileElement = document.createElement("div");
+                fileElement.className = "file";
+                fileElement.appendChild(filePath);
+                document.getElementById('file-panel').appendChild(fileElement);
+            }
         });
     });
 }

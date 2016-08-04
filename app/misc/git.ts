@@ -1,4 +1,5 @@
 import * as nodegit from "git";
+import NodeGit, { Status } from "nodegit";
 
 let Git = require("nodegit");
 
@@ -18,24 +19,59 @@ function getAllCommits(repoPath, callback) {
   });
 }
 
-function getRepoStatus(repoPath) {
+function displayModifiedFiles(repoPath) {
+  let modifiedFiles = [];
+
   Git.Repository.open(repoPath)
   .then(function(repo) {
     repo.getStatus().then(function(statuses) {
-      function statusToText(status) {
-        let words = [];
-        if (status.isNew()) { words.push("NEW"); }
-        if (status.isModified()) { words.push("MODIFIED"); }
-        if (status.isTypechange()) { words.push("TYPECHANGE"); }
-        if (status.isRenamed()) { words.push("RENAMED"); }
-        if (status.isIgnored()) { words.push("IGNORED"); }
 
-        return words.join(" ");
+      statuses.forEach(addModifiedFile);
+      clearModifiedFilesList();
+      modifiedFiles.forEach(displayModifiedFile);
+
+      // Add modified file to array of modified files 'modifiedFiles'
+      function addModifiedFile(file) {
+        let path = file.path();
+        let modification = calculateModification(file);
+        modifiedFiles.push({
+            filePath: path,
+            fileModification: modification
+        });
       }
 
-      statuses.forEach(function(file) {
-        console.log(file.path() + " " + statusToText(file));
-      });
+      // Find HOW the file has been modified
+      function calculateModification(status) {
+        if (status.isNew()) {
+          return "NEW";
+        } else if (status.isModified()) {
+          return "MODIFIED";
+        } else if (status.isTypechange()) {
+          return "TYPECHANGE";
+        } else if (status.isRenamed()) {
+          return "RENAMED";
+        } else if (status.isIgnored()) {
+          return "IGNORED";
+        }
+      }
+
+      // Clear all modified files from the left file panel
+      function clearModifiedFilesList() {
+        let filePanel = document.getElementById('file-panel');
+        while (filePanel.firstChild) {
+          filePanel.removeChild(filePanel.firstChild);
+        }
+      }
+
+      // Add the modified file to the left file panel
+      function displayModifiedFile(file) {
+        let filePath = document.createElement("p");
+        filePath.innerHTML = file.filePath;
+        let fileElement = document.createElement("div");
+        fileElement.className = "file";
+        fileElement.appendChild(filePath);
+        document.getElementById('file-panel').appendChild(fileElement);
+      }
     });
   });
 }
@@ -72,4 +108,5 @@ function printFormattedDiff(commit) {
       });
     });
   });
+
 }
