@@ -32,7 +32,6 @@ function displayModifiedFiles(repoPath) {
                 });
             }
             function calculateModification(status) {
-                console.log(status);
                 if (status.isNew()) {
                     return "NEW";
                 }
@@ -76,31 +75,45 @@ function displayModifiedFiles(repoPath) {
                 }
                 fileElement.appendChild(filePath);
                 document.getElementById('file-panel').appendChild(fileElement);
+                fileElement.onclick = function () { printFileDiff(file.filePath); };
+            }
+            function printFileDiff(filePath) {
+                console.log("Printing diff for: " + filePath);
+                document.getElementById("diff-panel").innerHTML = "";
+                repo.getHeadCommit()
+                    .then(function (commit) {
+                    return getDiffText(commit, function (callback) {
+                        formatLine(callback);
+                    });
+                });
+            }
+            function formatLine(line) {
+                var element = document.createElement("div");
+                if (line.charAt(0) === "+") {
+                    element.style.backgroundColor = "#84db00";
+                }
+                else if (line.charAt(0) === "-") {
+                    element.style.backgroundColor = "red";
+                }
+                element.innerHTML = line;
+                document.getElementById("diff-panel").appendChild(element);
             }
         });
     });
 }
-function getDiffForCommit(commit) {
-    console.log("commit " + commit.sha());
-    console.log("Author:", commit.author().name() +
-        " <" + commit.author().email() + ">");
-    console.log("Date:", commit.date());
-    console.log("\n    " + commit.message());
-    return commit.getDiff();
-}
-function printFormattedDiff(commit) {
-    getDiffForCommit(commit).done(function (diffList) {
+function getDiffText(commit, callback) {
+    commit.getDiff().then(function (diffList) {
         diffList.forEach(function (diff) {
             diff.patches().then(function (patches) {
                 patches.forEach(function (patch) {
                     patch.hunks().then(function (hunks) {
                         hunks.forEach(function (hunk) {
                             hunk.lines().then(function (lines) {
-                                console.log("diff", patch.oldFile().path(), patch.newFile().path());
-                                console.log(hunk.header().trim());
+                                var diffMessage = "diff " + patch.oldFile().path() + " " + patch.newFile().path();
+                                callback(diffMessage);
+                                callback(hunk.header().trim());
                                 lines.forEach(function (line) {
-                                    console.log(String.fromCharCode(line.origin()) +
-                                        line.content().trim());
+                                    callback(String.fromCharCode(line.origin()) + line.content().trim());
                                 });
                             });
                         });
