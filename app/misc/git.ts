@@ -85,16 +85,43 @@ function displayModifiedFiles(repoPath) {
 
         fileElement.appendChild(filePath);
         document.getElementById('file-panel').appendChild(fileElement);
-        fileElement.onclick = function() { printFileDiff(file.filePath) };
+        fileElement.onclick = function() {
+          printFileDiff(file.filePath)
+        };
       }
 
       function printFileDiff(filePath) {
         console.log("Printing diff for: " + filePath);
+
         document.getElementById("diff-panel").innerHTML = "";
-        repo.getHeadCommit()
-        .then(function(commit) {
-          return getDiffText(commit, function(callback) {
-            formatLine(callback);
+        repo.getHeadCommit().then(function(commit) {
+          getCurrentDiff(commit, filePath, function(line) {
+            formatLine(line);
+          });
+        });
+      }
+
+      function getCurrentDiff(commit, filePath, callback) {
+        commit.getTree().then(function(tree) {
+          Git.Diff.treeToWorkdir(repo, tree, null).then(function(diff) {
+            diff.patches().then(function(patches) {
+              patches.forEach(function(patch) {
+                patch.hunks().then(function(hunks) {
+                  hunks.forEach(function(hunk) {
+                    hunk.lines().then(function(lines) {
+                      let oldFilePath = patch.oldFile().path();
+                      let newFilePath = patch.newFile().path();
+                      if (newFilePath === filePath) {
+                        callback(hunk.header().trim());
+                        lines.forEach(function(line) {
+                          callback(String.fromCharCode(line.origin()) + line.content().trim());
+                        });
+                      }
+                    });
+                  });
+                });
+              });
+            });
           });
         });
       }
