@@ -1,5 +1,7 @@
 "use strict";
 var Git = require("nodegit");
+var fs = require("fs");
+var green = "#84db00";
 function getAllCommits(repoPath, callback) {
     Git.Repository.open(repoPath)
         .then(function (repo) {
@@ -32,7 +34,6 @@ function displayModifiedFiles(repoPath) {
                 });
             }
             function calculateModification(status) {
-                console.log(status);
                 if (status.isNew()) {
                     return "NEW";
                 }
@@ -76,37 +77,75 @@ function displayModifiedFiles(repoPath) {
                 }
                 fileElement.appendChild(filePath);
                 document.getElementById('file-panel').appendChild(fileElement);
+                fileElement.onclick = function () {
+                    console.log("Printing diff for: " + file.filePath);
+                    document.getElementById("diff-panel").innerHTML = "";
+                    if (fileElement.className === "file file-created") {
+                        printNewFile(file.filePath);
+                    }
+                    else {
+                        printFileDiff(file.filePath);
+                    }
+                };
             }
-        });
-    });
-}
-function getDiffForCommit(commit) {
-    console.log("commit " + commit.sha());
-    console.log("Author:", commit.author().name() +
-        " <" + commit.author().email() + ">");
-    console.log("Date:", commit.date());
-    console.log("\n    " + commit.message());
-    return commit.getDiff();
-}
-function printFormattedDiff(commit) {
-    getDiffForCommit(commit).done(function (diffList) {
-        diffList.forEach(function (diff) {
-            diff.patches().then(function (patches) {
-                patches.forEach(function (patch) {
-                    patch.hunks().then(function (hunks) {
-                        hunks.forEach(function (hunk) {
-                            hunk.lines().then(function (lines) {
-                                console.log("diff", patch.oldFile().path(), patch.newFile().path());
-                                console.log(hunk.header().trim());
-                                lines.forEach(function (line) {
-                                    console.log(String.fromCharCode(line.origin()) +
-                                        line.content().trim());
+            function printNewFile(filePath) {
+                var fileLocation = "./tmp/" + filePath;
+                console.log(fileLocation);
+                var lineReader = require("readline").createInterface({
+                    input: fs.createReadStream(fileLocation)
+                });
+                lineReader.on("line", function (line) {
+                    formatNewFileLine(line);
+                });
+            }
+            function printFileDiff(filePath) {
+                repo.getHeadCommit().then(function (commit) {
+                    getCurrentDiff(commit, filePath, function (line) {
+                        formatLine(line);
+                    });
+                });
+            }
+            function getCurrentDiff(commit, filePath, callback) {
+                commit.getTree().then(function (tree) {
+                    Git.Diff.treeToWorkdir(repo, tree, null).then(function (diff) {
+                        diff.patches().then(function (patches) {
+                            patches.forEach(function (patch) {
+                                patch.hunks().then(function (hunks) {
+                                    hunks.forEach(function (hunk) {
+                                        hunk.lines().then(function (lines) {
+                                            var oldFilePath = patch.oldFile().path();
+                                            var newFilePath = patch.newFile().path();
+                                            if (newFilePath === filePath) {
+                                                callback(hunk.header().trim());
+                                                lines.forEach(function (line) {
+                                                    callback(String.fromCharCode(line.origin()) + line.content().trim());
+                                                });
+                                            }
+                                        });
+                                    });
                                 });
                             });
                         });
                     });
                 });
-            });
+            }
+            function formatLine(line) {
+                var element = document.createElement("div");
+                if (line.charAt(0) === "+") {
+                    element.style.backgroundColor = green;
+                }
+                else if (line.charAt(0) === "-") {
+                    element.style.backgroundColor = "red";
+                }
+                element.innerHTML = line;
+                document.getElementById("diff-panel").appendChild(element);
+            }
+            function formatNewFileLine(text) {
+                var element = document.createElement("div");
+                element.style.backgroundColor = green;
+                element.innerHTML = text;
+                document.getElementById("diff-panel").appendChild(element);
+            }
         });
     });
 }
