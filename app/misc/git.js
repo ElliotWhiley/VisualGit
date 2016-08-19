@@ -1,5 +1,7 @@
 "use strict";
 var Git = require("nodegit");
+var fs = require("fs");
+var green = "#84db00";
 function getAllCommits(repoPath, callback) {
     Git.Repository.open(repoPath)
         .then(function (repo) {
@@ -76,12 +78,27 @@ function displayModifiedFiles(repoPath) {
                 fileElement.appendChild(filePath);
                 document.getElementById('file-panel').appendChild(fileElement);
                 fileElement.onclick = function () {
-                    printFileDiff(file.filePath);
+                    console.log("Printing diff for: " + file.filePath);
+                    document.getElementById("diff-panel").innerHTML = "";
+                    if (fileElement.className === "file file-created") {
+                        printNewFile(file.filePath);
+                    }
+                    else {
+                        printFileDiff(file.filePath);
+                    }
                 };
             }
+            function printNewFile(filePath) {
+                var fileLocation = "./tmp/" + filePath;
+                console.log(fileLocation);
+                var lineReader = require("readline").createInterface({
+                    input: fs.createReadStream(fileLocation)
+                });
+                lineReader.on("line", function (line) {
+                    formatNewFileLine(line);
+                });
+            }
             function printFileDiff(filePath) {
-                console.log("Printing diff for: " + filePath);
-                document.getElementById("diff-panel").innerHTML = "";
                 repo.getHeadCommit().then(function (commit) {
                     getCurrentDiff(commit, filePath, function (line) {
                         formatLine(line);
@@ -115,7 +132,7 @@ function displayModifiedFiles(repoPath) {
             function formatLine(line) {
                 var element = document.createElement("div");
                 if (line.charAt(0) === "+") {
-                    element.style.backgroundColor = "#84db00";
+                    element.style.backgroundColor = green;
                 }
                 else if (line.charAt(0) === "-") {
                     element.style.backgroundColor = "red";
@@ -123,28 +140,12 @@ function displayModifiedFiles(repoPath) {
                 element.innerHTML = line;
                 document.getElementById("diff-panel").appendChild(element);
             }
-        });
-    });
-}
-function getDiffText(commit, callback) {
-    commit.getDiff().then(function (diffList) {
-        diffList.forEach(function (diff) {
-            diff.patches().then(function (patches) {
-                patches.forEach(function (patch) {
-                    patch.hunks().then(function (hunks) {
-                        hunks.forEach(function (hunk) {
-                            hunk.lines().then(function (lines) {
-                                var diffMessage = "diff " + patch.oldFile().path() + " " + patch.newFile().path();
-                                callback(diffMessage);
-                                callback(hunk.header().trim());
-                                lines.forEach(function (line) {
-                                    callback(String.fromCharCode(line.origin()) + line.content().trim());
-                                });
-                            });
-                        });
-                    });
-                });
-            });
+            function formatNewFileLine(text) {
+                var element = document.createElement("div");
+                element.style.backgroundColor = green;
+                element.innerHTML = text;
+                document.getElementById("diff-panel").appendChild(element);
+            }
         });
     });
 }
