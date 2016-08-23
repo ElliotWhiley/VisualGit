@@ -17,7 +17,6 @@ var HeaderComponent = (function () {
         this.repoBranch = "Repo branch";
     }
     HeaderComponent.prototype.promptUserToAddRepository = function () {
-        console.log("switching to add repo panel!!");
         switchToAddRepositoryPanel();
     };
     HeaderComponent = __decorate([
