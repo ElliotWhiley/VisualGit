@@ -1,5 +1,4 @@
 import { Component } from "@angular/core";
-import { FileService } from "../services/file.service";
 
 @Component({
   selector: "file-panel",
@@ -24,8 +23,7 @@ import { FileService } from "../services/file.service";
     </div>
 
   </div>
-  `,
-  providers: [FileService]
+  `
 })
 
 export class FilePanelComponent {

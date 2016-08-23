@@ -13,7 +13,6 @@ var AddRepositoryComponent = (function () {
     function AddRepositoryComponent() {
     }
     AddRepositoryComponent.prototype.addRepository = function () {
-        console.log("adding repository!!");
         downloadRepository();
         switchToMainPanel();
     };

@@ -40,15 +40,9 @@ function downloadRepository() {
       drawGraph();
 
       // Access any repository methods here.
-      console.log("downloaded repo!");
-      console.log("Repo: " + repository.getNameSpace);
-      console.log("Branch: " + repository.getCurrentBranch);
-      console.log("Path: " + repository.path);
-      console.log("Reference Names: ", repository.getReferenceNames);
       return repository.getReferenceNames;
     })
     .then(function(referenceNames) {
-      console.log(referenceNames);
     });
 
 

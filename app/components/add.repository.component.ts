@@ -1,5 +1,4 @@
 import { Component } from "@angular/core";
-import { RepositoryService } from "../services/repository.service";
 
 @Component({
   selector: "add-repository-panel",
@@ -17,7 +16,6 @@ export class AddRepositoryComponent {
   repositoryUrl: string;
 
   addRepository(): void {
-    console.log("adding repository!!");
     downloadRepository();
     switchToMainPanel();
   }

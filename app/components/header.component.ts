@@ -20,7 +20,6 @@ export class HeaderComponent   {
   repository: any;
 
   promptUserToAddRepository(): void {
-    console.log("switching to add repo panel!!");
     switchToAddRepositoryPanel();
   }
 }
