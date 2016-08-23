@@ -53,7 +53,7 @@ function displayModifiedFiles(repoPath) {
                 }
             }
             function clearModifiedFilesList() {
-                var filePanel = document.getElementById('file-panel');
+                var filePanel = document.getElementById('files-changed');
                 while (filePanel.firstChild) {
                     filePanel.removeChild(filePanel.firstChild);
                 }
@@ -75,7 +75,24 @@ function displayModifiedFiles(repoPath) {
                     fileElement.className = "file";
                 }
                 fileElement.appendChild(filePath);
-                document.getElementById('file-panel').appendChild(fileElement);
+                var checkbox = document.createElement("input");
+                checkbox.type = "checkbox";
+                checkbox.className = 'checkbox';
+                fileElement.appendChild(checkbox);
+                fileElement.addEventListener("click", function () {
+                    var childNodes = fileElement.childNodes;
+                    for (var i = 0; i < childNodes.length; i++) {
+                        if (childNodes[i].className === 'checkbox') {
+                            if (childNodes[i].checked === false) {
+                                childNodes[i].checked = true;
+                            }
+                            else {
+                                childNodes[i].checked = false;
+                            }
+                        }
+                    }
+                });
+                document.getElementById("files-changed").appendChild(fileElement);
             }
         });
     });

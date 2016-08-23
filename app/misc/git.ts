@@ -62,7 +62,7 @@ function displayModifiedFiles(repoPath) {
 
       // Clear all modified files from the left file panel
       function clearModifiedFilesList() {
-        let filePanel = document.getElementById('file-panel');
+        let filePanel = document.getElementById('files-changed');
         while (filePanel.firstChild) {
           filePanel.removeChild(filePanel.firstChild);
         }
@@ -85,7 +85,27 @@ function displayModifiedFiles(repoPath) {
         }
 
         fileElement.appendChild(filePath);
-        document.getElementById('file-panel').appendChild(fileElement);
+
+        let checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.className = 'checkbox';
+        fileElement.appendChild(checkbox);
+
+        // Add click event to file element to check/uncheck the checkbox
+        fileElement.addEventListener("click", function() {
+          let childNodes = fileElement.childNodes;
+          for (var i = 0; i < childNodes.length; i++) {
+            if (childNodes[i].className === 'checkbox') {
+              if (childNodes[i].checked === false) {
+                childNodes[i].checked = true;
+              } else {
+                childNodes[i].checked = false;
+              }
+            }
+          }
+        });
+
+        document.getElementById("files-changed").appendChild(fileElement);
       }
     });
   });
