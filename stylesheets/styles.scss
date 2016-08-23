@@ -1,3 +1,4 @@
+
 @import "variables.scss";
 
 p, h1 {
@@ -35,32 +36,76 @@ body {
     background-color: $dark-grey;
     float: left;
 
-    .modified-files-message {
-      padding: 20px;
-    }
+    .modified-files-header {
 
-    :hover {
-      opacity: 0.8;
-    }
-
-    .file {
-      width: 100% - 1;
-      height: 10%;
-      position: relative;
-      overflow: hidden;
-      border: 1px solid $white;
-
-      p {
-        color: $white;
+      .select-all-message {
+        width: 77.5%;
         display: inline-block;
-        vertical-align: middle;
         margin-left: 10px;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        overflow: hidden;
-        width: 90%;
+        vertical-align:middle;
+      }
+
+      .select-all-checkbox {
+
       }
     }
+
+    .files-changed {
+
+      .modified-files-message {
+        padding: 20px;
+      }
+
+      :hover {
+        opacity: 0.8;
+      }
+
+      .file {
+        width: 100% - 1;
+        height: 10%;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid $white;
+
+        p {
+          color: $white;
+          display: inline-block;
+          vertical-align: middle;
+          margin-left: 10px;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          width: 80%;
+        }
+
+        input {
+          vertical-align:middle;
+        }
+      }
+    }
+
+    .commit-panel {
+
+      .commit-message-input {
+        resize: none;
+        width: 90%;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 20px;
+        margin-bottom: 5px;
+        height: 50px;
+      }
+
+      .commit-button {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 10px;
+        margin-bottom: 10px;
+      }
+    }
+
   }
 
   .body-panel {
