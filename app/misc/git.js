@@ -1,5 +1,50 @@
 "use strict";
 var Git = require("nodegit");
+var repoPath = require("path").join(__dirname, "tmp");
+var fileToStage = "a.txt";
+var repo, index, oid, remote;
+function addAndCommit() {
+    Git.Repository.open(repoPath)
+        .then(function (repoResult) {
+        console.log("fileToStage: ", fileToStage);
+        console.log("repoPath: ", repoPath);
+        console.log("repoResult: ", repoResult);
+        repo = repoResult;
+        return repo.refreshIndex();
+    })
+        .then(function (indexResult) {
+        console.log("indexResult: ", indexResult);
+        index = indexResult;
+        return index.addByPath(fileToStage);
+    })
+        .then(function () {
+        return index.write();
+    })
+        .then(function () {
+        return index.writeTree();
+    })
+        .then(function (oidResult) {
+        oid = oidResult;
+        return Git.Reference.nameToId(repo, "HEAD");
+    })
+        .then(function (head) {
+        return repo.getCommit(head);
+    })
+        .then(function (parent) {
+        var author = Git.Signature.now("EdMinstrateur", "elliot.w@hotmail.com");
+        var committer = Git.Signature.now("EdMinstrateur", "elliot.w@hotmail.com");
+        return repo.createCommit("HEAD", author, committer, "Test commit message!!!  :O :O", oid, [parent]);
+    })
+        .then(function () {
+        clearModifiedFilesList();
+    });
+}
+function clearModifiedFilesList() {
+    var filePanel = document.getElementById('files-changed');
+    while (filePanel.firstChild) {
+        filePanel.removeChild(filePanel.firstChild);
+    }
+}
 function getAllCommits(repoPath, callback) {
     Git.Repository.open(repoPath)
         .then(function (repo) {
@@ -32,7 +77,6 @@ function displayModifiedFiles(repoPath) {
                 });
             }
             function calculateModification(status) {
-                console.log(status);
                 if (status.isNew()) {
                     return "NEW";
                 }
@@ -50,12 +94,6 @@ function displayModifiedFiles(repoPath) {
                 }
                 else if (status.isIgnored()) {
                     return "IGNORED";
-                }
-            }
-            function clearModifiedFilesList() {
-                var filePanel = document.getElementById('files-changed');
-                while (filePanel.firstChild) {
-                    filePanel.removeChild(filePanel.firstChild);
                 }
             }
             function displayModifiedFile(file) {
@@ -98,11 +136,6 @@ function displayModifiedFiles(repoPath) {
     });
 }
 function getDiffForCommit(commit) {
-    console.log("commit " + commit.sha());
-    console.log("Author:", commit.author().name() +
-        " <" + commit.author().email() + ">");
-    console.log("Date:", commit.date());
-    console.log("\n    " + commit.message());
     return commit.getDiff();
 }
 function printFormattedDiff(commit) {
@@ -113,11 +146,7 @@ function printFormattedDiff(commit) {
                     patch.hunks().then(function (hunks) {
                         hunks.forEach(function (hunk) {
                             hunk.lines().then(function (lines) {
-                                console.log("diff", patch.oldFile().path(), patch.newFile().path());
-                                console.log(hunk.header().trim());
                                 lines.forEach(function (line) {
-                                    console.log(String.fromCharCode(line.origin()) +
-                                        line.content().trim());
                                 });
                             });
                         });

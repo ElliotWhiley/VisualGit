@@ -2,6 +2,65 @@ import * as nodegit from "git";
 import NodeGit, { Status } from "nodegit";
 
 let Git = require("nodegit");
+let repoPath = require("path").join(__dirname, "tmp");
+
+let fileToStage = "a.txt";
+let repo, index, oid, remote;
+
+function addAndCommit() {
+  Git.Repository.open(repoPath)
+
+  .then(function(repoResult) {
+    console.log("fileToStage: ", fileToStage);
+    console.log("repoPath: ", repoPath);
+    console.log("repoResult: ", repoResult);
+    repo = repoResult;
+     return repo.refreshIndex();
+  })
+
+  .then(function(indexResult) {
+    console.log("indexResult: ", indexResult)
+    index = indexResult;
+    // TO DO add all files to stage
+    return index.addByPath(fileToStage);
+  })
+
+  .then(function() {
+    return index.write();
+  })
+
+  .then(function() {
+    return index.writeTree();
+  })
+
+  .then(function(oidResult) {
+    oid = oidResult;
+    return Git.Reference.nameToId(repo, "HEAD");
+  })
+
+  .then(function(head) {
+    return repo.getCommit(head);
+  })
+
+  .then(function(parent) {
+    let author = Git.Signature.now("EdMinstrateur", "elliot.w@hotmail.com");
+    let committer = Git.Signature.now("EdMinstrateur", "elliot.w@hotmail.com");
+    // TODO - insert commit message from textarea
+    return repo.createCommit("HEAD", author, committer, "Test commit message!!!  :O :O", oid, [parent]);
+  })
+
+  .then(function() {
+    clearModifiedFilesList();
+  });
+}
+
+// Clear all modified files from the left file panel
+function clearModifiedFilesList() {
+  let filePanel = document.getElementById('files-changed');
+  while (filePanel.firstChild) {
+    filePanel.removeChild(filePanel.firstChild);
+  }
+}
 
 function getAllCommits(repoPath, callback) {
   Git.Repository.open(repoPath)
@@ -44,7 +103,6 @@ function displayModifiedFiles(repoPath) {
 
       // Find HOW the file has been modified
       function calculateModification(status) {
-        console.log(status);
         if (status.isNew()) {
           return "NEW";
         } else if (status.isModified()) {
@@ -60,20 +118,12 @@ function displayModifiedFiles(repoPath) {
         }
       }
 
-      // Clear all modified files from the left file panel
-      function clearModifiedFilesList() {
-        let filePanel = document.getElementById('files-changed');
-        while (filePanel.firstChild) {
-          filePanel.removeChild(filePanel.firstChild);
-        }
-      }
-
       // Add the modified file to the left file panel
       function displayModifiedFile(file) {
         let filePath = document.createElement("p");
         filePath.innerHTML = file.filePath;
         let fileElement = document.createElement("div");
-        // TODO - change color of modified file
+        // Set how the file has been modified
         if (file.fileModification == "NEW") {
           fileElement.className = "file file-created";
         } else if (file.fileModification == "MODIFIED") {
@@ -112,12 +162,6 @@ function displayModifiedFiles(repoPath) {
 }
 
 function getDiffForCommit(commit) {
-  console.log("commit " + commit.sha());
-  console.log("Author:", commit.author().name() +
-  " <" + commit.author().email() + ">");
-  console.log("Date:", commit.date());
-  console.log("\n    " + commit.message());
-
   return commit.getDiff();
 }
 
@@ -129,12 +173,7 @@ function printFormattedDiff(commit) {
           patch.hunks().then(function(hunks) {
             hunks.forEach(function(hunk) {
               hunk.lines().then(function(lines) {
-                console.log("diff", patch.oldFile().path(),
-                patch.newFile().path());
-                console.log(hunk.header().trim());
                 lines.forEach(function(line) {
-                  console.log(String.fromCharCode(line.origin()) +
-                  line.content().trim());
                 });
               });
             });
@@ -143,5 +182,4 @@ function printFormattedDiff(commit) {
       });
     });
   });
-
 }
