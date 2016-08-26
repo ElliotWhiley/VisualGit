@@ -42,11 +42,13 @@ function addAndCommit() {
     });
 }
 function clearModifiedFilesList() {
-    var filePanel = document.getElementById('files-changed');
+    var filePanel = document.getElementById("files-changed");
     while (filePanel.firstChild) {
         filePanel.removeChild(filePanel.firstChild);
     }
 }
+var user = "Test User";
+var email = "test@mail.com";
 function getAllCommits(repoPath, callback) {
     Git.Repository.open(repoPath)
         .then(function (repo) {
@@ -58,6 +60,46 @@ function getAllCommits(repoPath, callback) {
             callback(commits);
         });
         history.start();
+    });
+}
+function pullFromRemote(repoPath) {
+    var repository;
+    console.log("pulling from remote repo");
+    Git.Repository.open(repoPath)
+        .then(function (repo) {
+        repository = repo;
+        return repository.fetchAll({
+            callbacks: {
+                credentials: function (url, userName) {
+                    return Git.Cred.sshKeyFromAgent(userName);
+                },
+                certificateCheck: function () {
+                    return 1;
+                }
+            }
+        });
+    })
+        .then(function () {
+        return repository.mergeBranches("master", "origin/master");
+    });
+}
+function pushToRemote(repoPath, branch) {
+    Git.Repository.open(repoPath)
+        .then(function (repo) {
+        repo.getRemotes()
+            .then(function (remotes) {
+            repo.getRemote(remotes[0])
+                .then(function (remote) {
+                console.log("pushing changes to " + branch);
+                return remote.push(["refs/heads/" + branch + ":refs/heads/" + branch], {
+                    callbacks: {
+                        credentials: function (url, userName) {
+                            return Git.Cred.sshKeyFromAgent(userName);
+                        }
+                    }
+                });
+            });
+        });
     });
 }
 function displayModifiedFiles(repoPath) {
@@ -115,7 +157,24 @@ function displayModifiedFiles(repoPath) {
                     fileElement.className = "file";
                 }
                 fileElement.appendChild(filePath);
-                document.getElementById('file-panel').appendChild(fileElement);
+                var checkbox = document.createElement("input");
+                checkbox.type = "checkbox";
+                checkbox.className = "checkbox";
+                fileElement.appendChild(checkbox);
+                fileElement.addEventListener("click", function () {
+                    var childNodes = fileElement.childNodes;
+                    for (var i = 0; i < childNodes.length; i++) {
+                        if (childNodes[i].className === "checkbox") {
+                            if (childNodes[i].checked === false) {
+                                childNodes[i].checked = true;
+                            }
+                            else {
+                                childNodes[i].checked = false;
+                            }
+                        }
+                    }
+                });
+                document.getElementById("files-changed").appendChild(fileElement);
                 fileElement.onclick = function () {
                     console.log("Printing diff for: " + file.filePath);
                     document.getElementById("diff-panel").innerHTML = "";

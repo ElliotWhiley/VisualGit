@@ -3,6 +3,7 @@ import NodeGit, { Status } from "nodegit";
 
 let Git = require("nodegit");
 let fs = require("fs");
+
 let repoPath = require("path").join(__dirname, "tmp");
 let green = "#84db00";
 let fileToStage = "a.txt";
@@ -20,7 +21,7 @@ function addAndCommit() {
   })
 
   .then(function(indexResult) {
-    console.log("indexResult: ", indexResult)
+    console.log("indexResult: ", indexResult);
     index = indexResult;
     // TO DO add all files to stage
     return index.addByPath(fileToStage);
@@ -57,11 +58,14 @@ function addAndCommit() {
 
 // Clear all modified files from the left file panel
 function clearModifiedFilesList() {
-  let filePanel = document.getElementById('files-changed');
+  let filePanel = document.getElementById("files-changed");
   while (filePanel.firstChild) {
     filePanel.removeChild(filePanel.firstChild);
   }
 }
+
+let user = "Test User";
+let email = "test@mail.com";
 
 function getAllCommits(repoPath, callback) {
   Git.Repository.open(repoPath)
@@ -76,6 +80,54 @@ function getAllCommits(repoPath, callback) {
     });
 
     history.start();
+  });
+}
+
+function pullFromRemote(repoPath) {
+  let repository;
+  console.log("pulling from remote repo");
+  Git.Repository.open(repoPath)
+  .then(function(repo) {
+    repository = repo;
+
+    return repository.fetchAll({
+      callbacks: {
+        credentials: function(url, userName) {
+          return Git.Cred.sshKeyFromAgent(userName);
+        },
+        certificateCheck: function() {
+          return 1;
+        }
+      }
+    });
+  })
+  // Now that we're finished fetching, go ahead and merge our local branch
+  // with the new one
+  .then(function() {
+    return repository.mergeBranches("master", "origin/master");
+  });
+}
+
+function pushToRemote(repoPath, branch) {
+  Git.Repository.open(repoPath)
+  .then(function(repo) {
+    repo.getRemotes()
+    .then(function(remotes) {
+      repo.getRemote(remotes[0])
+      .then(function(remote) {
+        console.log("pushing changes to " + branch);
+        return remote.push(
+          ["refs/heads/" + branch + ":refs/heads/" + branch],
+          {
+            callbacks: {
+              credentials: function(url, userName) {
+                return Git.Cred.sshKeyFromAgent(userName);
+              }
+            }
+          }
+        );
+      });
+    });
   });
 }
 
@@ -136,30 +188,19 @@ function displayModifiedFiles(repoPath) {
         }
 
         fileElement.appendChild(filePath);
-<<<<<<< HEAD
-        document.getElementById('file-panel').appendChild(fileElement);
-        fileElement.onclick = function() {
-          console.log("Printing diff for: " + file.filePath);
-          document.getElementById("diff-panel").innerHTML = "";
 
-          if (fileElement.className === "file file-created") {
-            printNewFile(file.filePath);
-          } else {
-            printFileDiff(file.filePath)
-          }
-        };
-=======
+        // document.getElementById('file-panel').appendChild(fileElement);
 
         let checkbox = document.createElement("input");
         checkbox.type = "checkbox";
-        checkbox.className = 'checkbox';
+        checkbox.className = "checkbox";
         fileElement.appendChild(checkbox);
 
         // Add click event to file element to check/uncheck the checkbox
         fileElement.addEventListener("click", function() {
           let childNodes = fileElement.childNodes;
-          for (var i = 0; i < childNodes.length; i++) {
-            if (childNodes[i].className === 'checkbox') {
+          for (let i = 0; i < childNodes.length; i++) {
+            if (childNodes[i].className === "checkbox") {
               if (childNodes[i].checked === false) {
                 childNodes[i].checked = true;
               } else {
@@ -170,10 +211,19 @@ function displayModifiedFiles(repoPath) {
         });
 
         document.getElementById("files-changed").appendChild(fileElement);
->>>>>>> stage-commit
+
+        fileElement.onclick = function() {
+          console.log("Printing diff for: " + file.filePath);
+          document.getElementById("diff-panel").innerHTML = "";
+
+          if (fileElement.className === "file file-created") {
+            printNewFile(file.filePath);
+          } else {
+            printFileDiff(file.filePath)
+          }
+        };
       }
 
-<<<<<<< HEAD
       function printNewFile(filePath) {
         let fileLocation = "./tmp/" + filePath;
         console.log(fileLocation);
@@ -213,21 +263,6 @@ function displayModifiedFiles(repoPath) {
                       }
                     });
                   });
-=======
-function getDiffForCommit(commit) {
-  return commit.getDiff();
-}
-
-function printFormattedDiff(commit) {
-  getDiffForCommit(commit).done(function(diffList) {
-    diffList.forEach(function(diff) {
-      diff.patches().then(function(patches) {
-        patches.forEach(function(patch) {
-          patch.hunks().then(function(hunks) {
-            hunks.forEach(function(hunk) {
-              hunk.lines().then(function(lines) {
-                lines.forEach(function(line) {
->>>>>>> stage-commit
                 });
               });
             });
