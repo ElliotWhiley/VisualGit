@@ -1,7 +1,52 @@
 "use strict";
 var Git = require("nodegit");
 var fs = require("fs");
+var repoPath = require("path").join(__dirname, "tmp");
 var green = "#84db00";
+var fileToStage = "a.txt";
+var repo, index, oid, remote;
+function addAndCommit() {
+    Git.Repository.open(repoPath)
+        .then(function (repoResult) {
+        console.log("fileToStage: ", fileToStage);
+        console.log("repoPath: ", repoPath);
+        console.log("repoResult: ", repoResult);
+        repo = repoResult;
+        return repo.refreshIndex();
+    })
+        .then(function (indexResult) {
+        console.log("indexResult: ", indexResult);
+        index = indexResult;
+        return index.addByPath(fileToStage);
+    })
+        .then(function () {
+        return index.write();
+    })
+        .then(function () {
+        return index.writeTree();
+    })
+        .then(function (oidResult) {
+        oid = oidResult;
+        return Git.Reference.nameToId(repo, "HEAD");
+    })
+        .then(function (head) {
+        return repo.getCommit(head);
+    })
+        .then(function (parent) {
+        var author = Git.Signature.now("EdMinstrateur", "elliot.w@hotmail.com");
+        var committer = Git.Signature.now("EdMinstrateur", "elliot.w@hotmail.com");
+        return repo.createCommit("HEAD", author, committer, "Test commit message!!!  :O :O", oid, [parent]);
+    })
+        .then(function () {
+        clearModifiedFilesList();
+    });
+}
+function clearModifiedFilesList() {
+    var filePanel = document.getElementById("files-changed");
+    while (filePanel.firstChild) {
+        filePanel.removeChild(filePanel.firstChild);
+    }
+}
 var user = "Test User";
 var email = "test@mail.com";
 function getAllCommits(repoPath, callback) {
@@ -45,6 +90,7 @@ function pushToRemote(repoPath, branch) {
             .then(function (remotes) {
             repo.getRemote(remotes[0])
                 .then(function (remote) {
+                console.log("pushing changes to " + branch);
                 return remote.push(["refs/heads/" + branch + ":refs/heads/" + branch], {
                     callbacks: {
                         credentials: function (url, userName) {
@@ -94,12 +140,6 @@ function displayModifiedFiles(repoPath) {
                     return "IGNORED";
                 }
             }
-            function clearModifiedFilesList() {
-                var filePanel = document.getElementById('file-panel');
-                while (filePanel.firstChild) {
-                    filePanel.removeChild(filePanel.firstChild);
-                }
-            }
             function displayModifiedFile(file) {
                 var filePath = document.createElement("p");
                 filePath.innerHTML = file.filePath;
@@ -117,7 +157,24 @@ function displayModifiedFiles(repoPath) {
                     fileElement.className = "file";
                 }
                 fileElement.appendChild(filePath);
-                document.getElementById('file-panel').appendChild(fileElement);
+                var checkbox = document.createElement("input");
+                checkbox.type = "checkbox";
+                checkbox.className = "checkbox";
+                fileElement.appendChild(checkbox);
+                fileElement.addEventListener("click", function () {
+                    var childNodes = fileElement.childNodes;
+                    for (var i = 0; i < childNodes.length; i++) {
+                        if (childNodes[i].className === "checkbox") {
+                            if (childNodes[i].checked === false) {
+                                childNodes[i].checked = true;
+                            }
+                            else {
+                                childNodes[i].checked = false;
+                            }
+                        }
+                    }
+                });
+                document.getElementById("files-changed").appendChild(fileElement);
                 fileElement.onclick = function () {
                     console.log("Printing diff for: " + file.filePath);
                     document.getElementById("diff-panel").innerHTML = "";

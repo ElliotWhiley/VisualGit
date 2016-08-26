@@ -3,7 +3,66 @@ import NodeGit, { Status } from "nodegit";
 
 let Git = require("nodegit");
 let fs = require("fs");
+
+let repoPath = require("path").join(__dirname, "tmp");
 let green = "#84db00";
+let fileToStage = "a.txt";
+let repo, index, oid, remote;
+
+function addAndCommit() {
+  Git.Repository.open(repoPath)
+
+  .then(function(repoResult) {
+    console.log("fileToStage: ", fileToStage);
+    console.log("repoPath: ", repoPath);
+    console.log("repoResult: ", repoResult);
+    repo = repoResult;
+     return repo.refreshIndex();
+  })
+
+  .then(function(indexResult) {
+    console.log("indexResult: ", indexResult);
+    index = indexResult;
+    // TO DO add all files to stage
+    return index.addByPath(fileToStage);
+  })
+
+  .then(function() {
+    return index.write();
+  })
+
+  .then(function() {
+    return index.writeTree();
+  })
+
+  .then(function(oidResult) {
+    oid = oidResult;
+    return Git.Reference.nameToId(repo, "HEAD");
+  })
+
+  .then(function(head) {
+    return repo.getCommit(head);
+  })
+
+  .then(function(parent) {
+    let author = Git.Signature.now("EdMinstrateur", "elliot.w@hotmail.com");
+    let committer = Git.Signature.now("EdMinstrateur", "elliot.w@hotmail.com");
+    // TODO - insert commit message from textarea
+    return repo.createCommit("HEAD", author, committer, "Test commit message!!!  :O :O", oid, [parent]);
+  })
+
+  .then(function() {
+    clearModifiedFilesList();
+  });
+}
+
+// Clear all modified files from the left file panel
+function clearModifiedFilesList() {
+  let filePanel = document.getElementById("files-changed");
+  while (filePanel.firstChild) {
+    filePanel.removeChild(filePanel.firstChild);
+  }
+}
 
 let user = "Test User";
 let email = "test@mail.com";
@@ -56,6 +115,7 @@ function pushToRemote(repoPath, branch) {
     .then(function(remotes) {
       repo.getRemote(remotes[0])
       .then(function(remote) {
+        console.log("pushing changes to " + branch);
         return remote.push(
           ["refs/heads/" + branch + ":refs/heads/" + branch],
           {
@@ -111,20 +171,12 @@ function displayModifiedFiles(repoPath) {
         }
       }
 
-      // Clear all modified files from the left file panel
-      function clearModifiedFilesList() {
-        let filePanel = document.getElementById('file-panel');
-        while (filePanel.firstChild) {
-          filePanel.removeChild(filePanel.firstChild);
-        }
-      }
-
       // Add the modified file to the left file panel
       function displayModifiedFile(file) {
         let filePath = document.createElement("p");
         filePath.innerHTML = file.filePath;
         let fileElement = document.createElement("div");
-        // TODO - change color of modified file
+        // Set how the file has been modified
         if (file.fileModification == "NEW") {
           fileElement.className = "file file-created";
         } else if (file.fileModification == "MODIFIED") {
@@ -136,7 +188,30 @@ function displayModifiedFiles(repoPath) {
         }
 
         fileElement.appendChild(filePath);
-        document.getElementById('file-panel').appendChild(fileElement);
+
+        // document.getElementById('file-panel').appendChild(fileElement);
+
+        let checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.className = "checkbox";
+        fileElement.appendChild(checkbox);
+
+        // Add click event to file element to check/uncheck the checkbox
+        fileElement.addEventListener("click", function() {
+          let childNodes = fileElement.childNodes;
+          for (let i = 0; i < childNodes.length; i++) {
+            if (childNodes[i].className === "checkbox") {
+              if (childNodes[i].checked === false) {
+                childNodes[i].checked = true;
+              } else {
+                childNodes[i].checked = false;
+              }
+            }
+          }
+        });
+
+        document.getElementById("files-changed").appendChild(fileElement);
+
         fileElement.onclick = function() {
           console.log("Printing diff for: " + file.filePath);
           document.getElementById("diff-panel").innerHTML = "";
