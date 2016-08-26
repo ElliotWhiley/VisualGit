@@ -3,8 +3,10 @@ import NodeGit, { Status } from "nodegit";
 
 let Git = require("nodegit");
 let fs = require("fs");
-
 let green = "#84db00";
+
+let user = "Test User";
+let email = "test@mail.com";
 
 function getAllCommits(repoPath, callback) {
   Git.Repository.open(repoPath)
@@ -19,6 +21,53 @@ function getAllCommits(repoPath, callback) {
     });
 
     history.start();
+  });
+}
+
+function pullFromRemote(repoPath) {
+  let repository;
+  console.log("pulling from remote repo");
+  Git.Repository.open(repoPath)
+  .then(function(repo) {
+    repository = repo;
+
+    return repository.fetchAll({
+      callbacks: {
+        credentials: function(url, userName) {
+          return Git.Cred.sshKeyFromAgent(userName);
+        },
+        certificateCheck: function() {
+          return 1;
+        }
+      }
+    });
+  })
+  // Now that we're finished fetching, go ahead and merge our local branch
+  // with the new one
+  .then(function() {
+    return repository.mergeBranches("master", "origin/master");
+  });
+}
+
+function pushToRemote(repoPath, branch) {
+  Git.Repository.open(repoPath)
+  .then(function(repo) {
+    repo.getRemotes()
+    .then(function(remotes) {
+      repo.getRemote(remotes[0])
+      .then(function(remote) {
+        return remote.push(
+          ["refs/heads/" + branch + ":refs/heads/" + branch],
+          {
+            callbacks: {
+              credentials: function(url, userName) {
+                return Git.Cred.sshKeyFromAgent(userName);
+              }
+            }
+          }
+        );
+      });
+    });
   });
 }
 

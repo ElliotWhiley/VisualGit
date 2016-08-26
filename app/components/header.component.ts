@@ -9,6 +9,8 @@ import { GraphService } from "../services/graph.service";
       <button (click)="promptUserToAddRepository()">+</button>
       <p>{{repoName}}</p>
       <p>{{repoBranch}}</p>
+      <img src="./assets/arrow.png" class="pull-button" onclick="pullFromRemote('./tmp')">
+      <img src="./assets/arrow.png" class="push-button" onclick="pushToRemote('./tmp', 'master')">
     </div>
   `,
   providers: [RepositoryService, GraphService]

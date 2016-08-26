@@ -2,6 +2,8 @@
 var Git = require("nodegit");
 var fs = require("fs");
 var green = "#84db00";
+var user = "Test User";
+var email = "test@mail.com";
 function getAllCommits(repoPath, callback) {
     Git.Repository.open(repoPath)
         .then(function (repo) {
@@ -13,6 +15,45 @@ function getAllCommits(repoPath, callback) {
             callback(commits);
         });
         history.start();
+    });
+}
+function pullFromRemote(repoPath) {
+    var repository;
+    console.log("pulling from remote repo");
+    Git.Repository.open(repoPath)
+        .then(function (repo) {
+        repository = repo;
+        return repository.fetchAll({
+            callbacks: {
+                credentials: function (url, userName) {
+                    return Git.Cred.sshKeyFromAgent(userName);
+                },
+                certificateCheck: function () {
+                    return 1;
+                }
+            }
+        });
+    })
+        .then(function () {
+        return repository.mergeBranches("master", "origin/master");
+    });
+}
+function pushToRemote(repoPath, branch) {
+    Git.Repository.open(repoPath)
+        .then(function (repo) {
+        repo.getRemotes()
+            .then(function (remotes) {
+            repo.getRemote(remotes[0])
+                .then(function (remote) {
+                return remote.push(["refs/heads/" + branch + ":refs/heads/" + branch], {
+                    callbacks: {
+                        credentials: function (url, userName) {
+                            return Git.Cred.sshKeyFromAgent(userName);
+                        }
+                    }
+                });
+            });
+        });
     });
 }
 function displayModifiedFiles(repoPath) {
