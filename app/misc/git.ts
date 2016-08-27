@@ -3,26 +3,28 @@ import NodeGit, { Status } from "nodegit";
 
 let Git = require("nodegit");
 let repoPath = require("path").join(__dirname, "tmp");
-
-let fileToStage = "a.txt";
 let repo, index, oid, remote;
 
 function addAndCommit() {
   Git.Repository.open(repoPath)
 
   .then(function(repoResult) {
-    console.log("fileToStage: ", fileToStage);
-    console.log("repoPath: ", repoPath);
-    console.log("repoResult: ", repoResult);
     repo = repoResult;
      return repo.refreshIndex();
   })
 
   .then(function(indexResult) {
-    console.log("indexResult: ", indexResult)
     index = indexResult;
-    // TO DO add all files to stage
-    return index.addByPath(fileToStage);
+    let filesToStage = [];
+    let filePanel = document.getElementById('files-changed');
+    let fileElements = filePanel.childNodes;
+    for (let i = 0; i < fileElements.length; i++) {
+      let fileElementChildren = fileElements[i].childNodes;
+      if (fileElementChildren[1].checked === true) {
+        filesToStage.push(fileElementChildren[0].innerHTML);
+      }
+    }
+    return index.addAll(filesToStage);
   })
 
   .then(function() {
@@ -45,12 +47,13 @@ function addAndCommit() {
   .then(function(parent) {
     let author = Git.Signature.now("EdMinstrateur", "elliot.w@hotmail.com");
     let committer = Git.Signature.now("EdMinstrateur", "elliot.w@hotmail.com");
-    // TODO - insert commit message from textarea
-    return repo.createCommit("HEAD", author, committer, "Test commit message!!!  :O :O", oid, [parent]);
+    let commitMessage = document.getElementById('commit-message-input').value;
+    return repo.createCommit("HEAD", author, committer, commitMessage, oid, [parent]);
   })
 
   .then(function() {
     clearModifiedFilesList();
+    clearCommitMessage();
   });
 }
 
@@ -60,6 +63,10 @@ function clearModifiedFilesList() {
   while (filePanel.firstChild) {
     filePanel.removeChild(filePanel.firstChild);
   }
+}
+
+function clearCommitMessage() {
+  document.getElementById('commit-message-input').value = "";
 }
 
 function getAllCommits(repoPath, callback) {
@@ -154,6 +161,18 @@ function displayModifiedFiles(repoPath) {
             }
           }
         });
+
+        // // Store file in global filesToCommit array if it doesn't already exist
+        // let fileAlreadyExists = false;
+        // for (let i = 0; i < fileElementsToCommit.length; i++) {
+        //   let children = fileElementsToCommit[i].childNodes;
+        //   if (children[0].innerHTML === file.filePath) {
+        //     fileAlreadyExists = true;
+        //   }
+        // }
+        // if (!fileAlreadyExists) {
+        //   fileElementsToCommit.push(fileElement);
+        // }
 
         document.getElementById("files-changed").appendChild(fileElement);
       }

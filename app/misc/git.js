@@ -1,21 +1,25 @@
 "use strict";
 var Git = require("nodegit");
 var repoPath = require("path").join(__dirname, "tmp");
-var fileToStage = "a.txt";
 var repo, index, oid, remote;
 function addAndCommit() {
     Git.Repository.open(repoPath)
         .then(function (repoResult) {
-        console.log("fileToStage: ", fileToStage);
-        console.log("repoPath: ", repoPath);
-        console.log("repoResult: ", repoResult);
         repo = repoResult;
         return repo.refreshIndex();
     })
         .then(function (indexResult) {
-        console.log("indexResult: ", indexResult);
         index = indexResult;
-        return index.addByPath(fileToStage);
+        var filesToStage = [];
+        var filePanel = document.getElementById('files-changed');
+        var fileElements = filePanel.childNodes;
+        for (var i = 0; i < fileElements.length; i++) {
+            var fileElementChildren = fileElements[i].childNodes;
+            if (fileElementChildren[1].checked === true) {
+                filesToStage.push(fileElementChildren[0].innerHTML);
+            }
+        }
+        return index.addAll(filesToStage);
     })
         .then(function () {
         return index.write();
@@ -33,10 +37,12 @@ function addAndCommit() {
         .then(function (parent) {
         var author = Git.Signature.now("EdMinstrateur", "elliot.w@hotmail.com");
         var committer = Git.Signature.now("EdMinstrateur", "elliot.w@hotmail.com");
-        return repo.createCommit("HEAD", author, committer, "Test commit message!!!  :O :O", oid, [parent]);
+        var commitMessage = document.getElementById('commit-message-input').value;
+        return repo.createCommit("HEAD", author, committer, commitMessage, oid, [parent]);
     })
         .then(function () {
         clearModifiedFilesList();
+        clearCommitMessage();
     });
 }
 function clearModifiedFilesList() {
@@ -44,6 +50,9 @@ function clearModifiedFilesList() {
     while (filePanel.firstChild) {
         filePanel.removeChild(filePanel.firstChild);
     }
+}
+function clearCommitMessage() {
+    document.getElementById('commit-message-input').value = "";
 }
 function getAllCommits(repoPath, callback) {
     Git.Repository.open(repoPath)
