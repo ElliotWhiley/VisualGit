@@ -68,14 +68,11 @@ function clearModifiedFilesList() {
   }
 }
 
-<<<<<<< HEAD
 function clearCommitMessage() {
   document.getElementById('commit-message-input').value = "";
 }
-=======
 let user = "Test User";
 let email = "test@mail.com";
->>>>>>> ffb57561770bb32e31b4d71f95f72fce4f5a3412
 
 function getAllCommits(repoPath, callback) {
   Git.Repository.open(repoPath)
@@ -199,8 +196,6 @@ function displayModifiedFiles(repoPath) {
 
         fileElement.appendChild(filePath);
 
-        // document.getElementById('file-panel').appendChild(fileElement);
-
         let checkbox = document.createElement("input");
         checkbox.type = "checkbox";
         checkbox.className = "checkbox";
@@ -219,18 +214,6 @@ function displayModifiedFiles(repoPath) {
             }
           }
         });
-
-        // // Store file in global filesToCommit array if it doesn't already exist
-        // let fileAlreadyExists = false;
-        // for (let i = 0; i < fileElementsToCommit.length; i++) {
-        //   let children = fileElementsToCommit[i].childNodes;
-        //   if (children[0].innerHTML === file.filePath) {
-        //     fileAlreadyExists = true;
-        //   }
-        // }
-        // if (!fileAlreadyExists) {
-        //   fileElementsToCommit.push(fileElement);
-        // }
 
         document.getElementById("files-changed").appendChild(fileElement);
 

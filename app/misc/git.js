@@ -56,6 +56,8 @@ function clearModifiedFilesList() {
 function clearCommitMessage() {
     document.getElementById('commit-message-input').value = "";
 }
+var user = "Test User";
+var email = "test@mail.com";
 function getAllCommits(repoPath, callback) {
     Git.Repository.open(repoPath)
         .then(function (repo) {
