@@ -1,6 +1,8 @@
 "use strict";
 var Git = require("nodegit");
+var fs = require("fs");
 var repoPath = require("path").join(__dirname, "tmp");
+var green = "#84db00";
 var repo, index, oid, remote;
 function addAndCommit() {
     Git.Repository.open(repoPath)
@@ -122,46 +124,76 @@ function displayModifiedFiles(repoPath) {
                     fileElement.className = "file";
                 }
                 fileElement.appendChild(filePath);
-                var checkbox = document.createElement("input");
-                checkbox.type = "checkbox";
-                checkbox.className = 'checkbox';
-                fileElement.appendChild(checkbox);
-                fileElement.addEventListener("click", function () {
-                    var childNodes = fileElement.childNodes;
-                    for (var i = 0; i < childNodes.length; i++) {
-                        if (childNodes[i].className === 'checkbox') {
-                            if (childNodes[i].checked === false) {
-                                childNodes[i].checked = true;
-                            }
-                            else {
-                                childNodes[i].checked = false;
-                            }
-                        }
+                document.getElementById('file-panel').appendChild(fileElement);
+                fileElement.onclick = function () {
+                    console.log("Printing diff for: " + file.filePath);
+                    document.getElementById("diff-panel").innerHTML = "";
+                    if (fileElement.className === "file file-created") {
+                        printNewFile(file.filePath);
                     }
-                });
-                document.getElementById("files-changed").appendChild(fileElement);
+                    else {
+                        printFileDiff(file.filePath);
+                    }
+                };
             }
-        });
-    });
-}
-function getDiffForCommit(commit) {
-    return commit.getDiff();
-}
-function printFormattedDiff(commit) {
-    getDiffForCommit(commit).done(function (diffList) {
-        diffList.forEach(function (diff) {
-            diff.patches().then(function (patches) {
-                patches.forEach(function (patch) {
-                    patch.hunks().then(function (hunks) {
-                        hunks.forEach(function (hunk) {
-                            hunk.lines().then(function (lines) {
-                                lines.forEach(function (line) {
+            function printNewFile(filePath) {
+                var fileLocation = "./tmp/" + filePath;
+                console.log(fileLocation);
+                var lineReader = require("readline").createInterface({
+                    input: fs.createReadStream(fileLocation)
+                });
+                lineReader.on("line", function (line) {
+                    formatNewFileLine(line);
+                });
+            }
+            function printFileDiff(filePath) {
+                repo.getHeadCommit().then(function (commit) {
+                    getCurrentDiff(commit, filePath, function (line) {
+                        formatLine(line);
+                    });
+                });
+            }
+            function getCurrentDiff(commit, filePath, callback) {
+                commit.getTree().then(function (tree) {
+                    Git.Diff.treeToWorkdir(repo, tree, null).then(function (diff) {
+                        diff.patches().then(function (patches) {
+                            patches.forEach(function (patch) {
+                                patch.hunks().then(function (hunks) {
+                                    hunks.forEach(function (hunk) {
+                                        hunk.lines().then(function (lines) {
+                                            var oldFilePath = patch.oldFile().path();
+                                            var newFilePath = patch.newFile().path();
+                                            if (newFilePath === filePath) {
+                                                callback(hunk.header().trim());
+                                                lines.forEach(function (line) {
+                                                    callback(String.fromCharCode(line.origin()) + line.content().trim());
+                                                });
+                                            }
+                                        });
+                                    });
                                 });
                             });
                         });
                     });
                 });
-            });
+            }
+            function formatLine(line) {
+                var element = document.createElement("div");
+                if (line.charAt(0) === "+") {
+                    element.style.backgroundColor = green;
+                }
+                else if (line.charAt(0) === "-") {
+                    element.style.backgroundColor = "red";
+                }
+                element.innerHTML = line;
+                document.getElementById("diff-panel").appendChild(element);
+            }
+            function formatNewFileLine(text) {
+                var element = document.createElement("div");
+                element.style.backgroundColor = green;
+                element.innerHTML = text;
+                document.getElementById("diff-panel").appendChild(element);
+            }
         });
     });
 }

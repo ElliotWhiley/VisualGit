@@ -2,7 +2,9 @@ import * as nodegit from "git";
 import NodeGit, { Status } from "nodegit";
 
 let Git = require("nodegit");
+let fs = require("fs");
 let repoPath = require("path").join(__dirname, "tmp");
+let green = "#84db00";
 let repo, index, oid, remote;
 
 function addAndCommit() {
@@ -105,7 +107,7 @@ function displayModifiedFiles(repoPath) {
         modifiedFiles.push({
             filePath: path,
             fileModification: modification
-        });
+          });
       }
 
       // Find HOW the file has been modified
@@ -142,6 +144,19 @@ function displayModifiedFiles(repoPath) {
         }
 
         fileElement.appendChild(filePath);
+<<<<<<< HEAD
+        document.getElementById('file-panel').appendChild(fileElement);
+        fileElement.onclick = function() {
+          console.log("Printing diff for: " + file.filePath);
+          document.getElementById("diff-panel").innerHTML = "";
+
+          if (fileElement.className === "file file-created") {
+            printNewFile(file.filePath);
+          } else {
+            printFileDiff(file.filePath)
+          }
+        };
+=======
 
         let checkbox = document.createElement("input");
         checkbox.type = "checkbox";
@@ -175,11 +190,50 @@ function displayModifiedFiles(repoPath) {
         // }
 
         document.getElementById("files-changed").appendChild(fileElement);
+>>>>>>> stage-commit
       }
-    });
-  });
-}
 
+<<<<<<< HEAD
+      function printNewFile(filePath) {
+        let fileLocation = "./tmp/" + filePath;
+        console.log(fileLocation);
+
+        let lineReader = require("readline").createInterface({
+          input: fs.createReadStream(fileLocation)
+        });
+
+        lineReader.on("line", function (line) {
+          formatNewFileLine(line);
+        });
+      }
+
+      function printFileDiff(filePath) {
+        repo.getHeadCommit().then(function(commit) {
+          getCurrentDiff(commit, filePath, function(line) {
+            formatLine(line);
+          });
+        });
+      }
+
+      function getCurrentDiff(commit, filePath, callback) {
+        commit.getTree().then(function(tree) {
+          Git.Diff.treeToWorkdir(repo, tree, null).then(function(diff) {
+            diff.patches().then(function(patches) {
+              patches.forEach(function(patch) {
+                patch.hunks().then(function(hunks) {
+                  hunks.forEach(function(hunk) {
+                    hunk.lines().then(function(lines) {
+                      let oldFilePath = patch.oldFile().path();
+                      let newFilePath = patch.newFile().path();
+                      if (newFilePath === filePath) {
+                        callback(hunk.header().trim());
+                        lines.forEach(function(line) {
+                          callback(String.fromCharCode(line.origin()) + line.content().trim());
+                        });
+                      }
+                    });
+                  });
+=======
 function getDiffForCommit(commit) {
   return commit.getDiff();
 }
@@ -193,12 +247,33 @@ function printFormattedDiff(commit) {
             hunks.forEach(function(hunk) {
               hunk.lines().then(function(lines) {
                 lines.forEach(function(line) {
+>>>>>>> stage-commit
                 });
               });
             });
           });
         });
-      });
+      }
+
+      function formatLine(line) {
+        let element = document.createElement("div");
+
+        if (line.charAt(0) === "+") {
+          element.style.backgroundColor = green;
+        } else if (line.charAt(0) === "-") {
+          element.style.backgroundColor = "red";
+        }
+
+        element.innerHTML = line;
+        document.getElementById("diff-panel").appendChild(element);
+      }
+
+      function formatNewFileLine(text) {
+        let element = document.createElement("div");
+        element.style.backgroundColor = green;
+        element.innerHTML = text;
+        document.getElementById("diff-panel").appendChild(element);
+      }
     });
   });
 }
