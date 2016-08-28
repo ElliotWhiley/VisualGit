@@ -25,14 +25,11 @@ body {
       display: inline-block;
     }
 
-    button {
-      margin-left: 40px;
-    }
-
     .pull-button {
       position: absolute;
       left: 60%;
       margin-left: -40px;
+      opacity: 0.7;
 
       padding-top: 13px;
       width: 80px;
@@ -40,16 +37,33 @@ body {
       display: inline-block;
     }
 
+    .pull-button:hover {
+      opacity: 1.0;
+    }
+
+    .pull-button:active {
+      -webkit-filter:brightness(30%);
+    }
+
     .push-button {
       position: absolute;
       left: 50%;
       margin-left: -40px;
+      opacity: 0.7;
 
       padding-bottom: 13px;
       width: 80px;
       height: 60px;
       transform: rotate(180deg);
       display: inline-block;
+    }
+
+    .push-button:hover {
+      opacity: 1.0;
+    }
+
+    .push-button:active {
+      -webkit-filter:brightness(30%);
     }
   }
 
