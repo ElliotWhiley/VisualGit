@@ -24,29 +24,43 @@ body .header p {
   display: inline-block;
 }
 
-body .header button {
-  margin-left: 40px;
-}
-
 body .header .pull-button {
   position: absolute;
   left: 60%;
   margin-left: -40px;
+  opacity: 0.7;
   padding-top: 13px;
   width: 80px;
   height: 60px;
   display: inline-block;
 }
 
+body .header .pull-button:hover {
+  opacity: 1.0;
+}
+
+body .header .pull-button:active {
+  -webkit-filter: brightness(30%);
+}
+
 body .header .push-button {
   position: absolute;
   left: 50%;
   margin-left: -40px;
+  opacity: 0.7;
   padding-bottom: 13px;
   width: 80px;
   height: 60px;
   transform: rotate(180deg);
   display: inline-block;
+}
+
+body .header .push-button:hover {
+  opacity: 1.0;
+}
+
+body .header .push-button:active {
+  -webkit-filter: brightness(30%);
 }
 
 body .file-panel {
