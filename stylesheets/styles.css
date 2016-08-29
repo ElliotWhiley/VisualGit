@@ -24,6 +24,10 @@ body .header p {
   display: inline-block;
 }
 
+body .header button {
+  margin-left: 40px;
+}
+
 body .header .pull-button {
   position: absolute;
   left: 60%;
