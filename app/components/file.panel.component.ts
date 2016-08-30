@@ -7,7 +7,7 @@ import { Component } from "@angular/core";
 
     <div class="modified-files-header" id="modified-files-header">
       <p class="select-all-message" id="select-all-message">Select all</p>
-      <input type="checkbox" class="select-all-checkbox" id="select-all-checkbox">
+      <input onClick="setAllCheckboxes(this);" type="checkbox" class="select-all-checkbox" id="select-all-checkbox"/>
     </div>
 
     <div class="files-changed" id="files-changed">
