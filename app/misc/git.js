@@ -45,6 +45,7 @@ function addAndCommit() {
         .then(function () {
         clearModifiedFilesList();
         clearCommitMessage();
+        clearSelectAllCheckbox();
     });
 }
 function clearModifiedFilesList() {
@@ -55,6 +56,9 @@ function clearModifiedFilesList() {
 }
 function clearCommitMessage() {
     document.getElementById('commit-message-input').value = "";
+}
+function clearSelectAllCheckbox() {
+    document.getElementById('select-all-checkbox').checked = false;
 }
 var user = "Test User";
 var email = "test@mail.com";
