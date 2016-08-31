@@ -51,7 +51,7 @@ function drawGraph() {
             selectable: true,
             selectConnectedEdges: false,
             tooltipDelay: 300,
-            zoomView: false,
+            zoomView: true,
         },
         layout: {
             randomSeed: 1,
@@ -102,8 +102,7 @@ function drawGraph() {
         },
     };
     network = new vis.Network(container, data, options);
-    var repository = "tmp";
-    getAllCommits(repository, function (commits) {
+    getAllCommits(function (commits) {
         populateCommits(commits);
     });
     network.on("doubleClick", function (callback) {

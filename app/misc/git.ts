@@ -4,14 +4,13 @@ import NodeGit, { Status } from "nodegit";
 let Git = require("nodegit");
 let fs = require("fs");
 
-let repoPath = require("path").join(__dirname, "tmp");
 let green = "#84db00";
 let repo, index, oid, remote;
 
 function addAndCommit() {
   let repository;
 
-  Git.Repository.open(repoPath)
+  Git.Repository.open(repoFullPath)
   .then(function(repository) {
     repository = repository;
     return repository.refreshIndex();
@@ -42,7 +41,7 @@ function addAndCommit() {
 }
 
 function addAndCommitHTTPS() {
-  Git.Repository.open(repoPath)
+  Git.Repository.open(repoFullPath)
 
   .then(function(repoResult) {
     repo = repoResult;
@@ -107,8 +106,8 @@ function clearCommitMessage() {
 let user = "Test User";
 let email = "test@mail.com";
 
-function getAllCommits(repoPath, callback) {
-  Git.Repository.open(repoPath)
+function getAllCommits(callback) {
+  Git.Repository.open(repoFullPath)
   .then(function(repo) {
     return repo.getMasterCommit();
   })
@@ -123,10 +122,10 @@ function getAllCommits(repoPath, callback) {
   });
 }
 
-function pullFromRemote(repoPath) {
+function pullFromRemote() {
   let repository;
   console.log("pulling from remote repo");
-  Git.Repository.open(repoPath)
+  Git.Repository.open(repoFullPath)
   .then(function(repo) {
     repository = repo;
 
@@ -148,8 +147,10 @@ function pullFromRemote(repoPath) {
   });
 }
 
-function pushToRemote(repoPath, branch) {
-  Git.Repository.open(repoPath)
+function pushToRemote() {
+  let branch = repoCurrentBranch;
+
+  Git.Repository.open(repoFullPath)
   .then(function(repo) {
     repo.getRemotes()
     .then(function(remotes) {
@@ -171,10 +172,10 @@ function pushToRemote(repoPath, branch) {
   });
 }
 
-function displayModifiedFiles(repoPath) {
+function displayModifiedFiles() {
   let modifiedFiles = [];
 
-  Git.Repository.open(repoPath)
+  Git.Repository.open(repoFullPath)
   .then(function(repo) {
     repo.getStatus().then(function(statuses) {
 
@@ -263,9 +264,7 @@ function displayModifiedFiles(repoPath) {
       }
 
       function printNewFile(filePath) {
-        let fileLocation = "./tmp/" + filePath;
-        console.log(fileLocation);
-
+        let fileLocation = require("path").join(repoFullPath, filePath);
         let lineReader = require("readline").createInterface({
           input: fs.createReadStream(fileLocation)
         });
@@ -328,5 +327,8 @@ function displayModifiedFiles(repoPath) {
         document.getElementById("diff-panel").appendChild(element);
       }
     });
+  },
+  function(err) {
+    console.log("waiting for repo to be initialised");
   });
 }

@@ -1,12 +1,11 @@
 "use strict";
 var Git = require("nodegit");
 var fs = require("fs");
-var repoPath = require("path").join(__dirname, "tmp");
 var green = "#84db00";
 var repo, index, oid, remote;
 function addAndCommit() {
     var repository;
-    Git.Repository.open(repoPath)
+    Git.Repository.open(repoFullPath)
         .then(function (repository) {
         repository = repository;
         return repository.refreshIndex();
@@ -33,7 +32,7 @@ function addAndCommit() {
     });
 }
 function addAndCommitHTTPS() {
-    Git.Repository.open(repoPath)
+    Git.Repository.open(repoFullPath)
         .then(function (repoResult) {
         repo = repoResult;
         return repo.refreshIndex();
@@ -86,8 +85,8 @@ function clearCommitMessage() {
 }
 var user = "Test User";
 var email = "test@mail.com";
-function getAllCommits(repoPath, callback) {
-    Git.Repository.open(repoPath)
+function getAllCommits(callback) {
+    Git.Repository.open(repoFullPath)
         .then(function (repo) {
         return repo.getMasterCommit();
     })
@@ -99,10 +98,10 @@ function getAllCommits(repoPath, callback) {
         history.start();
     });
 }
-function pullFromRemote(repoPath) {
+function pullFromRemote() {
     var repository;
     console.log("pulling from remote repo");
-    Git.Repository.open(repoPath)
+    Git.Repository.open(repoFullPath)
         .then(function (repo) {
         repository = repo;
         return repository.fetchAll({
@@ -120,8 +119,9 @@ function pullFromRemote(repoPath) {
         return repository.mergeBranches("master", "origin/master");
     });
 }
-function pushToRemote(repoPath, branch) {
-    Git.Repository.open(repoPath)
+function pushToRemote() {
+    var branch = repoCurrentBranch;
+    Git.Repository.open(repoFullPath)
         .then(function (repo) {
         repo.getRemotes()
             .then(function (remotes) {
@@ -139,9 +139,9 @@ function pushToRemote(repoPath, branch) {
         });
     });
 }
-function displayModifiedFiles(repoPath) {
+function displayModifiedFiles() {
     var modifiedFiles = [];
-    Git.Repository.open(repoPath)
+    Git.Repository.open(repoFullPath)
         .then(function (repo) {
         repo.getStatus().then(function (statuses) {
             statuses.forEach(addModifiedFile);
@@ -224,8 +224,7 @@ function displayModifiedFiles(repoPath) {
                 };
             }
             function printNewFile(filePath) {
-                var fileLocation = "./tmp/" + filePath;
-                console.log(fileLocation);
+                var fileLocation = require("path").join(repoFullPath, filePath);
                 var lineReader = require("readline").createInterface({
                     input: fs.createReadStream(fileLocation)
                 });
@@ -282,5 +281,7 @@ function displayModifiedFiles(repoPath) {
                 document.getElementById("diff-panel").appendChild(element);
             }
         });
+    }, function (err) {
+        console.log("waiting for repo to be initialised");
     });
 }
