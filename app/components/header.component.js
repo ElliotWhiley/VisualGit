@@ -22,7 +22,7 @@ var HeaderComponent = (function () {
     HeaderComponent = __decorate([
         core_1.Component({
             selector: "app-header",
-            template: "\n    <div class=\"header\">\n      <button (click)=\"promptUserToAddRepository()\">+</button>\n      <p class=\"repo-name\" id=\"repo-name\"></p>\n      <p class=\"repo-branch\" id=\"repo-branch\"></p>\n      <img src=\"./assets/arrow.png\" class=\"pull-button\" onclick=\"pullFromRemote('./tmp')\">\n      <img src=\"./assets/arrow.png\" class=\"push-button\" onclick=\"pushToRemote('./tmp', 'master')\">\n    </div>\n  ",
+            template: "\n    <div class=\"header\">\n      <button (click)=\"promptUserToAddRepository()\">+</button>\n      <p class=\"repo-name\" id=\"repo-name\">/ </p>\n      <p class=\"repo-branch\" id=\"repo-branch\">/ </p>\n      <img src=\"./assets/arrow.png\" class=\"pull-button\" onclick=\"pullFromRemote('./tmp')\">\n      <img src=\"./assets/arrow.png\" class=\"push-button\" onclick=\"pushToRemote('./tmp', 'master')\">\n    </div>\n  ",
             providers: [repository_service_1.RepositoryService, graph_service_1.GraphService]
         }), 
         __metadata('design:paramtypes', [])

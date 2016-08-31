@@ -18,7 +18,7 @@ function downloadRepository() {
   let repository = Git.Clone(cloneURL, localPath, options)
   .then(function(repository) {
     console.log("Repo successfully cloned");
-    //document.getElementById("repo-name").value = cloneDir;
+    document.getElementById("repo-name").innerHTML = "/" + cloneDir;
     drawGraph();
   },
   function(err) {
