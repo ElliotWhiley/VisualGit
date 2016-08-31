@@ -5,6 +5,34 @@ var repoPath = require("path").join(__dirname, "tmp");
 var green = "#84db00";
 var repo, index, oid, remote;
 function addAndCommit() {
+    var repository;
+    Git.Repository.open(repoPath)
+        .then(function (repository) {
+        repository = repository;
+        return repository.refreshIndex();
+    })
+        .then(function (indexResult) {
+        index = indexResult;
+        var filesToAdd = [];
+        var filePanel = document.getElementById('files-changed');
+        var fileElements = filePanel.childNodes;
+        for (var i = 0; i < fileElements.length; i++) {
+            var fileElementChildren = fileElements[i].childNodes;
+            if (fileElementChildren[1].checked === true) {
+                filesToAdd.push(fileElementChildren[0].innerHTML);
+            }
+        }
+        return filesToAdd;
+    })
+        .then(function (filesToAdd) {
+        var sign = Git.Signature.default(repository);
+        var commitMessage = document.getElementById('commit-message-input').value;
+        repository.createCommitOnHead(filesToAdd, sign, sign, commitMessage).then(function (oid) {
+            console.log("Commit successful: " + oid.tostrS());
+        });
+    });
+}
+function addAndCommitHTTPS() {
     Git.Repository.open(repoPath)
         .then(function (repoResult) {
         repo = repoResult;

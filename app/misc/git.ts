@@ -9,6 +9,39 @@ let green = "#84db00";
 let repo, index, oid, remote;
 
 function addAndCommit() {
+  let repository;
+
+  Git.Repository.open(repoPath)
+  .then(function(repository) {
+    repository = repository;
+    return repository.refreshIndex();
+  })
+
+  .then(function(indexResult) {
+   index = indexResult;
+   let filesToAdd = [];
+   let filePanel = document.getElementById('files-changed');
+   let fileElements = filePanel.childNodes;
+   for (let i = 0; i < fileElements.length; i++) {
+     let fileElementChildren = fileElements[i].childNodes;
+     if (fileElementChildren[1].checked === true) {
+       filesToAdd.push(fileElementChildren[0].innerHTML);
+     }
+   }
+   return filesToAdd;
+  })
+  .then(function(filesToAdd) {
+    let sign = Git.Signature.default(repository);
+    let commitMessage = document.getElementById('commit-message-input').value;
+
+    repository.createCommitOnHead(filesToAdd, sign, sign, commitMessage).then(function(oid) {
+      // Use oid
+      console.log("Commit successful: " + oid.tostrS())
+    });
+  });
+}
+
+function addAndCommitHTTPS() {
   Git.Repository.open(repoPath)
 
   .then(function(repoResult) {
