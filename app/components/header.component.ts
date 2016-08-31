@@ -7,10 +7,10 @@ import { GraphService } from "../services/graph.service";
   template: `
     <div class="header">
       <button (click)="promptUserToAddRepository()">+</button>
-      <p>{{repoName}}</p>
-      <p>{{repoBranch}}</p>
-      <img src="./assets/arrow.png" class="pull-button" onclick="pullFromRemote('./tmp')">
-      <img src="./assets/arrow.png" class="push-button" onclick="pushToRemote('./tmp', 'master')">
+      <p class="repo-name" id="repo-name">/ </p>
+      <p class="branch-name" id="branch-name">/ </p>
+      <img src="./assets/arrow.png" class="pull-button" onclick="pullFromRemote()">
+      <img src="./assets/arrow.png" class="push-button" onclick="pushToRemote()">
     </div>
   `,
   providers: [RepositoryService, GraphService]
