@@ -11,7 +11,7 @@ import { Component } from "@angular/core";
     </div>
 
     <div class="files-changed" id="files-changed">
-      <p class="modified-files-message">Your modified files will appear here</p>
+      <p class="modified-files-message" id="modified-files-message">Your modified files will appear here</p>
       <div class="file" *ngFor="let file of files">
         <p>{{file}}</p>
       </div>

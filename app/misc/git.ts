@@ -19,10 +19,10 @@ function addAndCommit() {
   .then(function(indexResult) {
     index = indexResult;
     let filesToStage = [];
-    let filePanel = document.getElementById('files-changed');
-    let fileElements = filePanel.childNodes;
+    let fileElements = document.getElementsByClassName('file');
     for (let i = 0; i < fileElements.length; i++) {
       let fileElementChildren = fileElements[i].childNodes;
+      console.log(fileElementChildren[0]);
       if (fileElementChildren[1].checked === true) {
         filesToStage.push(fileElementChildren[0].innerHTML);
       }
@@ -67,6 +67,11 @@ function clearModifiedFilesList() {
   while (filePanel.firstChild) {
     filePanel.removeChild(filePanel.firstChild);
   }
+  let filesChangedMessage = document.createElement("p");
+  filesChangedMessage.className = "modified-files-message";
+  filesChangedMessage.id = "modified-files-message";
+  filesChangedMessage.innerHTML = "Your modified files will appear here";
+  filePanel.appendChild(filesChangedMessage);
 }
 
 function clearCommitMessage() {
@@ -98,7 +103,6 @@ function getAllCommits(repoPath, callback) {
 
 function pullFromRemote(repoPath) {
   let repository;
-  console.log("pulling from remote repo");
   Git.Repository.open(repoPath)
   .then(function(repo) {
     repository = repo;
@@ -128,7 +132,6 @@ function pushToRemote(repoPath, branch) {
     .then(function(remotes) {
       repo.getRemote(remotes[0])
       .then(function(remote) {
-        console.log("pushing changes to " + branch);
         return remote.push(
           ["refs/heads/" + branch + ":refs/heads/" + branch],
           {
@@ -153,12 +156,21 @@ function displayModifiedFiles(repoPath) {
 
       statuses.forEach(addModifiedFile);
       if (modifiedFiles.length !== 0) {
-        clearModifiedFilesList();
+        let filePanelMessage = document.getElementById("modified-files-message");
+        filePanelMessage.parentNode.removeChild(filePanelMessage);
       }
       modifiedFiles.forEach(displayModifiedFile);
 
       // Add modified file to array of modified files 'modifiedFiles'
       function addModifiedFile(file) {
+        // Check if modified file is already being displayed
+        let filePaths = document.getElementsByClassName('file-path');
+        for (let i = 0; i < filePaths.length; i++) {
+          if (filePaths[i].innerHTML === file.path()) {
+            return;
+          }
+        }
+
         let path = file.path();
         let modification = calculateModification(file);
         modifiedFiles.push({
@@ -187,6 +199,7 @@ function displayModifiedFiles(repoPath) {
       // Add the modified file to the left file panel
       function displayModifiedFile(file) {
         let filePath = document.createElement("p");
+        filePath.className = "file-path";
         filePath.innerHTML = file.filePath;
         let fileElement = document.createElement("div");
         // Set how the file has been modified
@@ -224,7 +237,6 @@ function displayModifiedFiles(repoPath) {
         document.getElementById("files-changed").appendChild(fileElement);
 
         fileElement.onclick = function() {
-          console.log("Printing diff for: " + file.filePath);
           document.getElementById("diff-panel").innerHTML = "";
 
           if (fileElement.className === "file file-created") {
@@ -237,7 +249,6 @@ function displayModifiedFiles(repoPath) {
 
       function printNewFile(filePath) {
         let fileLocation = "./tmp/" + filePath;
-        console.log(fileLocation);
 
         let lineReader = require("readline").createInterface({
           input: fs.createReadStream(fileLocation)
