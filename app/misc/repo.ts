@@ -28,22 +28,23 @@ function downloadRepository() {
     refreshAll(repository);
   },
   function(err) {
-    console.log(err); // TODO show error
+    console.log(err); // TODO show error on screen
   });
 }
 
 function openRepository() {
-  let localPath = document.getElementById("repoOpen").innerHTML;
+  let localPath = document.getElementById("repoOpen").value;
   let fullLocalPath = require("path").join(__dirname, localPath);
 
-  let repository = Git.Repository.open(fullLocalPath).then(function() {
+  console.log("Trying to open repository at " + fullLocalPath);
+  Git.Repository.open(fullLocalPath).then(function(repository) {
     console.log("Repo successfully opened");
     repoFullPath = fullLocalPath;
     repoLocalPath = localPath;
     refreshAll(repository);
   },
   function(err) {
-    console.log(err); // TODO show error
+    console.log(err); // TODO show error on screen
   });
 }
 
@@ -56,8 +57,18 @@ function refreshAll(repository) {
     branch = branchParts[branchParts.length - 1];
   })
   .then(function() {
+    console.log("Updating the graph and the labels");
     drawGraph();
     document.getElementById("repo-name").innerHTML = "/" + repoLocalPath;
     document.getElementById("branch-name").innerHTML = "/" + branch;
   });
+}
+
+function updateLocalPath() {
+  let text = document.getElementById("repoClone").value;
+  let splitText = text.split(/\.|:|\//);
+  if (splitText.length >= 2) {
+    document.getElementById("repoSave").value = splitText[splitText.length - 2];
+  }
+
 }

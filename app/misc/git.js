@@ -6,8 +6,8 @@ var repo, index, oid, remote;
 function addAndCommit() {
     var repository;
     Git.Repository.open(repoFullPath)
-        .then(function (repository) {
-        repository = repository;
+        .then(function (repo) {
+        repository = repo;
         return repository.refreshIndex();
     })
         .then(function (indexResult) {
@@ -28,6 +28,7 @@ function addAndCommit() {
         var commitMessage = document.getElementById('commit-message-input').value;
         repository.createCommitOnHead(filesToAdd, sign, sign, commitMessage).then(function (oid) {
             console.log("Commit successful: " + oid.tostrS());
+            refreshAll(repository);
         });
     });
 }

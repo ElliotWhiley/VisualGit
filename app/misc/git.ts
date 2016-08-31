@@ -11,8 +11,8 @@ function addAndCommit() {
   let repository;
 
   Git.Repository.open(repoFullPath)
-  .then(function(repository) {
-    repository = repository;
+  .then(function(repo) {
+    repository = repo;
     return repository.refreshIndex();
   })
 
@@ -36,6 +36,7 @@ function addAndCommit() {
     repository.createCommitOnHead(filesToAdd, sign, sign, commitMessage).then(function(oid) {
       // Use oid
       console.log("Commit successful: " + oid.tostrS())
+      refreshAll(repository);
     });
   });
 }

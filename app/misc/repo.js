@@ -27,9 +27,10 @@ function downloadRepository() {
     });
 }
 function openRepository() {
-    var localPath = document.getElementById("repoOpen").innerHTML;
+    var localPath = document.getElementById("repoOpen").value;
     var fullLocalPath = require("path").join(__dirname, localPath);
-    var repository = Git.Repository.open(fullLocalPath).then(function () {
+    console.log("Trying to open repository at " + fullLocalPath);
+    Git.Repository.open(fullLocalPath).then(function (repository) {
         console.log("Repo successfully opened");
         repoFullPath = fullLocalPath;
         repoLocalPath = localPath;
@@ -46,8 +47,16 @@ function refreshAll(repository) {
         branch = branchParts[branchParts.length - 1];
     })
         .then(function () {
+        console.log("Updating the graph and the labels");
         drawGraph();
         document.getElementById("repo-name").innerHTML = "/" + repoLocalPath;
         document.getElementById("branch-name").innerHTML = "/" + branch;
     });
+}
+function updateLocalPath() {
+    var text = document.getElementById("repoClone").value;
+    var splitText = text.split(/\.|:|\//);
+    if (splitText.length >= 2) {
+        document.getElementById("repoSave").value = splitText[splitText.length - 2];
+    }
 }

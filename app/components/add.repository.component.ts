@@ -13,7 +13,7 @@ import { Component } from "@angular/core";
           <p>URL to clone from</p>
         </div>
         <div class=right>
-        <input type="text" name="repositoryRemote" size="50" id="repoClone"/>
+        <input type="text"oninput="updateLocalPath()" name="repositoryRemote" size="50" id="repoClone"/>
         </div>
       </div>
 
