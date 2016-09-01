@@ -20,7 +20,7 @@ function addAndCommit() {
    index = indexResult;
    let filesToAdd = [];
    let filePanel = document.getElementById('files-changed');
-   let fileElements = filePanel.childNodes;
+   let fileElements = document.getElementsByClassName('file');
    for (let i = 0; i < fileElements.length; i++) {
      let fileElementChildren = fileElements[i].childNodes;
      if (fileElementChildren[1].checked === true) {
@@ -37,6 +37,9 @@ function addAndCommit() {
       // Use oid
       console.log("Commit successful: " + oid.tostrS())
       refreshAll(repository);
+    },
+    function(err) {
+      console.log(err);
     });
   });
 }

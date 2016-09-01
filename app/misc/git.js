@@ -14,7 +14,7 @@ function addAndCommit() {
         index = indexResult;
         var filesToAdd = [];
         var filePanel = document.getElementById('files-changed');
-        var fileElements = filePanel.childNodes;
+        var fileElements = document.getElementsByClassName('file');
         for (var i = 0; i < fileElements.length; i++) {
             var fileElementChildren = fileElements[i].childNodes;
             if (fileElementChildren[1].checked === true) {
@@ -29,6 +29,8 @@ function addAndCommit() {
         repository.createCommitOnHead(filesToAdd, sign, sign, commitMessage).then(function (oid) {
             console.log("Commit successful: " + oid.tostrS());
             refreshAll(repository);
+        }, function (err) {
+            console.log(err);
         });
     });
 }
