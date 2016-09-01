@@ -154,8 +154,10 @@ function displayModifiedFiles() {
         repo.getStatus().then(function (statuses) {
             statuses.forEach(addModifiedFile);
             if (modifiedFiles.length !== 0) {
-                var filePanelMessage = document.getElementById("modified-files-message");
-                filePanelMessage.parentNode.removeChild(filePanelMessage);
+                if (document.getElementById("modified-files-message") !== null) {
+                    var filePanelMessage = document.getElementById("modified-files-message");
+                    filePanelMessage.parentNode.removeChild(filePanelMessage);
+                }
             }
             modifiedFiles.forEach(displayModifiedFile);
             function addModifiedFile(file) {

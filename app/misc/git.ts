@@ -191,8 +191,10 @@ function displayModifiedFiles() {
 
       statuses.forEach(addModifiedFile);
       if (modifiedFiles.length !== 0) {
-        let filePanelMessage = document.getElementById("modified-files-message");
-        filePanelMessage.parentNode.removeChild(filePanelMessage);
+        if (document.getElementById("modified-files-message") !== null) {
+          let filePanelMessage = document.getElementById("modified-files-message");
+          filePanelMessage.parentNode.removeChild(filePanelMessage);
+        }
       }
       modifiedFiles.forEach(displayModifiedFile);
 
