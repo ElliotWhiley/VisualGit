@@ -61,7 +61,7 @@ function drawGraph() {
       selectable: true,
       selectConnectedEdges: false,
       tooltipDelay: 300,
-      zoomView: false,
+      zoomView: true,
     },
 
     layout: {
@@ -118,8 +118,7 @@ function drawGraph() {
 
   network = new vis.Network(container, data, options);
 
-  let repository = "tmp";
-  getAllCommits(repository, function(commits) {
+  getAllCommits(function(commits) {
     populateCommits(commits);
   });
 

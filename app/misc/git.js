@@ -1,11 +1,39 @@
 "use strict";
 var Git = require("nodegit");
 var fs = require("fs");
-var repoPath = require("path").join(__dirname, "tmp");
 var green = "#84db00";
 var repo, index, oid, remote;
 function addAndCommit() {
-    Git.Repository.open(repoPath)
+    var repository;
+    Git.Repository.open(repoFullPath)
+        .then(function (repo) {
+        repository = repo;
+        return repository.refreshIndex();
+    })
+        .then(function (indexResult) {
+        index = indexResult;
+        var filesToAdd = [];
+        var filePanel = document.getElementById('files-changed');
+        var fileElements = filePanel.childNodes;
+        for (var i = 0; i < fileElements.length; i++) {
+            var fileElementChildren = fileElements[i].childNodes;
+            if (fileElementChildren[1].checked === true) {
+                filesToAdd.push(fileElementChildren[0].innerHTML);
+            }
+        }
+        return filesToAdd;
+    })
+        .then(function (filesToAdd) {
+        var sign = Git.Signature.default(repository);
+        var commitMessage = document.getElementById('commit-message-input').value;
+        repository.createCommitOnHead(filesToAdd, sign, sign, commitMessage).then(function (oid) {
+            console.log("Commit successful: " + oid.tostrS());
+            refreshAll(repository);
+        });
+    });
+}
+function addAndCommitHTTPS() {
+    Git.Repository.open(repoFullPath)
         .then(function (repoResult) {
         repo = repoResult;
         return repo.refreshIndex();
@@ -67,8 +95,8 @@ function clearSelectAllCheckbox() {
 }
 var user = "Test User";
 var email = "test@mail.com";
-function getAllCommits(repoPath, callback) {
-    Git.Repository.open(repoPath)
+function getAllCommits(callback) {
+    Git.Repository.open(repoFullPath)
         .then(function (repo) {
         return repo.getMasterCommit();
     })
@@ -80,9 +108,9 @@ function getAllCommits(repoPath, callback) {
         history.start();
     });
 }
-function pullFromRemote(repoPath) {
+function pullFromRemote() {
     var repository;
-    Git.Repository.open(repoPath)
+    Git.Repository.open(repoFullPath)
         .then(function (repo) {
         repository = repo;
         return repository.fetchAll({
@@ -100,8 +128,9 @@ function pullFromRemote(repoPath) {
         return repository.mergeBranches("master", "origin/master");
     });
 }
-function pushToRemote(repoPath, branch) {
-    Git.Repository.open(repoPath)
+function pushToRemote() {
+    var branch = repoCurrentBranch;
+    Git.Repository.open(repoFullPath)
         .then(function (repo) {
         repo.getRemotes()
             .then(function (remotes) {
@@ -118,9 +147,9 @@ function pushToRemote(repoPath, branch) {
         });
     });
 }
-function displayModifiedFiles(repoPath) {
+function displayModifiedFiles() {
     var modifiedFiles = [];
-    Git.Repository.open(repoPath)
+    Git.Repository.open(repoFullPath)
         .then(function (repo) {
         repo.getStatus().then(function (statuses) {
             statuses.forEach(addModifiedFile);
@@ -211,7 +240,7 @@ function displayModifiedFiles(repoPath) {
                 };
             }
             function printNewFile(filePath) {
-                var fileLocation = "./tmp/" + filePath;
+                var fileLocation = require("path").join(repoFullPath, filePath);
                 var lineReader = require("readline").createInterface({
                     input: fs.createReadStream(fileLocation)
                 });
@@ -268,5 +297,7 @@ function displayModifiedFiles(repoPath) {
                 document.getElementById("diff-panel-body").appendChild(element);
             }
         });
+    }, function (err) {
+        console.log("waiting for repo to be initialised");
     });
 }

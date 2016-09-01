@@ -4,12 +4,45 @@ import NodeGit, { Status } from "nodegit";
 let Git = require("nodegit");
 let fs = require("fs");
 
-let repoPath = require("path").join(__dirname, "tmp");
 let green = "#84db00";
 let repo, index, oid, remote;
 
 function addAndCommit() {
-  Git.Repository.open(repoPath)
+  let repository;
+
+  Git.Repository.open(repoFullPath)
+  .then(function(repo) {
+    repository = repo;
+    return repository.refreshIndex();
+  })
+
+  .then(function(indexResult) {
+   index = indexResult;
+   let filesToAdd = [];
+   let filePanel = document.getElementById('files-changed');
+   let fileElements = filePanel.childNodes;
+   for (let i = 0; i < fileElements.length; i++) {
+     let fileElementChildren = fileElements[i].childNodes;
+     if (fileElementChildren[1].checked === true) {
+       filesToAdd.push(fileElementChildren[0].innerHTML);
+     }
+   }
+   return filesToAdd;
+  })
+  .then(function(filesToAdd) {
+    let sign = Git.Signature.default(repository);
+    let commitMessage = document.getElementById('commit-message-input').value;
+
+    repository.createCommitOnHead(filesToAdd, sign, sign, commitMessage).then(function(oid) {
+      // Use oid
+      console.log("Commit successful: " + oid.tostrS())
+      refreshAll(repository);
+    });
+  });
+}
+
+function addAndCommitHTTPS() {
+  Git.Repository.open(repoFullPath)
 
   .then(function(repoResult) {
     repo = repoResult;
@@ -85,8 +118,8 @@ function clearSelectAllCheckbox() {
 let user = "Test User";
 let email = "test@mail.com";
 
-function getAllCommits(repoPath, callback) {
-  Git.Repository.open(repoPath)
+function getAllCommits(callback) {
+  Git.Repository.open(repoFullPath)
   .then(function(repo) {
     return repo.getMasterCommit();
   })
@@ -101,9 +134,9 @@ function getAllCommits(repoPath, callback) {
   });
 }
 
-function pullFromRemote(repoPath) {
+function pullFromRemote() {
   let repository;
-  Git.Repository.open(repoPath)
+  Git.Repository.open(repoFullPath)
   .then(function(repo) {
     repository = repo;
 
@@ -125,8 +158,10 @@ function pullFromRemote(repoPath) {
   });
 }
 
-function pushToRemote(repoPath, branch) {
-  Git.Repository.open(repoPath)
+function pushToRemote() {
+  let branch = repoCurrentBranch;
+
+  Git.Repository.open(repoFullPath)
   .then(function(repo) {
     repo.getRemotes()
     .then(function(remotes) {
@@ -147,10 +182,10 @@ function pushToRemote(repoPath, branch) {
   });
 }
 
-function displayModifiedFiles(repoPath) {
+function displayModifiedFiles() {
   let modifiedFiles = [];
 
-  Git.Repository.open(repoPath)
+  Git.Repository.open(repoFullPath)
   .then(function(repo) {
     repo.getStatus().then(function(statuses) {
 
@@ -249,8 +284,7 @@ function displayModifiedFiles(repoPath) {
       }
 
       function printNewFile(filePath) {
-        let fileLocation = "./tmp/" + filePath;
-
+        let fileLocation = require("path").join(repoFullPath, filePath);
         let lineReader = require("readline").createInterface({
           input: fs.createReadStream(fileLocation)
         });
@@ -313,5 +347,8 @@ function displayModifiedFiles(repoPath) {
         document.getElementById("diff-panel-body").appendChild(element);
       }
     });
+  },
+  function(err) {
+    console.log("waiting for repo to be initialised");
   });
 }

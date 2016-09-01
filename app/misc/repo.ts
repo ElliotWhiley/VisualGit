@@ -1,49 +1,74 @@
+let Git = require("nodegit");
+
+let repoFullPath;
+let repoLocalPath;
+let repoCurrentBranch = 'master';
+
 function downloadRepository() {
-  // Require in NodeGit, since we want to use the local copy, we"re using a
-  // relative path.  In your project, you will use:
-  //
-  let NodeGit = require("nodegit");
+  let cloneURL = document.getElementById("repoClone").value;
+  let localPath = document.getElementById("repoSave").value;
+  let fullLocalPath = require("path").join(__dirname, localPath);
+  let options = {};
 
-  // Using the `clone` method from the `Git.Clone` module, bring down the NodeGit
-  // test repository from GitHub.
-  let repositoryUrl = document.getElementById("repository-url").value;
-  let cloneURL = repositoryUrl;
-
-  // Ensure that the `tmp` directory is local to this file and not the CWD.
-  let localPath = require("path").join(__dirname, "tmp");
-
-  // Simple object to store clone options.
-  let cloneOptions = {};
-
-  // This is a required callback for OS X machines.  There is a known issue
-  // with libgit2 being able to verify certificates from GitHub.
-  cloneOptions.fetchOpts = {
+  options.fetchOpts = {
     callbacks: {
-      certificateCheck: function() { return 1; }
+      certificateCheck: function() { return 1; },
+      credentials: function(url, userName) {
+        return Git.Cred.sshKeyFromAgent(userName);
+      }
     }
   };
 
-  // Invoke the clone operation and store the returned Promise.
-  let cloneRepository = NodeGit.Clone(cloneURL, localPath, cloneOptions);
+  console.log("cloning into " + fullLocalPath);
+  let repository = Git.Clone(cloneURL, fullLocalPath, options)
+  .then(function(repository) {
+    console.log("Repo successfully cloned");
+    repoFullPath = fullLocalPath;
+    repoLocalPath = localPath;
+    refreshAll(repository);
+  },
+  function(err) {
+    console.log(err); // TODO show error on screen
+  });
+}
 
-  // If the repository already exists, the clone above will fail.  You can simply
-  // open the repository in this case to continue execution.
-  let errorAndAttemptOpen = function() {
-    return NodeGit.Repository.open(localPath);
-  };
+function openRepository() {
+  let localPath = document.getElementById("repoOpen").value;
+  let fullLocalPath = require("path").join(__dirname, localPath);
 
-  // Once the repository has been cloned or opened, you can work with a returned
-  // `Git.Repository` instance.
-  cloneRepository.catch(errorAndAttemptOpen)
-    .then(function(repository) {
+  console.log("Trying to open repository at " + fullLocalPath);
+  Git.Repository.open(fullLocalPath).then(function(repository) {
+    console.log("Repo successfully opened");
+    repoFullPath = fullLocalPath;
+    repoLocalPath = localPath;
+    refreshAll(repository);
+  },
+  function(err) {
+    console.log(err); // TODO show error on screen
+  });
+}
 
-      drawGraph();
+function refreshAll(repository) {
+  let branch;
 
-      // Access any repository methods here.
-      return repository.getReferenceNames;
-    })
-    .then(function(referenceNames) {
-    });
+  repository.getCurrentBranch()
+  .then(function(reference) {
+    let branchParts = reference.name().split("/");
+    branch = branchParts[branchParts.length - 1];
+  })
+  .then(function() {
+    console.log("Updating the graph and the labels");
+    drawGraph();
+    document.getElementById("repo-name").innerHTML = "/" + repoLocalPath;
+    document.getElementById("branch-name").innerHTML = "/" + branch;
+  });
+}
 
+function updateLocalPath() {
+  let text = document.getElementById("repoClone").value;
+  let splitText = text.split(/\.|:|\//);
+  if (splitText.length >= 2) {
+    document.getElementById("repoSave").value = splitText[splitText.length - 2];
+  }
 
 }
