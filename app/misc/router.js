@@ -26,3 +26,11 @@ function hideGraphPanel() {
 function hideAddRepositoryPanel() {
     document.getElementById("add-repository-panel").style.zIndex = "-10";
 }
+function displayDiffPanel() {
+    document.getElementById("graph-panel").style.width = "50%";
+    document.getElementById("diff-panel").style.width = "50%";
+}
+function hideDiffPanel() {
+    document.getElementById("diff-panel").style.width = "0";
+    document.getElementById("graph-panel").style.width = "100%";
+}

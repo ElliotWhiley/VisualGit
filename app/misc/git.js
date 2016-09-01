@@ -41,10 +41,10 @@ function addAndCommitHTTPS() {
         .then(function (indexResult) {
         index = indexResult;
         var filesToStage = [];
-        var filePanel = document.getElementById('files-changed');
-        var fileElements = filePanel.childNodes;
+        var fileElements = document.getElementsByClassName('file');
         for (var i = 0; i < fileElements.length; i++) {
             var fileElementChildren = fileElements[i].childNodes;
+            console.log(fileElementChildren[0]);
             if (fileElementChildren[1].checked === true) {
                 filesToStage.push(fileElementChildren[0].innerHTML);
             }
@@ -73,6 +73,7 @@ function addAndCommitHTTPS() {
         .then(function () {
         clearModifiedFilesList();
         clearCommitMessage();
+        clearSelectAllCheckbox();
     });
 }
 function clearModifiedFilesList() {
@@ -80,9 +81,17 @@ function clearModifiedFilesList() {
     while (filePanel.firstChild) {
         filePanel.removeChild(filePanel.firstChild);
     }
+    var filesChangedMessage = document.createElement("p");
+    filesChangedMessage.className = "modified-files-message";
+    filesChangedMessage.id = "modified-files-message";
+    filesChangedMessage.innerHTML = "Your modified files will appear here";
+    filePanel.appendChild(filesChangedMessage);
 }
 function clearCommitMessage() {
     document.getElementById('commit-message-input').value = "";
+}
+function clearSelectAllCheckbox() {
+    document.getElementById('select-all-checkbox').checked = false;
 }
 var user = "Test User";
 var email = "test@mail.com";
@@ -101,7 +110,6 @@ function getAllCommits(callback) {
 }
 function pullFromRemote() {
     var repository;
-    console.log("pulling from remote repo");
     Git.Repository.open(repoFullPath)
         .then(function (repo) {
         repository = repo;
@@ -128,7 +136,6 @@ function pushToRemote() {
             .then(function (remotes) {
             repo.getRemote(remotes[0])
                 .then(function (remote) {
-                console.log("pushing changes to " + branch);
                 return remote.push(["refs/heads/" + branch + ":refs/heads/" + branch], {
                     callbacks: {
                         credentials: function (url, userName) {
@@ -147,10 +154,17 @@ function displayModifiedFiles() {
         repo.getStatus().then(function (statuses) {
             statuses.forEach(addModifiedFile);
             if (modifiedFiles.length !== 0) {
-                clearModifiedFilesList();
+                var filePanelMessage = document.getElementById("modified-files-message");
+                filePanelMessage.parentNode.removeChild(filePanelMessage);
             }
             modifiedFiles.forEach(displayModifiedFile);
             function addModifiedFile(file) {
+                var filePaths = document.getElementsByClassName('file-path');
+                for (var i = 0; i < filePaths.length; i++) {
+                    if (filePaths[i].innerHTML === file.path()) {
+                        return;
+                    }
+                }
                 var path = file.path();
                 var modification = calculateModification(file);
                 modifiedFiles.push({
@@ -180,6 +194,7 @@ function displayModifiedFiles() {
             }
             function displayModifiedFile(file) {
                 var filePath = document.createElement("p");
+                filePath.className = "file-path";
                 filePath.innerHTML = file.filePath;
                 var fileElement = document.createElement("div");
                 if (file.fileModification == "NEW") {
@@ -214,8 +229,8 @@ function displayModifiedFiles() {
                 });
                 document.getElementById("files-changed").appendChild(fileElement);
                 fileElement.onclick = function () {
-                    console.log("Printing diff for: " + file.filePath);
-                    document.getElementById("diff-panel").innerHTML = "";
+                    displayDiffPanel();
+                    document.getElementById("diff-panel-body").innerHTML = "";
                     if (fileElement.className === "file file-created") {
                         printNewFile(file.filePath);
                     }
@@ -273,13 +288,13 @@ function displayModifiedFiles() {
                     element.style.backgroundColor = "red";
                 }
                 element.innerHTML = line;
-                document.getElementById("diff-panel").appendChild(element);
+                document.getElementById("diff-panel-body").appendChild(element);
             }
             function formatNewFileLine(text) {
                 var element = document.createElement("div");
                 element.style.backgroundColor = green;
                 element.innerHTML = text;
-                document.getElementById("diff-panel").appendChild(element);
+                document.getElementById("diff-panel-body").appendChild(element);
             }
         });
     }, function (err) {
