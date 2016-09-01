@@ -39,7 +39,11 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('commit-button').addEventListener("click", function() {
       addAndCommit();
     });
-  }, 5000);
+    // Add click event to minimise diff panel
+    document.getElementById('diff-panel-minimise').addEventListener("click", function () {
+      hideDiffPanel();
+    });
+  }, 3000);
 
   // Update modified files on left file panel every X seconds
   setInterval(function() {

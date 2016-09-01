@@ -200,7 +200,8 @@ function displayModifiedFiles(repoPath) {
                 });
                 document.getElementById("files-changed").appendChild(fileElement);
                 fileElement.onclick = function () {
-                    document.getElementById("diff-panel").innerHTML = "";
+                    displayDiffPanel();
+                    document.getElementById("diff-panel-body").innerHTML = "";
                     if (fileElement.className === "file file-created") {
                         printNewFile(file.filePath);
                     }
@@ -258,13 +259,13 @@ function displayModifiedFiles(repoPath) {
                     element.style.backgroundColor = "red";
                 }
                 element.innerHTML = line;
-                document.getElementById("diff-panel").appendChild(element);
+                document.getElementById("diff-panel-body").appendChild(element);
             }
             function formatNewFileLine(text) {
                 var element = document.createElement("div");
                 element.style.backgroundColor = green;
                 element.innerHTML = text;
-                document.getElementById("diff-panel").appendChild(element);
+                document.getElementById("diff-panel-body").appendChild(element);
             }
         });
     });
