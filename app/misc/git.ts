@@ -11,45 +11,9 @@ function addAndCommit() {
   let repository;
 
   Git.Repository.open(repoFullPath)
-  .then(function(repo) {
-    repository = repo;
-    return repository.refreshIndex();
-  })
-
-  .then(function(indexResult) {
-   index = indexResult;
-   let filesToAdd = [];
-   let filePanel = document.getElementById('files-changed');
-   let fileElements = document.getElementsByClassName('file');
-   for (let i = 0; i < fileElements.length; i++) {
-     let fileElementChildren = fileElements[i].childNodes;
-     if (fileElementChildren[1].checked === true) {
-       filesToAdd.push(fileElementChildren[0].innerHTML);
-     }
-   }
-   return filesToAdd;
-  })
-  .then(function(filesToAdd) {
-    let sign = Git.Signature.default(repository);
-    let commitMessage = document.getElementById('commit-message-input').value;
-
-    repository.createCommitOnHead(filesToAdd, sign, sign, commitMessage).then(function(oid) {
-      // Use oid
-      console.log("Commit successful: " + oid.tostrS())
-      refreshAll(repository);
-    },
-    function(err) {
-      console.log(err);
-    });
-  });
-}
-
-function addAndCommitHTTPS() {
-  Git.Repository.open(repoFullPath)
-
   .then(function(repoResult) {
-    repo = repoResult;
-     return repo.refreshIndex();
+    repository = repoResult;
+     return repository.refreshIndex();
   })
 
   .then(function(indexResult) {
@@ -58,7 +22,6 @@ function addAndCommitHTTPS() {
     let fileElements = document.getElementsByClassName('file');
     for (let i = 0; i < fileElements.length; i++) {
       let fileElementChildren = fileElements[i].childNodes;
-      console.log(fileElementChildren[0]);
       if (fileElementChildren[1].checked === true) {
         filesToStage.push(fileElementChildren[0].innerHTML);
       }
@@ -76,24 +39,26 @@ function addAndCommitHTTPS() {
 
   .then(function(oidResult) {
     oid = oidResult;
-    return Git.Reference.nameToId(repo, "HEAD");
+    return Git.Reference.nameToId(repository, "HEAD");
   })
 
   .then(function(head) {
-    return repo.getCommit(head);
+    return repository.getCommit(head);
   })
 
   .then(function(parent) {
-    let author = Git.Signature.now("EdMinstrateur", "elliot.w@hotmail.com");
-    let committer = Git.Signature.now("EdMinstrateur", "elliot.w@hotmail.com");
+    let sign = Git.Signature.default(repository);
     let commitMessage = document.getElementById('commit-message-input').value;
-    return repo.createCommit("HEAD", author, committer, commitMessage, oid, [parent]);
-  })
 
-  .then(function() {
+    return repository.createCommit("HEAD", sign, sign, commitMessage, oid, [parent]);
+  })
+  .then(function(oid) {
+    console.log("Commit successful: " + oid.tostrS())
+
     clearModifiedFilesList();
     clearCommitMessage();
     clearSelectAllCheckbox();
+    refreshAll(repository);
   });
 }
 
@@ -118,9 +83,6 @@ function clearSelectAllCheckbox() {
   document.getElementById('select-all-checkbox').checked = false;
 }
 
-let user = "Test User";
-let email = "test@mail.com";
-
 function getAllCommits(callback) {
   Git.Repository.open(repoFullPath)
   .then(function(repo) {
@@ -142,6 +104,7 @@ function pullFromRemote() {
   Git.Repository.open(repoFullPath)
   .then(function(repo) {
     repository = repo;
+    console.log("pulling changes from remote");
 
     return repository.fetchAll({
       callbacks: {
@@ -157,6 +120,7 @@ function pullFromRemote() {
   // Now that we're finished fetching, go ahead and merge our local branch
   // with the new one
   .then(function() {
+    console.log("Pull successful")
     return repository.mergeBranches("master", "origin/master");
   });
 }
@@ -166,6 +130,7 @@ function pushToRemote() {
 
   Git.Repository.open(repoFullPath)
   .then(function(repo) {
+    console.log("Pushing changes to remote")
     repo.getRemotes()
     .then(function(remotes) {
       repo.getRemote(remotes[0])
@@ -180,6 +145,9 @@ function pushToRemote() {
             }
           }
         );
+      })
+      .then(function() {
+        console.log("Push successful");
       });
     });
   });
