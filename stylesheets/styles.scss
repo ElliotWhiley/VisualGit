@@ -210,7 +210,7 @@ body {
         height: 100%;
         float: left;
         background-color: $white;
-        overflow: scroll;
+        overflow-y: scroll;
       }
 
       .diff-panel-minimise {

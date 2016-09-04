@@ -203,7 +203,7 @@ body .body-panel .diff-panel .diff-panel-body {
   height: 100%;
   float: left;
   background-color: #fff;
-  overflow: scroll;
+  overflow-y: scroll;
 }
 
 body .body-panel .diff-panel .diff-panel-minimise {
