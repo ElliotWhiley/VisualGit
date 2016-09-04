@@ -11,6 +11,13 @@ import { GraphService } from "../services/graph.service";
       <p class="branch-name" id="branch-name">/ </p>
       <img src="./assets/arrow.png" class="pull-button" onclick="pullFromRemote()">
       <img src="./assets/arrow.png" class="push-button" onclick="pushToRemote()">
+
+      <div id="modal" class="modal">
+        <div class="modal-content">
+          <span class="close">x</span>
+          <p id="modal-text-box">unset</p>
+        </div>
+      </div>
     </div>
   `,
   providers: [RepositoryService, GraphService]

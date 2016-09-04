@@ -83,7 +83,8 @@ function pullFromRemote() {
     Git.Repository.open(repoFullPath)
         .then(function (repo) {
         repository = repo;
-        console.log("pulling changes from remote");
+        console.log("Pulling changes from remote...");
+        displayModal("Pulling new changes from the remote repository");
         return repository.fetchAll({
             callbacks: {
                 credentials: function (url, userName) {
@@ -97,6 +98,7 @@ function pullFromRemote() {
     })
         .then(function () {
         console.log("Pull successful");
+        updateModalText("Pull successful");
         return repository.mergeBranches("master", "origin/master");
     });
 }
@@ -105,6 +107,7 @@ function pushToRemote() {
     Git.Repository.open(repoFullPath)
         .then(function (repo) {
         console.log("Pushing changes to remote");
+        displayModal("Pushing changes to remote...");
         repo.getRemotes()
             .then(function (remotes) {
             repo.getRemote(remotes[0])
@@ -119,6 +122,7 @@ function pushToRemote() {
             })
                 .then(function () {
                 console.log("Push successful");
+                updateModalText("Push successful");
             });
         });
     });

@@ -14,6 +14,61 @@ body .header {
   height: 10vh;
   background-color: #282828;
   border-bottom: 1px solid #181818;
+  /* The Modal (background) */
+  /* Modal Content/Box */
+  /* The Close Button */
+}
+
+body .header .modal {
+  display: none;
+  /* Hidden by default */
+  position: fixed;
+  /* Stay in place */
+  z-index: 1;
+  /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%;
+  /* Full width */
+  height: 100%;
+  /* Full height */
+  overflow: auto;
+  /* Enable scroll if needed */
+  background-color: black;
+  /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.4);
+  /* Black w/ opacity */
+}
+
+body .header .modal-content {
+  background-color: #282828;
+  margin: 15% auto;
+  /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 40%;
+  /* Could be more or less, depending on screen size */
+}
+
+body .header .modal-content p {
+  font-size: 16px;
+  line-height: 130%;
+  padding-left: 0px;
+  display: inline-block;
+}
+
+body .header .close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+body .header .close:hover,
+body .header .close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
 }
 
 body .header p {
