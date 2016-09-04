@@ -124,7 +124,7 @@ body .header .push-button:active {
 
 body .file-panel {
   width: 20%;
-  height: 80vh;
+  height: 75vh;
   background-color: #282828;
   float: left;
 }
@@ -227,7 +227,7 @@ body .body-panel .graph-panel {
 
 body .body-panel .graph-panel .network {
   width: 100%;
-  height: 80vh;
+  height: 75vh;
   margin: 0;
   padding: 0;
   background-color: #181818;
@@ -235,7 +235,7 @@ body .body-panel .graph-panel .network {
 
 body .add-repository-panel {
   position: absolute;
-  height: 80vh;
+  height: 75vh;
   width: 100%;
   background-color: #181818;
   padding-left: 110px;
@@ -307,11 +307,12 @@ body .add-repository-panel .right .button {
 
 body .footer {
   width: 100%;
-  height: 10vh;
+  height: 15vh;
   background-color: #282828;
   border-top: 1px solid #181818;
   position: fixed;
   bottom: 0;
+  overflow-y: scroll;
 }
 
 body .footer p {

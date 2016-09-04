@@ -119,7 +119,7 @@ body {
 
   .file-panel {
     width: 20%;
-    height: 80vh;
+    height: 75vh;
     background-color: $dark-grey;
     float: left;
 
@@ -235,7 +235,7 @@ body {
 
       .network {
         width: 100%;
-        height: 80vh;
+        height: 75vh;
         margin: 0;
         padding: 0;
         background-color: $darker-grey;
@@ -245,7 +245,7 @@ body {
 
   .add-repository-panel {
     position: absolute;
-    height: 80vh;
+    height: 75vh;
     width: 100%;
     background-color: $darker-grey;
     padding-left: 110px;
@@ -317,11 +317,12 @@ body {
 
   .footer {
     width: 100%;
-    height: 10vh;
+    height: 15vh;
     background-color: $dark-grey;
     border-top: 1px solid $darker-grey;
     position: fixed;
     bottom: 0;
+    overflow-y: scroll;
 
     p {
       margin: 0;
