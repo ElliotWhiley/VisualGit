@@ -8,6 +8,12 @@ function switchToAddRepositoryPanel() {
     hideGraphPanel();
     displayAddRepositoryPanel();
 }
+function displayMinimisePanel() {
+    document.getElementById("diff-panel-minimise").style.visibility = "visible";
+}
+function hideMinimisePanel() {
+    document.getElementById("diff-panel-minimise").style.visibility = "hidden";
+}
 function displayFilePanel() {
     document.getElementById("file-panel").style.zIndex = "10";
 }
@@ -29,8 +35,10 @@ function hideAddRepositoryPanel() {
 function displayDiffPanel() {
     document.getElementById("graph-panel").style.width = "50%";
     document.getElementById("diff-panel").style.width = "50%";
+    displayMinimisePanel();
 }
 function hideDiffPanel() {
     document.getElementById("diff-panel").style.width = "0";
     document.getElementById("graph-panel").style.width = "100%";
+    hideMinimisePanel();
 }
