@@ -13,7 +13,7 @@ import { Component } from "@angular/core";
           <p>URL to clone from</p>
         </div>
         <div class=right>
-        <input type="text"oninput="updateLocalPath()" name="repositoryRemote" size="50" id="repoClone"/>
+        <input type="text" oninput="updateLocalPath()" name="repositoryRemote" size="50" id="repoClone" placeholder="https://github.com/user/repository.git"/>
         </div>
       </div>
 
@@ -23,13 +23,13 @@ import { Component } from "@angular/core";
         </div>
         <div class=right>
           <input type="text" name="repositoryLocal" size="50" id="repoSave"/>
-          <button (click)="addRepository()">Clone</button>
+          <button class="button-clone" (click)="addRepository()">Clone</button>
         </div>
       </div>
 
 
       <div class=title>
-        <h1>Open local repository</h1>
+        <h1 class="open-local-repo">Open local repository</h1>
       </div>
 
       <div class=block>
@@ -38,7 +38,7 @@ import { Component } from "@angular/core";
         </div>
         <div class=right>
           <input type="text" name="repositoryLocal" size="50" id="repoOpen"/>
-          <button (click)="openRepository()">Open</button>
+          <button class="button-open" (click)="openRepository()">Open</button>
         </div>
       </div>
     </div>
