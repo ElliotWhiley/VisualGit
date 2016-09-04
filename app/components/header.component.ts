@@ -6,11 +6,11 @@ import { GraphService } from "../services/graph.service";
   selector: "app-header",
   template: `
     <div class="header">
-      <button (click)="promptUserToAddRepository()">+</button>
+      <button (click)="promptUserToAddRepository()" title="Add Repository">+</button>
       <p class="repo-name" id="repo-name">/ </p>
       <p class="branch-name" id="branch-name">/ </p>
-      <img src="./assets/arrow.png" class="pull-button" onclick="pullFromRemote()">
-      <img src="./assets/arrow.png" class="push-button" onclick="pushToRemote()">
+      <img src="./assets/arrow.png" class="pull-button" onclick="pullFromRemote()" title="Pull">
+      <img src="./assets/arrow.png" class="push-button" onclick="pushToRemote()" title="Push">
 
       <div id="modal" class="modal">
         <div class="modal-content">
