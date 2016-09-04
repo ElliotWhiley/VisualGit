@@ -245,7 +245,7 @@ function displayModifiedFiles() {
                                             var newFilePath = patch.newFile().path();
                                             if (newFilePath === filePath) {
                                                 lines.forEach(function (line) {
-                                                    callback(String.fromCharCode(line.origin()) + line.content().trim());
+                                                    callback(String.fromCharCode(line.origin()) + line.content());
                                                 });
                                             }
                                         });
@@ -260,11 +260,13 @@ function displayModifiedFiles() {
                 var element = document.createElement("div");
                 if (line.charAt(0) === "+") {
                     element.style.backgroundColor = "#84db00";
+                    line = line.slice(1, line.length);
                 }
                 else if (line.charAt(0) === "-") {
                     element.style.backgroundColor = "#ff2448";
+                    line = line.slice(1, line.length);
                 }
-                element.innerHTML = line;
+                element.innerText = line;
                 document.getElementById("diff-panel-body").appendChild(element);
             }
             function formatNewFileLine(text) {

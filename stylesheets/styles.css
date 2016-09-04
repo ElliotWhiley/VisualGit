@@ -234,6 +234,8 @@ body .body-panel .diff-panel .diff-panel-body {
 
 body .body-panel .diff-panel .diff-panel-body div {
   padding: 1px 5px 1px 5px;
+  white-space: pre;
+  font-family: monospace;
 }
 
 body .body-panel .diff-panel .diff-panel-minimise {
