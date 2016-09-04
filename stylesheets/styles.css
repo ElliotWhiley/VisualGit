@@ -83,6 +83,11 @@ body .header .add-repository-button {
   margin-left: 40px;
   vertical-align: middle;
   margin-bottom: 10px;
+  opacity: 0.7;
+}
+
+body .header .add-repository-button:hover {
+  opacity: 1;
 }
 
 body .header .pull-button {
@@ -142,10 +147,6 @@ body .file-panel .files-changed .modified-files-message {
   padding: 20px;
 }
 
-body .file-panel .files-changed :hover {
-  opacity: 0.8;
-}
-
 body .file-panel .files-changed .file {
   width: 99%;
   height: 10%;
@@ -167,6 +168,10 @@ body .file-panel .files-changed .file p {
 
 body .file-panel .files-changed .file input {
   vertical-align: middle;
+}
+
+body .file-panel .files-changed .file:hover {
+  opacity: 0.8;
 }
 
 body .file-panel .commit-panel .commit-message-input {
