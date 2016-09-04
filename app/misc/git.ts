@@ -55,6 +55,7 @@ function addAndCommit() {
   .then(function(oid) {
     console.log("Commit successful: " + oid.tostrS())
 
+    hideDiffPanel();
     clearModifiedFilesList();
     clearCommitMessage();
     clearSelectAllCheckbox();
