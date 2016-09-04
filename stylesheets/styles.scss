@@ -182,6 +182,8 @@ body {
         margin-top: 20px;
         margin-bottom: 5px;
         height: 50px;
+        border-radius: 5px;
+        padding: 5px;
       }
 
       .commit-button {
@@ -190,6 +192,16 @@ body {
         margin-right: auto;
         margin-top: 10px;
         margin-bottom: 10px;
+        height: 30px;
+        border-radius: 10px;
+        border: 0;
+        padding: 0 15px;
+        background-color: $teal;
+        color: $white;
+      }
+
+      .commit-button:hover {
+        opacity: 0.8;
       }
     }
 
@@ -207,10 +219,16 @@ body {
 
       .diff-panel-body {
         width: 90%;
-        height: 100%;
+        height: 75vh;
         float: left;
-        background-color: $white;
+        background-color: $dark-grey;
+        color: $white;
         overflow-y: scroll;
+        outline: 1px solid $darker-grey;
+
+        div {
+          padding: 1px 5px 1px 5px;
+        }
       }
 
       .diff-panel-minimise {
@@ -256,6 +274,10 @@ body {
       color: white;
     }
 
+    .open-local-repo {
+      margin-top: 70px;
+    }
+
     p {
       display: inline-block;
       margin-right: 20px;
@@ -271,7 +293,7 @@ body {
       padding: 10px;
     }
 
-    button {
+    .button-clone, .button-open {
       display: inline-block;
       height: 30px;
       border-radius: 10px;
@@ -279,9 +301,13 @@ body {
       padding: 0 15px;
       margin: 15px 40px;
       margin-left: 10px;
-      background-color: $green;
+      background-color: $teal;
       color: $white;
       float: right;
+    }
+
+    .button-clone:hover, .button-open:hover {
+      opacity: 0.8;
     }
 
     .title {
