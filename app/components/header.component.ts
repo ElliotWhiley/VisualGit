@@ -7,14 +7,16 @@ import { GraphService } from "../services/graph.service";
   template: `
     <div class="header">
       <img src="./assets/AddRepositoryFolder.svg" (click)="promptUserToAddRepository()" class="add-repository-button" title="Add Repository">
-      <p class="repo-name" id="repo-name"></p>
-      <p class="branch-name" id="branch-name"></p>
-      <img src="./assets/arrow.png" class="pull-button" onclick="pullFromRemote()" title="Pull">
-      <img src="./assets/arrow.png" class="push-button" onclick="pushToRemote()" title="Push">
+      <img src="./assets/RightArrow.svg" class="right-arrow">
+      <p class="repo-name" id="repo-name">repository</p>
+      <img src="./assets/RightArrow.svg" class="right-arrow">
+      <p class="branch-name" id="branch-name">branch</p>
+      <img src="./assets/Pull.svg" class="pull-button" onclick="pullFromRemote()" title="Pull">
+      <img src="./assets/Push.svg" class="push-button" onclick="pushToRemote()" title="Push">
 
       <div id="modal" class="modal">
         <div class="modal-content">
-          <span class="close">x</span>
+          <img src="./assets/Close.svg" class="close">
           <p id="modal-text-box">unset</p>
         </div>
       </div>

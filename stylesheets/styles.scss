@@ -17,27 +17,39 @@ body {
     background-color:  $dark-grey;
     border-bottom: 1px solid $darker-grey;
 
-    /* The Modal (background) */
     .modal {
-        display: none; /* Hidden by default */
-        position: fixed; /* Stay in place */
-        z-index: 1; /* Sit on top */
+        display: none;
+        position: fixed;
+        z-index: 1;
         left: 0;
         top: 0;
-        width: 100%; /* Full width */
-        height: 100%; /* Full height */
-        overflow: auto; /* Enable scroll if needed */
-        background-color: rgb(0,0,0); /* Fallback color */
-        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgb(0,0,0);
+        background-color: rgba(0,0,0,0.4);
+    }
+
+    .modal:hover {
+      opacity: 1;
     }
 
     /* Modal Content/Box */
     .modal-content {
         background-color: $dark-grey;
-        margin: 15% auto; /* 15% from the top and centered */
+        margin: 30% auto;
         padding: 20px;
-        border: 1px solid #888;
-        width: 40%; /* Could be more or less, depending on screen size */
+        border: 3px solid $teal;
+        width: 40%;
+        border-radius: 10px;
+
+        .close {
+          opacity: 0.7;
+        }
+
+        .close:hover {
+          opacity: 1;
+        }
 
         p {
           font-size: 16px;
@@ -48,7 +60,6 @@ body {
         }
     }
 
-    /* The Close Button */
     .close {
         color: #aaa;
         float: right;
@@ -56,8 +67,7 @@ body {
         font-weight: bold;
     }
 
-    .close:hover,
-    .close:focus {
+    .close:hover, .close:focus {
         color: black;
         text-decoration: none;
         cursor: pointer;
@@ -66,7 +76,6 @@ body {
     p {
       margin: 0;
       line-height: 10vh;
-      padding-left: 40px;
       font-size: 25px;
       display: inline-block;
     }
@@ -82,13 +91,19 @@ body {
       opacity: 1;
     }
 
+    .right-arrow {
+      padding-left: 10px;
+      padding-bottom: 5px;
+      opacity: 0.7;
+      vertical-align: middle;
+    }
+
     .pull-button {
       position: absolute;
       left: 60%;
       margin-left: -40px;
       opacity: 0.7;
-
-      padding-top: 13px;
+      padding-top: 5px;
       width: 80px;
       height: 60px;
       display: inline-block;
@@ -107,11 +122,9 @@ body {
       left: 50%;
       margin-left: -40px;
       opacity: 0.7;
-
-      padding-bottom: 13px;
+      padding-top: 5px;
       width: 80px;
       height: 60px;
-      transform: rotate(180deg);
       display: inline-block;
     }
 
@@ -250,10 +263,11 @@ body {
         justify-content: center;
         align-items: center;
         background-color: $dark-grey;
+        visibility: hidden;
       }
 
       .diff-panel-minimise:hover {
-        background-color: $light-grey;
+        background-color: $dark-grey-hover;
       }
 
     }
@@ -277,9 +291,23 @@ body {
     height: 75vh;
     width: 100%;
     background-color: $darker-grey;
-    padding-left: 110px;
     z-index: -10;
     box-sizing: border-box;
+
+    .add-repository-body {
+      padding-left: 110px;
+    }
+
+    .back-button {
+      float: left;
+      position: absolute;
+      padding: 15px;
+      opacity: 0.7;
+    }
+
+    .back-button:hover {
+      opacity: 1;
+    }
 
     h1 {
       color: white;
@@ -323,6 +351,10 @@ body {
 
     .title {
       width: 100%;
+
+      .clone-title {
+        margin-top: 20px;
+      }
     }
 
     .block {
