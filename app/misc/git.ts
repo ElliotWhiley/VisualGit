@@ -5,7 +5,8 @@ let Git = require("nodegit");
 let fs = require("fs");
 
 let green = "#84db00";
-let repo, index, oid, remote;
+let repo, index, oid, remote, commitMessage;
+let filesToAdd = [];
 
 function addAndCommit() {
   let repository;
@@ -24,7 +25,7 @@ function addAndCommit() {
       let fileElementChildren = fileElements[i].childNodes;
       if (fileElementChildren[1].checked === true) {
         filesToStage.push(fileElementChildren[0].innerHTML);
-        addCommand("git add " + fileElementChildren[0].innerHTML);
+        filesToAdd.push(fileElementChildren[0].innerHTML)
       }
     }
     return index.addAll(filesToStage);
@@ -49,8 +50,7 @@ function addAndCommit() {
 
   .then(function(parent) {
     let sign = Git.Signature.default(repository);
-    let commitMessage = document.getElementById('commit-message-input').value;
-    addCommand('git commit -m "' + commitMessage + '"');
+    commitMessage = document.getElementById('commit-message-input').value;
 
     return repository.createCommit("HEAD", sign, sign, commitMessage, oid, [parent]);
   })
@@ -61,6 +61,10 @@ function addAndCommit() {
     clearModifiedFilesList();
     clearCommitMessage();
     clearSelectAllCheckbox();
+    for (let i = 0; i < filesToAdd.length; i++) {
+      addCommand("git add " + filesToAdd[i]);
+    }
+    addCommand('git commit -m "' + commitMessage + '"');
     refreshAll(repository);
   });
 }

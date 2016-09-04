@@ -2,7 +2,8 @@
 var Git = require("nodegit");
 var fs = require("fs");
 var green = "#84db00";
-var repo, index, oid, remote;
+var repo, index, oid, remote, commitMessage;
+var filesToAdd = [];
 function addAndCommit() {
     var repository;
     Git.Repository.open(repoFullPath)
@@ -18,7 +19,7 @@ function addAndCommit() {
             var fileElementChildren = fileElements[i].childNodes;
             if (fileElementChildren[1].checked === true) {
                 filesToStage.push(fileElementChildren[0].innerHTML);
-                addCommand("git add " + fileElementChildren[0].innerHTML);
+                filesToAdd.push(fileElementChildren[0].innerHTML);
             }
         }
         return index.addAll(filesToStage);
@@ -38,8 +39,7 @@ function addAndCommit() {
     })
         .then(function (parent) {
         var sign = Git.Signature.default(repository);
-        var commitMessage = document.getElementById('commit-message-input').value;
-        addCommand('git commit -m "' + commitMessage + '"');
+        commitMessage = document.getElementById('commit-message-input').value;
         return repository.createCommit("HEAD", sign, sign, commitMessage, oid, [parent]);
     })
         .then(function (oid) {
@@ -48,6 +48,10 @@ function addAndCommit() {
         clearModifiedFilesList();
         clearCommitMessage();
         clearSelectAllCheckbox();
+        for (var i = 0; i < filesToAdd.length; i++) {
+            addCommand("git add " + filesToAdd[i]);
+        }
+        addCommand('git commit -m "' + commitMessage + '"');
         refreshAll(repository);
     });
 }
