@@ -239,20 +239,6 @@ function displayModifiedFiles() {
         checkbox.className = "checkbox";
         fileElement.appendChild(checkbox);
 
-        // Add click event to file element to check/uncheck the checkbox
-        fileElement.addEventListener("click", function() {
-          let childNodes = fileElement.childNodes;
-          for (let i = 0; i < childNodes.length; i++) {
-            if (childNodes[i].className === "checkbox") {
-              if (childNodes[i].checked === false) {
-                childNodes[i].checked = true;
-              } else {
-                childNodes[i].checked = false;
-              }
-            }
-          }
-        });
-
         document.getElementById("files-changed").appendChild(fileElement);
 
         fileElement.onclick = function() {
@@ -315,9 +301,9 @@ function displayModifiedFiles() {
         let element = document.createElement("div");
 
         if (line.charAt(0) === "+") {
-          element.style.backgroundColor = green;
+          element.style.backgroundColor = "#84db00";
         } else if (line.charAt(0) === "-") {
-          element.style.backgroundColor = "red";
+          element.style.backgroundColor = "#ff2448";
         }
 
         element.innerHTML = line;

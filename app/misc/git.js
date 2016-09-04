@@ -203,19 +203,6 @@ function displayModifiedFiles() {
                 checkbox.type = "checkbox";
                 checkbox.className = "checkbox";
                 fileElement.appendChild(checkbox);
-                fileElement.addEventListener("click", function () {
-                    var childNodes = fileElement.childNodes;
-                    for (var i = 0; i < childNodes.length; i++) {
-                        if (childNodes[i].className === "checkbox") {
-                            if (childNodes[i].checked === false) {
-                                childNodes[i].checked = true;
-                            }
-                            else {
-                                childNodes[i].checked = false;
-                            }
-                        }
-                    }
-                });
                 document.getElementById("files-changed").appendChild(fileElement);
                 fileElement.onclick = function () {
                     displayDiffPanel();
@@ -271,10 +258,10 @@ function displayModifiedFiles() {
             function formatLine(line) {
                 var element = document.createElement("div");
                 if (line.charAt(0) === "+") {
-                    element.style.backgroundColor = green;
+                    element.style.backgroundColor = "#84db00";
                 }
                 else if (line.charAt(0) === "-") {
-                    element.style.backgroundColor = "red";
+                    element.style.backgroundColor = "#ff2448";
                 }
                 element.innerHTML = line;
                 document.getElementById("diff-panel-body").appendChild(element);
