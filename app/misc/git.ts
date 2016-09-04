@@ -24,6 +24,7 @@ function addAndCommit() {
       let fileElementChildren = fileElements[i].childNodes;
       if (fileElementChildren[1].checked === true) {
         filesToStage.push(fileElementChildren[0].innerHTML);
+        addCommand("git add " + fileElementChildren[0].innerHTML);
       }
     }
     return index.addAll(filesToStage);
@@ -49,6 +50,7 @@ function addAndCommit() {
   .then(function(parent) {
     let sign = Git.Signature.default(repository);
     let commitMessage = document.getElementById('commit-message-input').value;
+    addCommand('git commit -m "' + commitMessage + '"');
 
     return repository.createCommit("HEAD", sign, sign, commitMessage, oid, [parent]);
   })

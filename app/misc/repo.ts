@@ -28,6 +28,7 @@ function downloadRepository() {
   .then(function(repository) {
     console.log("Repo successfully cloned");
     updateModalText("Clone Successful, repository saved under: " + cloneURL);
+    addCommand("git clone " + cloneURL + " " + localPath);
     repoFullPath = fullLocalPath;
     repoLocalPath = localPath;
     refreshAll(repository);
