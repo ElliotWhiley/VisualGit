@@ -27,7 +27,7 @@ function downloadRepository() {
   let repository = Git.Clone(cloneURL, fullLocalPath, options)
   .then(function(repository) {
     console.log("Repo successfully cloned");
-    updateModalText("Clone Successful, repository saved under: " + cloneURL);
+    updateModalText("Clone Successful, repository saved under: " + fullLocalPath);
     addCommand("git clone " + cloneURL + " " + localPath);
     repoFullPath = fullLocalPath;
     repoLocalPath = localPath;
@@ -114,4 +114,5 @@ function displayModal(text) {
 
 function updateModalText(text) {
   document.getElementById("modal-text-box").innerHTML = text;
+  modal.style.display = "block";
 }
