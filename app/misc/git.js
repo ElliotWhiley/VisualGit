@@ -91,6 +91,7 @@ function pullFromRemote() {
         .then(function (repo) {
         repository = repo;
         console.log("Pulling changes from remote...");
+        addCommand("git pull");
         displayModal("Pulling new changes from the remote repository");
         return repository.fetchAll({
             callbacks: {
@@ -115,6 +116,7 @@ function pushToRemote() {
         .then(function (repo) {
         console.log("Pushing changes to remote");
         displayModal("Pushing changes to remote...");
+        addCommand("git push -u origin master");
         repo.getRemotes()
             .then(function (remotes) {
             repo.getRemote(remotes[0])
