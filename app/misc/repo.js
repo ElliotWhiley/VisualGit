@@ -58,8 +58,8 @@ function refreshAll(repository) {
         .then(function () {
         console.log("Updating the graph and the labels");
         drawGraph();
-        document.getElementById("repo-name").innerHTML = "/" + repoLocalPath;
-        document.getElementById("branch-name").innerHTML = "/" + branch;
+        document.getElementById("repo-name").innerHTML = repoLocalPath;
+        document.getElementById("branch-name").innerHTML = branch;
     });
 }
 function updateLocalPath() {

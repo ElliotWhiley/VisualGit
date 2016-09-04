@@ -22,7 +22,7 @@ var HeaderComponent = (function () {
     HeaderComponent = __decorate([
         core_1.Component({
             selector: "app-header",
-            template: "\n    <div class=\"header\">\n      <img src=\"./assets/AddRepositoryFolder.svg\" (click)=\"promptUserToAddRepository()\" class=\"add-repository-button\" title=\"Add Repository\">\n      <p class=\"repo-name\" id=\"repo-name\">/ </p>\n      <p class=\"branch-name\" id=\"branch-name\">/ </p>\n      <img src=\"./assets/arrow.png\" class=\"pull-button\" onclick=\"pullFromRemote()\" title=\"Pull\">\n      <img src=\"./assets/arrow.png\" class=\"push-button\" onclick=\"pushToRemote()\" title=\"Push\">\n\n      <div id=\"modal\" class=\"modal\">\n        <div class=\"modal-content\">\n          <span class=\"close\">x</span>\n          <p id=\"modal-text-box\">unset</p>\n        </div>\n      </div>\n    </div>\n  ",
+            template: "\n    <div class=\"header\">\n      <img src=\"./assets/AddRepositoryFolder.svg\" (click)=\"promptUserToAddRepository()\" class=\"add-repository-button\" title=\"Add Repository\">\n      <p class=\"repo-name\" id=\"repo-name\"></p>\n      <p class=\"branch-name\" id=\"branch-name\"></p>\n      <img src=\"./assets/arrow.png\" class=\"pull-button\" onclick=\"pullFromRemote()\" title=\"Pull\">\n      <img src=\"./assets/arrow.png\" class=\"push-button\" onclick=\"pushToRemote()\" title=\"Push\">\n\n      <div id=\"modal\" class=\"modal\">\n        <div class=\"modal-content\">\n          <span class=\"close\">x</span>\n          <p id=\"modal-text-box\">unset</p>\n        </div>\n      </div>\n    </div>\n  ",
             providers: [repository_service_1.RepositoryService, graph_service_1.GraphService]
         }), 
         __metadata('design:paramtypes', [])
