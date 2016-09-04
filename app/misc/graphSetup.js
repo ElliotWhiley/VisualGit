@@ -21,7 +21,7 @@ function drawGraph() {
                 middle: false,
                 from: false,
             },
-            color: "#0097A7",
+            color: "#39c0ba",
             hoverWidth: 0,
             physics: false,
             selectionWidth: 0,
@@ -69,8 +69,8 @@ function drawGraph() {
                 shape: "dot",
                 size: 6,
                 color: {
-                    background: "#0097A7",
-                    border: "#0097A7",
+                    background: "#39c0ba",
+                    border: "#39c0ba",
                     highlight: {
                         background: "#07f968",
                         border: "#3c3c3c"
@@ -84,7 +84,7 @@ function drawGraph() {
             borderWidth: 8,
             borderWidthSelected: 8,
             color: {
-                border: "#0097A7",
+                border: "#39c0ba",
                 background: "#FFF",
                 highlight: {
                     border: "#FF0",
