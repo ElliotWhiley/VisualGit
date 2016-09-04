@@ -244,7 +244,6 @@ function displayModifiedFiles() {
                                             var oldFilePath = patch.oldFile().path();
                                             var newFilePath = patch.newFile().path();
                                             if (newFilePath === filePath) {
-                                                callback(hunk.header().trim());
                                                 lines.forEach(function (line) {
                                                     callback(String.fromCharCode(line.origin()) + line.content().trim());
                                                 });
