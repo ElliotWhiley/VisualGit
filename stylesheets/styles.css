@@ -79,8 +79,10 @@ body .header p {
   display: inline-block;
 }
 
-body .header button {
+body .header .add-repository-button {
   margin-left: 40px;
+  vertical-align: middle;
+  margin-bottom: 10px;
 }
 
 body .header .pull-button {

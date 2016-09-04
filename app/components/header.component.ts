@@ -6,7 +6,7 @@ import { GraphService } from "../services/graph.service";
   selector: "app-header",
   template: `
     <div class="header">
-      <button (click)="promptUserToAddRepository()" title="Add Repository">+</button>
+      <img src="./assets/AddRepositoryFolder.svg" (click)="promptUserToAddRepository()" class="add-repository-button" title="Add Repository">
       <p class="repo-name" id="repo-name">/ </p>
       <p class="branch-name" id="branch-name">/ </p>
       <img src="./assets/arrow.png" class="pull-button" onclick="pullFromRemote()" title="Pull">

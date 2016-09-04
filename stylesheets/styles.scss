@@ -71,8 +71,10 @@ body {
       display: inline-block;
     }
 
-    button {
+    .add-repository-button {
       margin-left: 40px;
+      vertical-align: middle;
+      margin-bottom: 10px;
     }
 
     .pull-button {
