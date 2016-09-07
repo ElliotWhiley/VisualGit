@@ -129,10 +129,17 @@ function pullFromRemote() {
   // Now that we're finished fetching, go ahead and merge our local branch
   // with the new one
   .then(function() {
-    console.log("Pull successful");
-    updateModalText("Pull successful");
-    return repository.mergeBranches("master", "origin/master");
+    repository.mergeBranches("master", "origin/master")
+    .then(function() {
+        refreshAll(repository);
+        console.log("Pull successful");
+        updateModalText("Pull successful");
+    });
   });
+//   .then(function(updatedRepository) {
+//     refreshAll(updatedRepository);
+
+// });
 }
 
 function pushToRemote() {
@@ -161,6 +168,7 @@ function pushToRemote() {
       .then(function() {
         console.log("Push successful");
         updateModalText("Push successful");
+        refreshAll(repo);
       });
     });
   });
