@@ -50,6 +50,9 @@ npm install
 npm start
 ````
 
+### ssh-agent
+As VisualGit utilises SSH for user authentication, ensure you [generate an SSH key for your GitHub account](https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/). If you are not running on Mac, you will also need to set up and run an ssh-agent to access your SSH key at run time without providing your credentials each time.
+
 # Development
 
 ### TypeScript
