@@ -1,7 +1,0 @@
-node_modules/
-typings/
-tmp/
-dist/
-stylesheets/variables.css
-npm-debug.log
-git-history*
