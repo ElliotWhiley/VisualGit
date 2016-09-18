@@ -70,3 +70,13 @@ npm start
 
 # Contributing
 We are open to pull requests with new features or improvements.
+
+# Help
+Visualgit utilises a range of libraries and frameworks, more information on them can be found below:
+
+###[Electron](http://electron.atom.io/)
+###[Node.js](https://nodejs.org/en/about/)
+###[AngularJS](https://angular.io/)
+###[nodegit](http://www.nodegit.org/)
+###[TypeScript](https://www.typescriptlang.org/)
+###[Sass](http://sass-lang.com/)
