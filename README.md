@@ -6,7 +6,8 @@ An easy-to-use, visually-oriented desktop client for Git aimed at helping studen
 
 ### Prerequisites
 
-NPM is required to install and run VisualGit. Installation instructions are below.
+npm (Node Package Manager) is used to manage VisualGit's dependencies, therefore it is required to install and run VisualGit.
+Follow the installation instructions below:
 
 #### Centos-based systems
 ````
@@ -23,10 +24,10 @@ If you have homebrew installed:
 ````
 brew install npm
 ````
-Otherwise download and install the latest version of Node.js from [link](https://nodejs.org/en/)
+Otherwise download and install the latest version of [Node.j](https://nodejs.org/en/) (v6.2.1 or later)
 
 #### Windows
-Download and install the latest version of Node.js from [link](https://nodejs.org/en/)
+Download and install the latest version of  [Node.js](https://nodejs.org/en/) (v6.2.1 or later)
 
 ### Setup
 Clone with either HTTPS or SSH:
