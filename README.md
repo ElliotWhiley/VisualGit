@@ -1,6 +1,7 @@
 # Welcome
 
 An easy-to-use, visually-oriented desktop client for Git aimed at helping students learn the standard Git workflow.
+You can get a summary of our project by reading our [cool poster](https://github.com/ElliotWhiley/VisualGit/raw/resources/visualgit-poster.pdf)   :)
 
 # Installation
 
