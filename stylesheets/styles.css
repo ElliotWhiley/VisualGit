@@ -216,6 +216,7 @@ body .body-panel {
   float: right;
 }
 
+
 body .body-panel .diff-panel {
   width: 0;
   height: 100%;
@@ -264,6 +265,15 @@ body .body-panel .graph-panel .network {
   margin: 0;
   padding: 0;
   background-color: #181818;
+}
+
+body .authenticate {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  background-color: #181818;
+  z-index: 30;
+  box-sizing: border-box;
 }
 
 body .add-repository-panel {

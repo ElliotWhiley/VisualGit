@@ -95,8 +95,8 @@ function pullFromRemote() {
         displayModal("Pulling new changes from the remote repository");
         return repository.fetchAll({
             callbacks: {
-                credentials: function (url, userName) {
-                    return Git.Cred.sshKeyFromAgent(userName);
+                credentials: function () {
+                    return cred;
                 },
                 certificateCheck: function () {
                     return 1;
@@ -126,8 +126,8 @@ function pushToRemote() {
                 .then(function (remote) {
                 return remote.push(["refs/heads/" + branch + ":refs/heads/" + branch], {
                     callbacks: {
-                        credentials: function (url, userName) {
-                            return Git.Cred.sshKeyFromAgent(userName);
+                        credentials: function () {
+                            return cred;
                         }
                     }
                 });
@@ -138,6 +138,17 @@ function pushToRemote() {
                 refreshAll(repo);
             });
         });
+    });
+}
+function createBranch(branchName) {
+    Git.Repository.open(repoFullPath)
+        .then(function (repo) {
+        return repo.getHeadCommit()
+            .then(function (commit) {
+            return repo.createBranch(branchName, commit, 0, repo.defaultSignature(), "Created new-branch on HEAD");
+        });
+    }).done(function () {
+        console.log("All done!");
     });
 }
 function displayModifiedFiles() {
@@ -282,5 +293,11 @@ function displayModifiedFiles() {
         });
     }, function (err) {
         console.log("waiting for repo to be initialised");
+    });
+}
+function checkoutCommit() {
+    Git.Repository.open(repoFullPath)
+        .then(function (repo) {
+        Git.Reference.create(repo, "checkout");
     });
 }

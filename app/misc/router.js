@@ -1,9 +1,12 @@
+var cred;
 function switchToMainPanel() {
+    hideAuthenticatePanel();
     hideAddRepositoryPanel();
     displayFilePanel();
     displayGraphPanel();
 }
 function switchToAddRepositoryPanel() {
+    hideAuthenticatePanel();
     hideFilePanel();
     hideGraphPanel();
     displayAddRepositoryPanel();
@@ -41,4 +44,10 @@ function hideDiffPanel() {
     document.getElementById("diff-panel").style.width = "0";
     document.getElementById("graph-panel").style.width = "100%";
     hideMinimisePanel();
+}
+function hideAuthenticatePanel() {
+    document.getElementById("authenticate").style.zIndex = "-20";
+}
+function displayAuthenticatePanel() {
+    document.getElementById("authenticate").style.zIndex = "20";
 }

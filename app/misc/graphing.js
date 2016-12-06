@@ -102,9 +102,17 @@ function addEdges(c) {
 function makeNode(c, column) {
     var id = nodeId++;
     var name = "Node " + id;
+    var reference;
     var stringer = c.author().toString().replace(/</, "%").replace(/>/, "%");
     var email = stringer.split("%")[1];
     var title = "Author: " + email + "<br>" + "Message: " + c.message();
+    var oid = c.id();
+    Git.Repository.open(repoFullPath)
+        .then(function (repoResult) {
+        Git.Reference.create(repoResult, "HEAD", oid, 1, "checkout reference").then(function (ref) {
+            reference = ref;
+        });
+    });
     nodes.add({
         id: id,
         shape: "circularImage",
@@ -121,6 +129,7 @@ function makeNode(c, column) {
         time: c.timeMs(),
         column: column,
         email: email,
+        reference: reference,
     });
 }
 function makeEdge(sha, parentSha) {

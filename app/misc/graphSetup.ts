@@ -122,7 +122,7 @@ function drawGraph() {
     populateCommits(commits);
   });
 
-  network.on("doubleClick", function(callback) {
+  network.on("oncontext", function(callback) {
     if (callback.nodes[0] === undefined) {
       return;
     } else {
@@ -139,5 +139,5 @@ function drawGraph() {
     };
 
     network.focus(callback.nodes[0], moveOptions);
-  });
-}, false);
+  }, false);
+}

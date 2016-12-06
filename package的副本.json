@@ -4,7 +4,7 @@
   "description": "A visually-oriented Git client",
   "main": "index.js",
   "engines": {
-    "atom-shell": "1.2.3"
+    "atom-shell": "^1.2.8"
   },
   "scripts": {
     "start": "electron index.js",
@@ -29,23 +29,22 @@
     "@angular/router-deprecated": "2.0.0-rc.1",
     "@angular/upgrade": "2.0.0-rc.1",
     "angular2-in-memory-web-api": "0.0.11",
-    "bootstrap": "3.3.6",
-    "core-js": "2.4.0",
-    "electron-debug": "1.0.0",
-    "node-sass": "3.7.0",
-    "nodegit": "0.13.2",
-    "reflect-metadata": "0.1.3",
+    "bootstrap": "^3.3.6",
+    "core-js": "^2.4.0",
+    "electron-debug": "^1.0.0",
+    "node-sass": "^3.7.0",
+    "nodegit": "^0.13.2",
+    "reflect-metadata": "^0.1.3",
     "rxjs": "5.0.0-beta.6",
     "systemjs": "0.19.27",
-    "typings": "1.3.0",
-    "vis": "4.16.0",
-    "zone.js": "0.6.12",
-    "octonode": "0.7.7"
+    "typings": "^1.3.0",
+    "vis": "~4.16.0",
+    "zone.js": "^0.6.12"
   },
   "devDependencies": {
-    "devtron": "1.1.0",
-    "electron-packager": "7.0.0",
-    "electron-prebuilt": "1.2.8",
-    "xo": "0.15.0"
+    "devtron": "^1.1.0",
+    "electron-packager": "^7.0.0",
+    "electron-prebuilt": "^1.2.8",
+    "xo": "^0.15.0"
   }
 }

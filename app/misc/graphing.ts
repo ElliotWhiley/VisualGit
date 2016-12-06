@@ -124,10 +124,17 @@ function addEdges(c) {
 function makeNode(c, column: number) {
   let id = nodeId++;
   let name = "Node " + id;
-
+  let reference;
   let stringer = c.author().toString().replace(/</, "%").replace(/>/, "%");
   let email = stringer.split("%")[1];
   let title = "Author: " + email + "<br>" + "Message: " + c.message();
+  let oid = c.id();
+  Git.Repository.open(repoFullPath)
+  .then(function(repoResult) {
+    Git.Reference.create(repoResult, "HEAD", oid, 1, "checkout reference").then(function(ref) {
+      reference = ref;
+    });
+  });
 
   nodes.add({
     id: id,
@@ -146,6 +153,7 @@ function makeNode(c, column: number) {
     time: c.timeMs(),
     column: column,
     email: email,
+    reference: reference,
   });
 }
 

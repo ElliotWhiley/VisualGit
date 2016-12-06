@@ -10,11 +10,13 @@ function downloadRepository() {
     var fullLocalPath = require("path").join(__dirname, localPath);
     var options = {};
     displayModal("Cloning Repository...");
-    options.fetchOpts = {
-        callbacks: {
-            certificateCheck: function () { return 1; },
-            credentials: function (url, userName) {
-                return Git.Cred.sshKeyFromAgent(userName);
+    options = {
+        fetchOpts: {
+            callbacks: {
+                certificateCheck: function () { return 1; },
+                credentials: function () {
+                    return cred;
+                }
             }
         }
     };
