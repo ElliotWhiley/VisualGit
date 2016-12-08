@@ -19,14 +19,14 @@ var HeaderComponent = (function () {
     HeaderComponent.prototype.promptUserToAddRepository = function () {
         switchToAddRepositoryPanel();
     };
-    HeaderComponent = __decorate([
-        core_1.Component({
-            selector: "app-header",
-            template: "\n    <div class=\"header\">\n      <img src=\"./assets/AddRepositoryFolder.svg\" (click)=\"promptUserToAddRepository()\" class=\"add-repository-button\" title=\"Add Repository\">\n      <img src=\"./assets/RightArrow.svg\" class=\"right-arrow\">\n      <p class=\"repo-name\" id=\"repo-name\">repository</p>\n      <img src=\"./assets/RightArrow.svg\" class=\"right-arrow\">\n      <p class=\"branch-name\" id=\"branch-name\">branch</p>\n      <img src=\"./assets/Pull.svg\" class=\"pull-button\" onclick=\"pullFromRemote()\" title=\"Pull\">\n      <img src=\"./assets/Push.svg\" class=\"push-button\" onclick=\"pushToRemote()\" title=\"Push\">\n\n      <div id=\"modal\" class=\"modal\">\n        <div class=\"modal-content\">\n          <img src=\"./assets/Close.svg\" class=\"close\">\n          <p id=\"modal-text-box\">unset</p>\n        </div>\n      </div>\n    </div>\n  ",
-            providers: [repository_service_1.RepositoryService, graph_service_1.GraphService]
-        }), 
-        __metadata('design:paramtypes', [])
-    ], HeaderComponent);
     return HeaderComponent;
 }());
+HeaderComponent = __decorate([
+    core_1.Component({
+        selector: "app-header",
+        template: "\n    <nav class=\"navbar navbar-inverse\" role=\"navigation\">\n      <div class=\"container-fluid\">\n        <div class=\"collapse navbar-collapse\" id=\"bs-example-navbar-collapse\">\n          <ul class=\"nav navbar-nav\">\n            <li><img src=\"./assets/AddRepositoryFolder.svg\" (click)=\"promptUserToAddRepository()\" class=\"add-repository-button\" title=\"Add Repository\"></li>\n            <li><img src=\"./assets/RightArrow.svg\" class=\"right-arrow\" href=\"#\"></li>\n            <li class=\"dropdown repo-name\">\n              <a href=\"#\" class=\"dropdown-toggle\" id=\"repo-name\" data-toggle=\"dropdown\">\n                Repository\n                <span class=\"caret\"></span>\n              </a>\n              <ul class=\"dropdown-menu\" role=\"menu\">\n                <li><a href=\"#\">jmeter</a></li>\n              </ul>\n            </li>\n            <li><img src=\"./assets/RightArrow.svg\" class=\"right-arrow\" href=\"#\"></li>\n            <li class=\"dropdown\">\n              <a href=\"#\" class=\"dropdown-toggle\" id=\"branch-name\" data-toggle=\"dropdown\">\n                Branch\n                <span class=\"caret\"></span>\n              </a>\n              <ul class=\"dropdown-menu\" role=\"menu\" >\n                <li role=\"presentation\">\n                  <div class=\"input-group\">\n                    <input type=\"text\" id=\"branchName\" class=\"form-control\" placeholder=\"Search or create branch\">\n                    <span class=\"input-group-btn\">\n                      <button class=\"btn btn-default\" type=\"button\" onclick=\"createBranch()\">OK</button>\n                    </span>\n                  </div>\n                </li>\n              </ul>\n            </li>\n          </ul>\n          <img src=\"./assets/Pull.svg\" class=\"pull-button\" onclick=\"pullFromRemote()\" title=\"Pull\">\n          <img src=\"./assets/Push.svg\" class=\"push-button\" onclick=\"pushToRemote()\" title=\"Push\">\n          <ul class=\"navbar-nav navbar-right\">\n            <li><img id=\"avater\" height=\"70\" width=\"70\" src=\"./assets/AddRepositoryFolder.svg\" align=\"right\"></li>\n          </ul>\n        </div>\n      </div>\n    </nav>\n    <div id=\"modal\" class=\"modal\">\n      <div class=\"modal-content\">\n        <img src=\"./assets/Close.svg\" class=\"close\">\n        <p id=\"modal-text-box\">unset</p>\n      </div>\n    </div>\n  ",
+        providers: [repository_service_1.RepositoryService, graph_service_1.GraphService]
+    }),
+    __metadata("design:paramtypes", [])
+], HeaderComponent);
 exports.HeaderComponent = HeaderComponent;

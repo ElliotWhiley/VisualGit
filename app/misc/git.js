@@ -140,7 +140,9 @@ function pushToRemote() {
         });
     });
 }
-function createBranch(branchName) {
+function createBranch() {
+    var branchName = document.getElementById("branchName").value;
+    console.log(branchName + "!!!!!!");
     Git.Repository.open(repoFullPath)
         .then(function (repo) {
         return repo.getHeadCommit()
@@ -293,11 +295,5 @@ function displayModifiedFiles() {
         });
     }, function (err) {
         console.log("waiting for repo to be initialised");
-    });
-}
-function checkoutCommit() {
-    Git.Repository.open(repoFullPath)
-        .then(function (repo) {
-        Git.Reference.create(repo, "checkout");
     });
 }

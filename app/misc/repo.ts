@@ -67,6 +67,7 @@ function refreshAll(repository) {
   repository.getCurrentBranch()
   .then(function(reference) {
     let branchParts = reference.name().split("/");
+    console.log(branchParts + "OOOOOOOOOOO");
     branch = branchParts[branchParts.length - 1];
   })
   .then(function() {

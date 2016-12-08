@@ -174,7 +174,9 @@ function pushToRemote() {
   });
 }
 
-function createBranch(branchName) {
+function createBranch() {
+  let branchName = document.getElementById("branchName").value;
+  console.log(branchName + "!!!!!!");
   Git.Repository.open(repoFullPath)
   .then(function(repo) {
     // Create a new branch on head
@@ -350,11 +352,4 @@ function displayModifiedFiles() {
   function(err) {
     console.log("waiting for repo to be initialised");
   });
-}
-
-function checkoutCommit() {
-
-  Git.Repository.open(repoFullPath)
-  .then(function(repo) {
-    Git.Reference.create(repo, "checkout", )
 }

@@ -3,6 +3,7 @@ let username;
 let password;
 let aid, atoken;
 let client;
+let avaterImg;
 function getUserInfo() {
   username = document.getElementById("username").value;
   password = document.getElementById("password").value;
@@ -17,7 +18,8 @@ function getUserInfo() {
     if (err) {
       console.log(err);
     }
-    console.log(Object.values(data)[2]);
+    avaterImg = Object.values(data)[2]
+    document.getElementById("avater").src = avaterImg;
   });
 
   // let scopes = {
