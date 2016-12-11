@@ -1,4 +1,5 @@
 var Git = require("nodegit");
+var $ = require('jquery');
 var repoFullPath;
 var repoLocalPath;
 var repoCurrentBranch = "master";
@@ -40,11 +41,11 @@ function openRepository() {
     console.log("Trying to open repository at " + fullLocalPath);
     displayModal("Opening Local Repository...");
     Git.Repository.open(fullLocalPath).then(function (repository) {
-        console.log("Repo successfully opened");
-        updateModalText("Repository successfully opened");
         repoFullPath = fullLocalPath;
         repoLocalPath = localPath;
         refreshAll(repository);
+        console.log("Repo successfully opened");
+        updateModalText("Repository successfully opened");
     }, function (err) {
         updateModalText("Opening Failed - " + err);
         console.log(err);
@@ -57,12 +58,88 @@ function refreshAll(repository) {
         var branchParts = reference.name().split("/");
         console.log(branchParts + "OOOOOOOOOOO");
         branch = branchParts[branchParts.length - 1];
+    }, function (err) {
+        console.log(err + "?????");
     })
         .then(function () {
         console.log("Updating the graph and the labels");
         drawGraph();
         document.getElementById("repo-name").innerHTML = repoLocalPath;
         document.getElementById("branch-name").innerHTML = branch;
+    });
+}
+function getAllBranches() {
+    Git.Repository.open(repoFullPath)
+        .then(function (repo) {
+        return repo.getReferenceNames(Git.Reference.TYPE.LISTALL);
+    })
+        .then(function (branchList) {
+        clearBranchElement();
+        for (var i = 0; i < branchList.length; i++) {
+            var bp = branchList[i].split("/");
+            if (bp[1] !== "remotes") {
+                displayBranch(bp[bp.length - 1], "branch-dropdown", "checkoutLocalBranch(this)");
+            }
+        }
+    });
+}
+function getOtherBranches() {
+    var list;
+    var repos;
+    Git.Repository.open(repoFullPath)
+        .then(function (repo) {
+        repos = repo;
+        return repo.getReferenceNames(Git.Reference.TYPE.LISTALL);
+    })
+        .then(function (branchList) {
+        clearMergeElement();
+        list = branchList;
+    })
+        .then(function () {
+        return repos.getCurrentBranch();
+    })
+        .then(function (ref) {
+        var name = ref.name().split("/");
+        console.log("&&&&&&&");
+        clearBranchElement();
+        for (var i = 0; i < list.length; i++) {
+            var bp = list[i].split("/");
+            if (bp[1] !== "remotes" && bp[bp.length - 1] !== name[name.length - 1]) {
+                displayBranch(bp[bp.length - 1], "merge-dropdown", "mergeLocalBranches(this)");
+            }
+        }
+    });
+}
+function clearMergeElement() {
+    var ul = document.getElementById("merge-dropdown");
+    ul.innerHTML = '';
+}
+function clearBranchElement() {
+    var ul = document.getElementById("branch-dropdown");
+    var li = document.getElementById("create-branch");
+    ul.innerHTML = '';
+    ul.appendChild(li);
+}
+function displayBranch(name, id, onclick) {
+    var ul = document.getElementById(id);
+    var li = document.createElement("li");
+    li.setAttribute("role", "presentation");
+    li.setAttribute("href", "#");
+    li.setAttribute("onclick", onclick);
+    li.appendChild(document.createTextNode(name));
+    ul.appendChild(li);
+}
+function checkoutLocalBranch(element) {
+    var bn = element.innerHTML;
+    console.log(bn + ">>>>>>>>");
+    Git.Repository.open(repoFullPath)
+        .then(function (repo) {
+        repo.checkoutBranch("refs/heads/" + bn)
+            .then(function () {
+            refreshAll(repo);
+        }, function (err) {
+            console.log(err + "<<<<<<<");
+        });
     });
 }
 function updateLocalPath() {
@@ -72,29 +149,11 @@ function updateLocalPath() {
         document.getElementById("repoSave").value = splitText[splitText.length - 2];
     }
 }
-function initModal() {
-    modal = document.getElementById("modal");
-    btn = document.getElementById("new-repo-button");
-    confirmBtn = document.getElementById("confirm-button");
-    span = document.getElementsByClassName("close")[0];
-}
-function handleModal() {
-    span.onclick = function () {
-        modal.style.display = "none";
-    };
-    window.onclick = function (event) {
-        if (event.target == modal) {
-            modal.style.display = "none";
-        }
-    };
-}
 function displayModal(text) {
-    initModal();
-    handleModal();
     document.getElementById("modal-text-box").innerHTML = text;
-    modal.style.display = "block";
+    $('#modal').modal('show');
 }
 function updateModalText(text) {
     document.getElementById("modal-text-box").innerHTML = text;
-    modal.style.display = "block";
+    $('#modal').modal('show');
 }

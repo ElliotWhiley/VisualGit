@@ -1,7 +1,7 @@
 import * as nodegit from "git";
 
 let vis = require("vis");
-
+let github1 = require("octonode");
 let nodeId = 1;
 let commitHistory = [];
 let commitList = [];
@@ -9,8 +9,10 @@ let spacingY = 100;
 let spacingX = 80;
 let parentCount = {};
 let columns: boolean[] = [];
+let githubUsername = require('github-username');
+let avatarUrls = {};
 
-function process(commits: nodegit.Commit[]) {
+function processGraph(commits: nodegit.Commit[]) {
   populateCommits(commits);
 }
 
@@ -20,7 +22,6 @@ function populateCommits(commits) {
   commitList = [];
   parentCount = {};
   columns = [];
-
   // Sort
   commitHistory = commits.sort(function(a, b) {
     return a.timeMs() - b.timeMs();
@@ -128,14 +129,6 @@ function makeNode(c, column: number) {
   let stringer = c.author().toString().replace(/</, "%").replace(/>/, "%");
   let email = stringer.split("%")[1];
   let title = "Author: " + email + "<br>" + "Message: " + c.message();
-  let oid = c.id();
-  Git.Repository.open(repoFullPath)
-  .then(function(repoResult) {
-    Git.Reference.create(repoResult, "HEAD", oid, 1, "checkout reference").then(function(ref) {
-      reference = ref;
-    });
-  });
-
   nodes.add({
     id: id,
     shape: "circularImage",

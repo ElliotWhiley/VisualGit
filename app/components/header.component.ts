@@ -16,18 +16,18 @@ import { GraphService } from "../services/graph.service";
                 Repository
                 <span class="caret"></span>
               </a>
-              <ul class="dropdown-menu" role="menu">
-                <li><a href="#">jmeter</a></li>
+              <ul class="dropdown-menu" id="repo-dropdown" role="menu">
+                <li><a href="#">WTF</a></li>
               </ul>
             </li>
             <li><img src="./assets/RightArrow.svg" class="right-arrow" href="#"></li>
             <li class="dropdown">
-              <a href="#" class="dropdown-toggle" id="branch-name" data-toggle="dropdown">
+              <a href="#" class="dropdown-toggle" id="branch-name" onclick="getAllBranches()" data-toggle="dropdown">
                 Branch
                 <span class="caret"></span>
               </a>
-              <ul class="dropdown-menu" role="menu" >
-                <li role="presentation">
+              <ul class="dropdown-menu" id="branch-dropdown" role="menu" >
+                <li role="presentation" id="create-branch">
                   <div class="input-group">
                     <input type="text" id="branchName" class="form-control" placeholder="Search or create branch">
                     <span class="input-group-btn">
@@ -37,19 +37,39 @@ import { GraphService } from "../services/graph.service";
                 </li>
               </ul>
             </li>
+            <li>
+              <a href="#" class="dropdown-toggle btn btn-inverse" id="merge-name" onclick="getOtherBranches()" style="font-size : 20px" data-toggle="dropdown">
+                Update From
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" id="merge-dropdown" role="menu" >
+              </ul>
+            </li>
           </ul>
           <img src="./assets/Pull.svg" class="pull-button" onclick="pullFromRemote()" title="Pull">
           <img src="./assets/Push.svg" class="push-button" onclick="pushToRemote()" title="Push">
           <ul class="navbar-nav navbar-right">
-            <li><img id="avater" height="70" width="70" src="./assets/AddRepositoryFolder.svg" align="right"></li>
+            <li><img id="avater" height="50" width="50" src="./assets/AddRepositoryFolder.svg" align="right"></li>
           </ul>
         </div>
       </div>
     </nav>
-    <div id="modal" class="modal">
-      <div class="modal-content">
-        <img src="./assets/Close.svg" class="close">
-        <p id="modal-text-box">unset</p>
+    <div id="modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title">Info</h4>
+          </div>
+          <div class="modal-body" id="modal-text-box">
+            unset
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
       </div>
     </div>
   `,

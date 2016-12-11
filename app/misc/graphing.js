@@ -1,5 +1,6 @@
 "use strict";
 var vis = require("vis");
+var github1 = require("octonode");
 var nodeId = 1;
 var commitHistory = [];
 var commitList = [];
@@ -7,7 +8,9 @@ var spacingY = 100;
 var spacingX = 80;
 var parentCount = {};
 var columns = [];
-function process(commits) {
+var githubUsername = require('github-username');
+var avatarUrls = {};
+function processGraph(commits) {
     populateCommits(commits);
 }
 function populateCommits(commits) {
@@ -106,13 +109,6 @@ function makeNode(c, column) {
     var stringer = c.author().toString().replace(/</, "%").replace(/>/, "%");
     var email = stringer.split("%")[1];
     var title = "Author: " + email + "<br>" + "Message: " + c.message();
-    var oid = c.id();
-    Git.Repository.open(repoFullPath)
-        .then(function (repoResult) {
-        Git.Reference.create(repoResult, "HEAD", oid, 1, "checkout reference").then(function (ref) {
-            reference = ref;
-        });
-    });
     nodes.add({
         id: id,
         shape: "circularImage",

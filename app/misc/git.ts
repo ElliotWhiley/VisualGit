@@ -188,10 +188,51 @@ function createBranch() {
         0,
         repo.defaultSignature(),
         "Created new-branch on HEAD");
+    }, function(err) {
+      console.log(err + "LLLLLL");
     });
   }).done(function() {
     console.log("All done!");
   });
+}
+
+function mergeLocalBranches(element) {
+  let bn = element.innerHTML;
+  let fromBranch;
+  let repos;
+  Git.Repository.open(repoFullPath)
+  .then(function(repo) {
+    repos = repo;
+  })
+  .then(function() {
+    console.log("??????");
+    return repos.getBranch("refs/heads/" + bn);
+  })
+  .then(function(branch) {
+    console.log(branch.name());
+    fromBranch = branch;
+    return repos.getCurrentBranch();
+  })
+  .then(function(toBranch) {
+    console.log(toBranch.name());
+    return repos.mergeBranches(toBranch,
+       fromBranch,
+       repos.defaultSignature(),
+       Git.Merge.PREFERENCE.NONE,
+       null);
+  })
+  .then(function(index) {
+    let text;
+    console.log(index);
+    if (index instanceof Git.Index) {
+      text = "Conflicts Exist";
+    } else {
+      text = "Merge Successfully";
+    }
+    console.log(text);
+    updateModalText(text);
+    refreshAll(repos);
+  })
 }
 
 function displayModifiedFiles() {
@@ -252,11 +293,11 @@ function displayModifiedFiles() {
         filePath.innerHTML = file.filePath;
         let fileElement = document.createElement("div");
         // Set how the file has been modified
-        if (file.fileModification == "NEW") {
+        if (file.fileModification === "NEW") {
           fileElement.className = "file file-created";
-        } else if (file.fileModification == "MODIFIED") {
+        } else if (file.fileModification === "MODIFIED") {
           fileElement.className = "file file-modified";
-        } else if (file.fileModification == "DELETED") {
+        } else if (file.fileModification === "DELETED") {
           fileElement.className = "file file-deleted";
         } else {
           fileElement.className = "file";

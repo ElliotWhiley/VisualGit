@@ -119,7 +119,7 @@ function drawGraph() {
   network = new vis.Network(container, data, options);
 
   getAllCommits(function(commits) {
-    populateCommits(commits);
+    processGraph(commits);
   });
 
   network.on("oncontext", function(callback) {

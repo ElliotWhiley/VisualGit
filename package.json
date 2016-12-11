@@ -41,7 +41,8 @@
     "typings": "1.3.0",
     "vis": "4.16.0",
     "zone.js": "0.6.12",
-    "octonode": "0.7.7"
+    "octonode": "0.7.7",
+    "github-username": "3.0.0"
   },
   "devDependencies": {
     "devtron": "1.1.0",
