@@ -5,26 +5,27 @@ import { Component } from "@angular/core";
   selector: "user-auth",
   template: `
     <div class="authenticate" id="authenticate">
-      <form role="form" style="text-align:center">
+      <form role="form" style="text-align:center; margin-top:100px">
         <label>
-          <h1>User Authentication</h1>
+          <h1>VisualGit</h1>
         </label>
-        <div class="form-group">
-          <label for="name">
-            <p>Please Enter Your Username/Email</p>
-          </label>
-          <input type="text" name="username" size="50" id="username">
+        <br><br>
+        <div class="input-group" style="width:280px;">
+          <span class="input-group-addon" id="basic-addon1">@</span>
+          <input id="username" type="text" class="form-control" placeholder="username" aria-describedby="basic-addon1">
         </div>
+        <br>
 
-        <div class="form-group">
-          <label for="name">
-            <p>Password</p>
-          </label>
-          <input type="password" name="password" size="50" id="password"/>
+        <div class="input-group" style="width:280px;">
+          <span class="input-group-addon" id="basic-addon1">@</span>
+          <input id="password" type="password" class="form-control" placeholder="password" aria-describedby="basic-addon1">
         </div>
-        <p>
-        <p>
-        <button class="button-clone" (click)="switchToMainPanel()">Log In</button>
+        <br>
+        <div>
+          <button type="submit" style="width:280px;" class="btn btn-success" (click)="switchToMainPanel()">Log on</button>
+        </div>
+        <br>
+        <button type="submit" style="width:280px;" class="btn btn-primary" onclick="switchToMainPanel()">Continue without Log on</button>
       </form>
     </div>
   `
@@ -32,9 +33,6 @@ import { Component } from "@angular/core";
 
 export class AuthenticateComponent {
   switchToMainPanel(): void {
-    getUserInfo();
-    console.log(username);
-    console.log(password);
-    switchToMainPanel();
+    getUserInfo(switchToMainPanel);
   }
 }

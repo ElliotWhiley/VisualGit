@@ -4,7 +4,9 @@ let password;
 let aid, atoken;
 let client;
 let avaterImg;
-function getUserInfo() {
+let repoList = {};
+let url;
+function getUserInfo(callback) {
   username = document.getElementById("username").value;
   password = document.getElementById("password").value;
   cred = Git.Cred.userpassPlaintextNew(username, password);
@@ -17,9 +19,31 @@ function getUserInfo() {
   ghme.info(function(err, data, head) {
     if (err) {
       displayModal(err);
+    } else {
+      avaterImg = Object.values(data)[2]
+      let doc = document.getElementById("avater");
+      doc.innerHTML = "";
+      var elem = document.createElement("img");
+      elem.width = 40;
+      elem.height = 40;
+      elem.src = avaterImg;
+      doc.appendChild(elem);
+      callback();
     }
-    avaterImg = Object.values(data)[2]
-    document.getElementById("avater").src = avaterImg;
+  });
+
+  ghme.repos(function(err, data, head) {
+    if (err) {
+      return;
+    } else {
+      console.log(data.length);
+      for (let i = 0; i < data.length; i++) {
+        let rep = Object.values(data)[i];
+        console.log(rep['html_url']);
+        displayBranch(rep['name'], "repo-dropdown", "selectRepo(this)");
+        repoList[rep['name']] = rep['html_url'];
+      }
+    }
   });
 
   // let scopes = {
@@ -40,10 +64,25 @@ function getUserInfo() {
   // });
 }
 
-function getAvaImg(author) {
-  let client = github.client();
-  client.get('/users/pksunkara', {}, function (err, status, body, headers) {
-    console.log(Object.values(body)[2]);
-    return Object.values(body)[2]; //json object
-  });
+function selectRepo(ele) {
+  url = repoList[ele.innerHTML];
+  let butt = document.getElementById("cloneButton");
+  butt.innerHTML = 'Clone ' + ele.innerHTML;
+  butt.setAttribute('class', 'btn btn-primary');
+  console.log(url + 'JJJJJJJJ' + ele.innerHTML);
+}
+
+function cloneRepo() {
+  if (url === null) {
+    updateModalText("Ops! Error occors");
+    return;
+  }
+  let splitText = url.split(/\.|:|\//);
+  let local;
+  if (splitText.length >= 2) {
+    local = splitText[splitText.length - 2];
+  }
+  downloadFunc(url, local);
+  url = null;
+  $('#repo-modal').modal('hide');
 }

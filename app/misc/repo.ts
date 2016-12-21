@@ -1,5 +1,5 @@
 let Git = require("nodegit");
-let $ = require('jquery');
+let $ = require('jQuery');
 let repoFullPath;
 let repoLocalPath;
 let repoCurrentBranch = "master";
@@ -9,6 +9,10 @@ let span;
 function downloadRepository() {
   let cloneURL = document.getElementById("repoClone").value;
   let localPath = document.getElementById("repoSave").value;
+  downloadFunc(cloneURL, localPath);
+}
+
+function downloadFunc(cloneURL, localPath) {
   let fullLocalPath = require("path").join(__dirname, localPath);
   let options = {};
 
@@ -140,10 +144,13 @@ function clearBranchElement() {
 function displayBranch(name, id, onclick) {
   let ul = document.getElementById(id);
   let li = document.createElement("li");
-  li.setAttribute("role", "presentation");
-  li.setAttribute("href", "#");
-  li.setAttribute("onclick", onclick)
-  li.appendChild(document.createTextNode(name));
+  let a = document.createElement("a");
+  a.setAttribute("href", "#");
+  a.setAttribute("class", "list-group-item");
+  a.setAttribute("onclick", onclick);
+  li.setAttribute("role", "presentation")
+  a.appendChild(document.createTextNode(name));
+  li.appendChild(a);
   ul.appendChild(li);
 }
 

@@ -29,9 +29,11 @@ function populateCommits(commits) {
 
   // Plot the graph
   for (let i = 0; i < commitHistory.length; i++) {
+    console.log(i + " / " + commitHistory.length);
     let parents: string[] = commitHistory[i].parents();
     let nodeColumn;
-
+    console.log(commitHistory[i].toString() + "wow");
+    console.log("0....");
     for (let j = 0; j < parents.length; j++) {
       let parent = parents[j];
       if (!(parent in parentCount)) {
@@ -40,22 +42,28 @@ function populateCommits(commits) {
         parentCount[parent]++;
       }
     }
-
+    console.log("1....");
     if (parents.length === 0) {
       // no parents means first commit so assign the first column
+      console.log("1.2....");
       columns[0] = true;
       nodeColumn = 0;
+      console.log("2....");
     } else if (parents.length === 1) {
+      console.log("1.4....");
       let parent = parents[0];
-      let parentId = getNodeId(parents.toString());
+      console.log("1.41....");
+      let parentId = getNodeId(parent.toString());
+      console.log("1.42...." + parentId + "   " + parent.toString());
       let parentColumn = commitList[parentId - 1]["column"];
-
+      console.log("1.43....");
       if (parentCount[parent] === 1) {
         // first child
         nodeColumn = parentColumn;
       } else {
         nodeColumn = nextFreeColumn(parentColumn);
       }
+      console.log("2....");
     } else {
       let desiredColumn: number = -1;
       let desiredParent: string = "";
@@ -74,8 +82,8 @@ function populateCommits(commits) {
         }
 
       }
-      for (let i = 0; i < freeableColumns.length; i++) {
-        let index = freeableColumns[i];
+      for (let k = 0; k < freeableColumns.length; k++) {
+        let index = freeableColumns[k];
         columns[index] = false;
       }
       if (parentCount[desiredParent] === 1) {
@@ -111,12 +119,10 @@ function nextFreeColumn(column: number) {
 
 function addEdges(c) {
   let parents = c.parents();
-
   if (parents.length !== 0) {
     parents.forEach(function(parent) {
       let sha: string = c.sha();
       let parentSha: string = parent.toString();
-
       makeEdge(sha, parentSha);
     });
   }
@@ -139,7 +145,6 @@ function makeNode(c, column: number) {
     x: (column - 1) * spacingX,
     y: (id - 1) * spacingY,
   });
-
   commitList.push({
     sha: c.sha(),
     id: id,
@@ -163,7 +168,9 @@ function makeEdge(sha: string, parentSha: string) {
 function getNodeId(sha: string) {
   for (let i = 0; i < commitList.length; i++) {
     let c = commitList[i];
+    console.log(c["sha"] + "  " + c["id"]);
     if (c["sha"] === sha) {
+      console.log("yes!");
       return c["id"];
     }
   }

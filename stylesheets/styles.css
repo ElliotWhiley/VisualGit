@@ -29,9 +29,39 @@ body .navbar .dropdown-menu {
   color: #ffffff;
 }
 
+body .navbar .dropdown-menu a {
+  color: #000;
+}
+
+body .navbar .repo-name {
+  margin-left: 30px;
+}
+
+body .navbar .branch-name {
+  margin-left: 15px;
+}
+
+body .navbar .merge {
+  margin-left: 20px;
+}
+
+body .navbar .upload {
+  margin-left: 70px;
+}
+
+body .navbar .download {
+  margin-left: 30px;
+}
+
+body .navbar .dropdown-toggle {
+  margin-top: 10px;
+}
+
+
 body .container-fluid {
   padding-top: 10px;
 }
+
 
 body .file-panel {
   width: 20%;
@@ -172,6 +202,13 @@ body .authenticate {
   background-color: #181818;
   z-index: 30;
   box-sizing: border-box;
+  color: #fff;
+}
+
+body .authenticate .input-group {
+  margin-left: auto;
+  margin-right:auto;
+  text-align: center;
 }
 
 body .add-repository-panel {

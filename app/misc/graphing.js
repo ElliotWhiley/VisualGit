@@ -22,8 +22,11 @@ function populateCommits(commits) {
         return a.timeMs() - b.timeMs();
     });
     for (var i = 0; i < commitHistory.length; i++) {
+        console.log(i + " / " + commitHistory.length);
         var parents = commitHistory[i].parents();
         var nodeColumn = void 0;
+        console.log(commitHistory[i].toString() + "wow");
+        console.log("0....");
         for (var j = 0; j < parents.length; j++) {
             var parent_1 = parents[j];
             if (!(parent_1 in parentCount)) {
@@ -33,20 +36,28 @@ function populateCommits(commits) {
                 parentCount[parent_1]++;
             }
         }
+        console.log("1....");
         if (parents.length === 0) {
+            console.log("1.2....");
             columns[0] = true;
             nodeColumn = 0;
+            console.log("2....");
         }
         else if (parents.length === 1) {
+            console.log("1.4....");
             var parent_2 = parents[0];
-            var parentId = getNodeId(parents.toString());
+            console.log("1.41....");
+            var parentId = getNodeId(parent_2.toString());
+            console.log("1.42...." + parentId + "   " + parent_2.toString());
             var parentColumn = commitList[parentId - 1]["column"];
+            console.log("1.43....");
             if (parentCount[parent_2] === 1) {
                 nodeColumn = parentColumn;
             }
             else {
                 nodeColumn = nextFreeColumn(parentColumn);
             }
+            console.log("2....");
         }
         else {
             var desiredColumn = -1;
@@ -64,8 +75,8 @@ function populateCommits(commits) {
                     freeableColumns.push(proposedColumn);
                 }
             }
-            for (var i_1 = 0; i_1 < freeableColumns.length; i_1++) {
-                var index = freeableColumns[i_1];
+            for (var k = 0; k < freeableColumns.length; k++) {
+                var index = freeableColumns[k];
                 columns[index] = false;
             }
             if (parentCount[desiredParent] === 1) {
@@ -139,7 +150,9 @@ function makeEdge(sha, parentSha) {
 function getNodeId(sha) {
     for (var i = 0; i < commitList.length; i++) {
         var c = commitList[i];
+        console.log(c["sha"] + "  " + c["id"]);
         if (c["sha"] === sha) {
+            console.log("yes!");
             return c["id"];
         }
     }

@@ -13,17 +13,14 @@ var AuthenticateComponent = (function () {
     function AuthenticateComponent() {
     }
     AuthenticateComponent.prototype.switchToMainPanel = function () {
-        getUserInfo();
-        console.log(username);
-        console.log(password);
-        switchToMainPanel();
+        getUserInfo(switchToMainPanel);
     };
     return AuthenticateComponent;
 }());
 AuthenticateComponent = __decorate([
     core_1.Component({
         selector: "user-auth",
-        template: "\n    <div class=\"authenticate\" id=\"authenticate\">\n      <form role=\"form\" style=\"text-align:center\">\n        <label>\n          <h1>User Authentication</h1>\n        </label>\n        <div class=\"form-group\">\n          <label for=\"name\">\n            <p>Please Enter Your Username/Email</p>\n          </label>\n          <input type=\"text\" name=\"username\" size=\"50\" id=\"username\">\n        </div>\n\n        <div class=\"form-group\">\n          <label for=\"name\">\n            <p>Password</p>\n          </label>\n          <input type=\"password\" name=\"password\" size=\"50\" id=\"password\"/>\n        </div>\n        <p>\n        <p>\n        <button class=\"button-clone\" (click)=\"switchToMainPanel()\">Log In</button>\n      </form>\n    </div>\n  "
+        template: "\n    <div class=\"authenticate\" id=\"authenticate\">\n      <form role=\"form\" style=\"text-align:center; margin-top:100px\">\n        <label>\n          <h1>VisualGit</h1>\n        </label>\n        <br><br>\n        <div class=\"input-group\" style=\"width:280px;\">\n          <span class=\"input-group-addon\" id=\"basic-addon1\">@</span>\n          <input id=\"username\" type=\"text\" class=\"form-control\" placeholder=\"username\" aria-describedby=\"basic-addon1\">\n        </div>\n        <br>\n\n        <div class=\"input-group\" style=\"width:280px;\">\n          <span class=\"input-group-addon\" id=\"basic-addon1\">@</span>\n          <input id=\"password\" type=\"password\" class=\"form-control\" placeholder=\"password\" aria-describedby=\"basic-addon1\">\n        </div>\n        <br>\n        <div>\n          <button type=\"submit\" style=\"width:280px;\" class=\"btn btn-success\" (click)=\"switchToMainPanel()\">Log on</button>\n        </div>\n        <br>\n        <button type=\"submit\" style=\"width:280px;\" class=\"btn btn-primary\" onclick=\"switchToMainPanel()\">Continue without Log on</button>\n      </form>\n    </div>\n  "
     }),
     __metadata("design:paramtypes", [])
 ], AuthenticateComponent);

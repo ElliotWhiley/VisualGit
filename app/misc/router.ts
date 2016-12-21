@@ -1,6 +1,7 @@
 let cred;
 
 function switchToMainPanel() {
+  console.log("lolololol");
   hideAuthenticatePanel();
   hideAddRepositoryPanel();
   displayFilePanel();

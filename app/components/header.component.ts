@@ -7,28 +7,31 @@ import { GraphService } from "../services/graph.service";
   template: `
     <nav class="navbar navbar-inverse" role="navigation">
       <div class="container-fluid">
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        </div>
+        <div class="collapse navbar-collapse" id="navbar">
           <ul class="nav navbar-nav">
             <li><img src="./assets/AddRepositoryFolder.svg" (click)="promptUserToAddRepository()" class="add-repository-button" title="Add Repository"></li>
-            <li><img src="./assets/RightArrow.svg" class="right-arrow" href="#"></li>
-            <li class="dropdown repo-name">
-              <a href="#" class="dropdown-toggle" id="repo-name" data-toggle="dropdown">
-                Repository
+            <li class="repo-name dropdown">
+              <button class="btn btn-inverse dropdown-toggle btn-sm" id="repo-name" data-toggle="modal" data-target="#repo-modal">
+                repository
                 <span class="caret"></span>
-              </a>
-              <ul class="dropdown-menu" id="repo-dropdown" role="menu">
-                <li><a href="#">WTF</a></li>
-              </ul>
+              </button>
             </li>
-            <li><img src="./assets/RightArrow.svg" class="right-arrow" href="#"></li>
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" id="branch-name" onclick="getAllBranches()" data-toggle="dropdown">
-                Branch
+            <li class="branch-name dropdown">
+              <button class="btn btn-inverse dropdown-toggle btn-sm" id="branch-name" onclick="getAllBranches()" data-toggle="dropdown">
+                branch
                 <span class="caret"></span>
-              </a>
-              <ul class="dropdown-menu" id="branch-dropdown" role="menu" >
+              </button>
+              <ul class="dropdown-menu" id="branch-dropdown" role="menu" aria-labelledby="branch-name">
                 <li role="presentation" id="create-branch">
-                  <div class="input-group">
+                  <div class="input-group menuitem">
                     <input type="text" id="branchName" class="form-control" placeholder="Search or create branch">
                     <span class="input-group-btn">
                       <button class="btn btn-default" type="button" onclick="createBranch()">OK</button>
@@ -37,19 +40,26 @@ import { GraphService } from "../services/graph.service";
                 </li>
               </ul>
             </li>
-            <li>
-              <a href="#" class="dropdown-toggle btn btn-inverse" id="merge-name" onclick="getOtherBranches()" style="font-size : 20px" data-toggle="dropdown">
-                Update From
+            <li class="merge dropdown">
+              <button href="#" class="btn btn-inverse dropdown-toggle btn-sm" id="merge-name" onclick="getOtherBranches()" data-toggle="dropdown">
+                update from
                 <span class="caret"></span>
-              </a>
+              </button>
               <ul class="dropdown-menu" id="merge-dropdown" role="menu" >
               </ul>
             </li>
+            <li class="upload"><i class="fa fa-cloud-upload fa-2x" aria-hidden="true" style="color:white" onclick="pushToRemote()" title="Push"></i></li>
+            <li class="download"><i class="fa fa-cloud-download fa-2x" aria-hidden="true" style="color:white" onclick="pullFromRemote()" title="Pull"></i></li>
           </ul>
-          <img src="./assets/Pull.svg" class="pull-button" onclick="pullFromRemote()" title="Pull">
-          <img src="./assets/Push.svg" class="push-button" onclick="pushToRemote()" title="Push">
           <ul class="navbar-nav navbar-right">
-            <li><img id="avater" height="50" width="50" src="./assets/AddRepositoryFolder.svg" align="right"></li>
+            <li>
+              <a id="avater" class="dropdown-toggle">
+                <i class="fa fa-github fa-2x" aria-hidden="true" style="color:white"></i>
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" id="user-dropdown" role="menu" >
+              </ul>
+            </li>
           </ul>
         </div>
       </div>
@@ -71,6 +81,17 @@ import { GraphService } from "../services/graph.service";
           </div>
         </div>
       </div>
+    </div>
+    <div id="repo-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <ul class="list-group"id="repo-dropdown" role="menu" aria-labelledby="repo-name">
+          </ul>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary disabled" id="cloneButton" onclick="cloneRepo()">Clone</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
     </div>
   `,
   providers: [RepositoryService, GraphService]
