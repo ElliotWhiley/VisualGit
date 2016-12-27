@@ -1,9 +1,21 @@
 var vis = require("vis");
-var options, nodes, edges, network;
+var options, bsNodes, bsEdges, abNodes, abEdges, nodes, edges, network;
 function drawGraph() {
+    bsNodes = new vis.DataSet([]);
+    bsEdges = new vis.DataSet([]);
+    abNodes = new vis.DataSet([]);
+    abEdges = new vis.DataSet([]);
     nodes = new vis.DataSet([]);
     edges = new vis.DataSet([]);
     var container = document.getElementById("my-network");
+    var bsData = {
+        nodes: bsNodes,
+        edges: bsEdges
+    };
+    var abData = {
+        nodes: abNodes,
+        edges: abEdges
+    };
     var data = {
         nodes: nodes,
         edges: edges
@@ -101,11 +113,11 @@ function drawGraph() {
             enabled: false,
         },
     };
-    network = new vis.Network(container, data, options);
+    network = new vis.Network(container, bsData, options);
     getAllCommits(function (commits) {
         processGraph(commits);
     });
-    network.on("oncontext", function (callback) {
+    network.on("doubleClick", function (callback) {
         if (callback.nodes[0] === undefined) {
             return;
         }
@@ -121,5 +133,35 @@ function drawGraph() {
             }
         };
         network.focus(callback.nodes[0], moveOptions);
+    }, false);
+    var flag = "basic";
+    network.on("zoom", function (callback) {
+        var moveOptions = {
+            scale: 1,
+            animation: {
+                duration: 1000,
+                easingFunction: "easeInOutQuad",
+            }
+        };
+        if (network.getScale() > 1.5 && callback.direction === '+' && flag === 'abstract') {
+            network.setData(data);
+            flag = 'node';
+            network.fit(moveOptions);
+        }
+        else if (network.getScale() < 0.6 && callback.direction === '-' && flag === 'node') {
+            network.setData(abData);
+            flag = 'abstract';
+            network.fit(moveOptions);
+        }
+        else if (network.getScale() > 1.5 && callback.direction === '+' && flag === 'basic') {
+            network.setData(abData);
+            flag = 'abstract';
+            network.fit(moveOptions);
+        }
+        else if (network.getScale() < 0.6 && callback.direction === '-' && flag === 'abstract') {
+            network.setData(bsData);
+            flag = 'basic';
+            network.fit(moveOptions);
+        }
     }, false);
 }

@@ -3,37 +3,73 @@ import * as nodegit from "git";
 let vis = require("vis");
 let github1 = require("octonode");
 let nodeId = 1;
+let absNodeId = 1;
+let basicNodeId = 1;
+let abstractList = [];
+let basicList = [];
 let commitHistory = [];
 let commitList = [];
 let spacingY = 100;
 let spacingX = 80;
 let parentCount = {};
 let columns: boolean[] = [];
+let abstractCount = 0;
+let basicCount = 0;
 let githubUsername = require('github-username');
 let avatarUrls = {};
 
 function processGraph(commits: nodegit.Commit[]) {
-  populateCommits(commits);
+  sortCommits(commits);
+  populateCommits();
 }
 
-function populateCommits(commits) {
+function sortCommits(commits) {
+  while (commits.length > 0) {
+    let commit = commits.shift();
+    let parents = commit.parents();
+    if (parents === null || parents.length === 0) {
+      commitHistory.push(commit);
+    } else {
+      let count = 0;
+      for (let i = 0; i < parents.length; i++) {
+        let psha = parents[i].toString();
+        for (let j = 0; j < commitHistory.length; j++) {
+          if (commitHistory[j].toString() === psha) {
+            count++;
+            break;
+          }
+        }
+        if (count < i + 1) {
+          break;
+        }
+      }
+      if (count === parents.length) {
+        commitHistory.push(commit);
+      } else {
+        commits.push(commit);
+      }
+    }
+  }
+}
+
+function populateCommits() {
   // reset variables for idempotency, shouldn't be needed when a class is created instead
   nodeId = 1;
+  absNodeId = 1;
+  basicNodeId = 1;
   commitList = [];
   parentCount = {};
   columns = [];
   // Sort
-  commitHistory = commits.sort(function(a, b) {
-    return a.timeMs() - b.timeMs();
-  });
+  // commitHistory = commits.sort(function(a, b) {
+  //   return a.timeMs() - b.timeMs();
+  // });
 
   // Plot the graph
   for (let i = 0; i < commitHistory.length; i++) {
     console.log(i + " / " + commitHistory.length);
     let parents: string[] = commitHistory[i].parents();
     let nodeColumn;
-    console.log(commitHistory[i].toString() + "wow");
-    console.log("0....");
     for (let j = 0; j < parents.length; j++) {
       let parent = parents[j];
       if (!(parent in parentCount)) {
@@ -42,33 +78,32 @@ function populateCommits(commits) {
         parentCount[parent]++;
       }
     }
-    console.log("1....");
     if (parents.length === 0) {
       // no parents means first commit so assign the first column
-      console.log("1.2....");
       columns[0] = true;
       nodeColumn = 0;
-      console.log("2....");
+      console.log("1.10");
     } else if (parents.length === 1) {
-      console.log("1.4....");
+      console.log("1.20");
+      console.log("1.20 " + commitList[0]['sha'].toString());
       let parent = parents[0];
-      console.log("1.41....");
+      console.log(parent.toString());
       let parentId = getNodeId(parent.toString());
-      console.log("1.42...." + parentId + "   " + parent.toString());
+      console.log("1.211  " + parentId);
       let parentColumn = commitList[parentId - 1]["column"];
-      console.log("1.43....");
+      console.log("1.212");
       if (parentCount[parent] === 1) {
         // first child
         nodeColumn = parentColumn;
       } else {
         nodeColumn = nextFreeColumn(parentColumn);
       }
-      console.log("2....");
+      console.log("1.22");
     } else {
       let desiredColumn: number = -1;
       let desiredParent: string = "";
       let freeableColumns: number[] = [];
-
+      console.log("1.30");
       for (let j = 0; j < parents.length; j++) {
         let parent: string = parents[j];
         let parentId = getNodeId(parent.toString());
@@ -82,6 +117,7 @@ function populateCommits(commits) {
         }
 
       }
+      console.log("1.31");
       for (let k = 0; k < freeableColumns.length; k++) {
         let index = freeableColumns[k];
         columns[index] = false;
@@ -92,14 +128,25 @@ function populateCommits(commits) {
       } else {
         nodeColumn = nextFreeColumn(desiredColumn);
       }
+      console.log("1.32");
     }
 
     makeNode(commitHistory[i], nodeColumn);
+    makeAbsNode(commitHistory[i], nodeColumn);
+    makeBasicNode(commitHistory[i], nodeColumn);
   }
 
   // Add edges
   for (let i = 0; i < commitHistory.length; i++) {
     addEdges(commitHistory[i]);
+  }
+
+  for (let i = 0; i < abstractList.length; i++) {
+    addAbsEdge(abstractList[i]);
+  }
+
+  for (let i = 0; i < basicList.length; i++) {
+    addBasicEdge(basicList[i]);
   }
 
   commitList = commitList.sort(timeCompare);
@@ -124,6 +171,143 @@ function addEdges(c) {
       let sha: string = c.sha();
       let parentSha: string = parent.toString();
       makeEdge(sha, parentSha);
+    });
+  }
+}
+
+function addAbsEdge(c) {
+  let parents = c['parents'];
+  for (let i = 0; i < parents.length; i++) {
+    for (let j = 0; j < abstractList.length; j++) {
+      console.log(i + "  " + j + "  " + abstractList[j]['sha']);
+      if (abstractList[j]['sha'].indexOf(parents[i].toString()) > -1) {
+        abEdges.add({
+          from: abstractList[j]['id'],
+          to: c['id']
+        });
+      }
+    }
+  }
+}
+
+function addBasicEdge(c) {
+  let parents = c['parents'];
+  for (let i = 0; i < parents.length; i++) {
+    for (let j = 0; j < basicList.length; j++) {
+      console.log(i + "  " + j + "  " + basicList[j]['sha']);
+      if (basicList[j]['sha'].indexOf(parents[i].toString()) > -1) {
+        bsEdges.add({
+          from: basicList[j]['id'],
+          to: c['id']
+        });
+      }
+    }
+  }
+}
+
+function makeBasicNode(c, column: number) {
+  let reference;
+  let stringer = c.author().toString().replace(/</, "%").replace(/>/, "%");
+  let email = stringer.split("%")[1];
+  let flag = true;
+  let count = 1;
+  if (c.parents().length === 1) {
+    let cp = c.parents()[0].toString();
+    for (let i = 0; i < basicList.length; i++) {
+      let index = basicList[i]['sha'].indexOf(cp);
+      if (index > -1) {
+        flag = false;
+        if (basicList[i]['email'].indexOf(email) < 0) {
+          basicList[i]['email'].push(email);
+        }
+        basicList[i]['count'] += 1;
+        count = basicList[i]['count'];
+        basicList[i]['sha'].push(c.toString());
+        break;
+      }
+    }
+  }
+
+  if (flag) {
+    let id = basicNodeId++;
+    let title = "Number of Commits: " + count;
+    bsNodes.add({
+      id: id,
+      shape: "circularImage",
+      title: title,
+      image: imageForUser(email),
+      physics: false,
+      fixed: (id === 1),
+      x: (column - 1) * spacingX,
+      y: (id - 1) * spacingY,
+    });
+
+    let shaList = [];
+    shaList.push(c.toString());
+
+    let emailList = [];
+    emailList.push(email);
+
+    basicList.push({
+      sha: shaList,
+      id: id,
+      time: c.timeMs(),
+      column: column,
+      email: emailList,
+      reference: reference,
+      parents: c.parents(),
+      count: 1,
+    });
+  }
+}
+
+function makeAbsNode(c, column: number) {
+  let reference;
+  let stringer = c.author().toString().replace(/</, "%").replace(/>/, "%");
+  let email = stringer.split("%")[1];
+  let flag = true;
+  let count = 1;
+  if (c.parents().length === 1) {
+    let cp = c.parents()[0].toString();
+    for (let i = 0; i < abstractList.length; i++) {
+      let index = abstractList[i]['sha'].indexOf(cp);
+      if (index > -1 && abstractList[i]['email'] === email) {
+        flag = false;
+        abstractList[i]['count'] += 1;
+        count = abstractList[i]['count'];
+        abstractList[i]['sha'].push(c.toString());
+        abNodes.update({id: i+1, title: "Author: " + email + "<br>" + "Number of Commits: " + count});
+        break;
+      }
+    }
+  }
+
+  if (flag) {
+    let id = absNodeId++;
+    let title = "Author: " + email + "<br>" + "Number of Commits: " + count;
+    abNodes.add({
+      id: id,
+      shape: "circularImage",
+      title: title,
+      image: imageForUser(email),
+      physics: false,
+      fixed: (id === 1),
+      x: (column - 1) * spacingX,
+      y: (id - 1) * spacingY,
+    });
+
+    let shaList = [];
+    shaList.push(c.toString());
+
+    abstractList.push({
+      sha: shaList,
+      id: id,
+      time: c.timeMs(),
+      column: column,
+      email: email,
+      reference: reference,
+      parents: c.parents(),
+      count: 1,
     });
   }
 }
@@ -168,9 +352,7 @@ function makeEdge(sha: string, parentSha: string) {
 function getNodeId(sha: string) {
   for (let i = 0; i < commitList.length; i++) {
     let c = commitList[i];
-    console.log(c["sha"] + "  " + c["id"]);
     if (c["sha"] === sha) {
-      console.log("yes!");
       return c["id"];
     }
   }
