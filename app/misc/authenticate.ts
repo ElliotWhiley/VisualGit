@@ -28,6 +28,8 @@ function getUserInfo(callback) {
       elem.height = 40;
       elem.src = avaterImg;
       doc.appendChild(elem);
+      doc = document.getElementById("log");
+      doc.innerHTML = 'sign out';
       callback();
     }
   });

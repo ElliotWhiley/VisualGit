@@ -19,6 +19,7 @@ let githubUsername = require('github-username');
 let avatarUrls = {};
 
 function processGraph(commits: nodegit.Commit[]) {
+  commitHistory = [];
   sortCommits(commits);
   populateCommits();
 }
@@ -82,28 +83,20 @@ function populateCommits() {
       // no parents means first commit so assign the first column
       columns[0] = true;
       nodeColumn = 0;
-      console.log("1.10");
     } else if (parents.length === 1) {
-      console.log("1.20");
-      console.log("1.20 " + commitList[0]['sha'].toString());
       let parent = parents[0];
-      console.log(parent.toString());
       let parentId = getNodeId(parent.toString());
-      console.log("1.211  " + parentId);
       let parentColumn = commitList[parentId - 1]["column"];
-      console.log("1.212");
       if (parentCount[parent] === 1) {
         // first child
         nodeColumn = parentColumn;
       } else {
         nodeColumn = nextFreeColumn(parentColumn);
       }
-      console.log("1.22");
     } else {
       let desiredColumn: number = -1;
       let desiredParent: string = "";
       let freeableColumns: number[] = [];
-      console.log("1.30");
       for (let j = 0; j < parents.length; j++) {
         let parent: string = parents[j];
         let parentId = getNodeId(parent.toString());
@@ -117,7 +110,6 @@ function populateCommits() {
         }
 
       }
-      console.log("1.31");
       for (let k = 0; k < freeableColumns.length; k++) {
         let index = freeableColumns[k];
         columns[index] = false;
@@ -128,8 +120,9 @@ function populateCommits() {
       } else {
         nodeColumn = nextFreeColumn(desiredColumn);
       }
-      console.log("1.32");
     }
+
+    console.log(Object.keys(bsNodes).length + "????");
 
     makeNode(commitHistory[i], nodeColumn);
     makeAbsNode(commitHistory[i], nodeColumn);
@@ -179,7 +172,7 @@ function addAbsEdge(c) {
   let parents = c['parents'];
   for (let i = 0; i < parents.length; i++) {
     for (let j = 0; j < abstractList.length; j++) {
-      console.log(i + "  " + j + "  " + abstractList[j]['sha']);
+      //console.log(i + "  " + j + "  " + abstractList[j]['sha']);
       if (abstractList[j]['sha'].indexOf(parents[i].toString()) > -1) {
         abEdges.add({
           from: abstractList[j]['id'],
@@ -194,7 +187,7 @@ function addBasicEdge(c) {
   let parents = c['parents'];
   for (let i = 0; i < parents.length; i++) {
     for (let j = 0; j < basicList.length; j++) {
-      console.log(i + "  " + j + "  " + basicList[j]['sha']);
+      //console.log(i + "  " + j + "  " + basicList[j]['sha']);
       if (basicList[j]['sha'].indexOf(parents[i].toString()) > -1) {
         bsEdges.add({
           from: basicList[j]['id'],
@@ -207,6 +200,7 @@ function addBasicEdge(c) {
 
 function makeBasicNode(c, column: number) {
   let reference;
+  let name = getName(c.author().toString());
   let stringer = c.author().toString().replace(/</, "%").replace(/>/, "%");
   let email = stringer.split("%")[1];
   let flag = true;
@@ -215,17 +209,20 @@ function makeBasicNode(c, column: number) {
     let cp = c.parents()[0].toString();
     for (let i = 0; i < basicList.length; i++) {
       let index = basicList[i]['sha'].indexOf(cp);
-      if (index > -1) {
+      if (index > -1 && basicList[i]['column'] === column) {
         flag = false;
         if (basicList[i]['email'].indexOf(email) < 0) {
           basicList[i]['email'].push(email);
         }
         basicList[i]['count'] += 1;
         count = basicList[i]['count'];
+        bsNodes.update({id: i+1, title: "Number of Commits: " + count});
         basicList[i]['sha'].push(c.toString());
         break;
       }
     }
+  } else if (c.parents().length === 2) {
+    console.log(email + "?????");
   }
 
   if (flag) {
@@ -235,7 +232,7 @@ function makeBasicNode(c, column: number) {
       id: id,
       shape: "circularImage",
       title: title,
-      image: imageForUser(email),
+      image: imageForUser(name),
       physics: false,
       fixed: (id === 1),
       x: (column - 1) * spacingX,
@@ -263,6 +260,7 @@ function makeBasicNode(c, column: number) {
 
 function makeAbsNode(c, column: number) {
   let reference;
+  let name = getName(c.author().toString());
   let stringer = c.author().toString().replace(/</, "%").replace(/>/, "%");
   let email = stringer.split("%")[1];
   let flag = true;
@@ -271,7 +269,7 @@ function makeAbsNode(c, column: number) {
     let cp = c.parents()[0].toString();
     for (let i = 0; i < abstractList.length; i++) {
       let index = abstractList[i]['sha'].indexOf(cp);
-      if (index > -1 && abstractList[i]['email'] === email) {
+      if (index > -1 && abstractList[i]['email'] === email && abstractList[i]['column'] === column) {
         flag = false;
         abstractList[i]['count'] += 1;
         count = abstractList[i]['count'];
@@ -289,7 +287,7 @@ function makeAbsNode(c, column: number) {
       id: id,
       shape: "circularImage",
       title: title,
-      image: imageForUser(email),
+      image: imageForUser(name),
       physics: false,
       fixed: (id === 1),
       x: (column - 1) * spacingX,
@@ -314,8 +312,8 @@ function makeAbsNode(c, column: number) {
 
 function makeNode(c, column: number) {
   let id = nodeId++;
-  let name = "Node " + id;
   let reference;
+  let name = getName(c.author().toString());
   let stringer = c.author().toString().replace(/</, "%").replace(/>/, "%");
   let email = stringer.split("%")[1];
   let title = "Author: " + email + "<br>" + "Message: " + c.message();
@@ -323,7 +321,7 @@ function makeNode(c, column: number) {
     id: id,
     shape: "circularImage",
     title: title,
-    image: imageForUser(email),
+    image: imageForUser(name),
     physics: false,
     fixed: (id === 1),
     x: (column - 1) * spacingX,

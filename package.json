@@ -43,7 +43,8 @@
     "zone.js": "0.6.12",
     "octonode": "0.7.7",
     "github-username": "3.0.0",
-    "font-awesome": "4.7.0"
+    "font-awesome": "4.7.0",
+    "material-letter-icons": "1.0.7"
   },
   "devDependencies": {
     "devtron": "1.1.0",

@@ -17,6 +17,7 @@ var basicCount = 0;
 var githubUsername = require('github-username');
 var avatarUrls = {};
 function processGraph(commits) {
+    commitHistory = [];
     sortCommits(commits);
     populateCommits();
 }
@@ -73,30 +74,22 @@ function populateCommits() {
         if (parents.length === 0) {
             columns[0] = true;
             nodeColumn = 0;
-            console.log("1.10");
         }
         else if (parents.length === 1) {
-            console.log("1.20");
-            console.log("1.20 " + commitList[0]['sha'].toString());
             var parent_2 = parents[0];
-            console.log(parent_2.toString());
             var parentId = getNodeId(parent_2.toString());
-            console.log("1.211  " + parentId);
             var parentColumn = commitList[parentId - 1]["column"];
-            console.log("1.212");
             if (parentCount[parent_2] === 1) {
                 nodeColumn = parentColumn;
             }
             else {
                 nodeColumn = nextFreeColumn(parentColumn);
             }
-            console.log("1.22");
         }
         else {
             var desiredColumn = -1;
             var desiredParent = "";
             var freeableColumns = [];
-            console.log("1.30");
             for (var j = 0; j < parents.length; j++) {
                 var parent_3 = parents[j];
                 var parentId = getNodeId(parent_3.toString());
@@ -109,7 +102,6 @@ function populateCommits() {
                     freeableColumns.push(proposedColumn);
                 }
             }
-            console.log("1.31");
             for (var k = 0; k < freeableColumns.length; k++) {
                 var index = freeableColumns[k];
                 columns[index] = false;
@@ -120,8 +112,8 @@ function populateCommits() {
             else {
                 nodeColumn = nextFreeColumn(desiredColumn);
             }
-            console.log("1.32");
         }
+        console.log(Object.keys(bsNodes).length + "????");
         makeNode(commitHistory[i], nodeColumn);
         makeAbsNode(commitHistory[i], nodeColumn);
         makeBasicNode(commitHistory[i], nodeColumn);
@@ -161,7 +153,6 @@ function addAbsEdge(c) {
     var parents = c['parents'];
     for (var i = 0; i < parents.length; i++) {
         for (var j = 0; j < abstractList.length; j++) {
-            console.log(i + "  " + j + "  " + abstractList[j]['sha']);
             if (abstractList[j]['sha'].indexOf(parents[i].toString()) > -1) {
                 abEdges.add({
                     from: abstractList[j]['id'],
@@ -175,7 +166,6 @@ function addBasicEdge(c) {
     var parents = c['parents'];
     for (var i = 0; i < parents.length; i++) {
         for (var j = 0; j < basicList.length; j++) {
-            console.log(i + "  " + j + "  " + basicList[j]['sha']);
             if (basicList[j]['sha'].indexOf(parents[i].toString()) > -1) {
                 bsEdges.add({
                     from: basicList[j]['id'],
@@ -187,6 +177,7 @@ function addBasicEdge(c) {
 }
 function makeBasicNode(c, column) {
     var reference;
+    var name = getName(c.author().toString());
     var stringer = c.author().toString().replace(/</, "%").replace(/>/, "%");
     var email = stringer.split("%")[1];
     var flag = true;
@@ -195,17 +186,21 @@ function makeBasicNode(c, column) {
         var cp = c.parents()[0].toString();
         for (var i = 0; i < basicList.length; i++) {
             var index = basicList[i]['sha'].indexOf(cp);
-            if (index > -1) {
+            if (index > -1 && basicList[i]['column'] === column) {
                 flag = false;
                 if (basicList[i]['email'].indexOf(email) < 0) {
                     basicList[i]['email'].push(email);
                 }
                 basicList[i]['count'] += 1;
                 count = basicList[i]['count'];
+                bsNodes.update({ id: i + 1, title: "Number of Commits: " + count });
                 basicList[i]['sha'].push(c.toString());
                 break;
             }
         }
+    }
+    else if (c.parents().length === 2) {
+        console.log(email + "?????");
     }
     if (flag) {
         var id = basicNodeId++;
@@ -214,7 +209,7 @@ function makeBasicNode(c, column) {
             id: id,
             shape: "circularImage",
             title: title,
-            image: imageForUser(email),
+            image: imageForUser(name),
             physics: false,
             fixed: (id === 1),
             x: (column - 1) * spacingX,
@@ -238,6 +233,7 @@ function makeBasicNode(c, column) {
 }
 function makeAbsNode(c, column) {
     var reference;
+    var name = getName(c.author().toString());
     var stringer = c.author().toString().replace(/</, "%").replace(/>/, "%");
     var email = stringer.split("%")[1];
     var flag = true;
@@ -246,7 +242,7 @@ function makeAbsNode(c, column) {
         var cp = c.parents()[0].toString();
         for (var i = 0; i < abstractList.length; i++) {
             var index = abstractList[i]['sha'].indexOf(cp);
-            if (index > -1 && abstractList[i]['email'] === email) {
+            if (index > -1 && abstractList[i]['email'] === email && abstractList[i]['column'] === column) {
                 flag = false;
                 abstractList[i]['count'] += 1;
                 count = abstractList[i]['count'];
@@ -263,7 +259,7 @@ function makeAbsNode(c, column) {
             id: id,
             shape: "circularImage",
             title: title,
-            image: imageForUser(email),
+            image: imageForUser(name),
             physics: false,
             fixed: (id === 1),
             x: (column - 1) * spacingX,
@@ -285,8 +281,8 @@ function makeAbsNode(c, column) {
 }
 function makeNode(c, column) {
     var id = nodeId++;
-    var name = "Node " + id;
     var reference;
+    var name = getName(c.author().toString());
     var stringer = c.author().toString().replace(/</, "%").replace(/>/, "%");
     var email = stringer.split("%")[1];
     var title = "Author: " + email + "<br>" + "Message: " + c.message();
@@ -294,7 +290,7 @@ function makeNode(c, column) {
         id: id,
         shape: "circularImage",
         title: title,
-        image: imageForUser(email),
+        image: imageForUser(name),
         physics: false,
         fixed: (id === 1),
         x: (column - 1) * spacingX,

@@ -119,7 +119,7 @@ function pushToRemote() {
         .then(function (repo) {
         console.log("Pushing changes to remote");
         displayModal("Pushing changes to remote...");
-        addCommand("git push -u origin master");
+        addCommand("git push -u origin " + branch);
         repo.getRemotes()
             .then(function (remotes) {
             repo.getRemote(remotes[0])

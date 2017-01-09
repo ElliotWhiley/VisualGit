@@ -53,11 +53,16 @@ import { GraphService } from "../services/graph.service";
           </ul>
           <ul class="navbar-nav navbar-right">
             <li>
-              <a id="avater" class="dropdown-toggle">
+              <a id="avater" class="dropdown-toggle" data-toggle="dropdown">
                 <i class="fa fa-github fa-2x" aria-hidden="true" style="color:white"></i>
                 <span class="caret"></span>
               </a>
               <ul class="dropdown-menu" id="user-dropdown" role="menu" >
+                <li role="presentation">
+                  <a href="#" id="log" class="list-group-item" onclick="displayAuthenticatePanel()">
+                    sign in
+                  </a>
+                </li>
               </ul>
             </li>
           </ul>

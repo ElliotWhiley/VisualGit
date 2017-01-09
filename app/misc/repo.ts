@@ -80,7 +80,7 @@ function refreshAll(repository) {
     console.log("Updating the graph and the labels");
     drawGraph();
     document.getElementById("repo-name").innerHTML = repoLocalPath;
-    document.getElementById("branch-name").innerHTML = branch;
+    document.getElementById("branch-name").innerHTML = branch + '<span class="caret"></span>';
   });
 }
 
@@ -156,6 +156,7 @@ function displayBranch(name, id, onclick) {
 
 function checkoutLocalBranch(element) {
   let bn = element.innerHTML;
+  repoCurrentBranch = bn;
   console.log(bn + ">>>>>>>>");
   Git.Repository.open(repoFullPath)
   .then(function(repo) {

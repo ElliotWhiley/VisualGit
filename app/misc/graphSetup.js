@@ -1,6 +1,7 @@
 var vis = require("vis");
 var options, bsNodes, bsEdges, abNodes, abEdges, nodes, edges, network;
 function drawGraph() {
+    console.log(bsNodes);
     bsNodes = new vis.DataSet([]);
     bsEdges = new vis.DataSet([]);
     abNodes = new vis.DataSet([]);
@@ -8,6 +9,7 @@ function drawGraph() {
     nodes = new vis.DataSet([]);
     edges = new vis.DataSet([]);
     var container = document.getElementById("my-network");
+    container.innerHTML = '';
     var bsData = {
         nodes: bsNodes,
         edges: bsEdges
@@ -148,7 +150,7 @@ function drawGraph() {
             flag = 'node';
             network.fit(moveOptions);
         }
-        else if (network.getScale() < 0.6 && callback.direction === '-' && flag === 'node') {
+        else if (network.getScale() < 0.4 && callback.direction === '-' && flag === 'node') {
             network.setData(abData);
             flag = 'abstract';
             network.fit(moveOptions);
@@ -158,7 +160,7 @@ function drawGraph() {
             flag = 'abstract';
             network.fit(moveOptions);
         }
-        else if (network.getScale() < 0.6 && callback.direction === '-' && flag === 'abstract') {
+        else if (network.getScale() < 0.4 && callback.direction === '-' && flag === 'abstract') {
             network.setData(bsData);
             flag = 'basic';
             network.fit(moveOptions);

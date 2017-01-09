@@ -22,10 +22,10 @@ import { Component } from "@angular/core";
         </div>
         <br>
         <div>
-          <button type="submit" style="width:280px;" class="btn btn-success" (click)="switchToMainPanel()">Log on</button>
+          <button type="submit" style="width:280px;" class="btn btn-success" (click)="switchToMainPanel()">Sign In</button>
         </div>
         <br>
-        <button type="submit" style="width:280px;" class="btn btn-primary" onclick="switchToMainPanel()">Continue without Log on</button>
+        <button type="submit" style="width:280px;" class="btn btn-primary" onclick="switchToMainPanel()">Continue without sign in</button>
       </form>
     </div>
   `
