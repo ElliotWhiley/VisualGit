@@ -1,7 +1,6 @@
 var vis = require("vis");
 var options, bsNodes, bsEdges, abNodes, abEdges, nodes, edges, network;
 function drawGraph() {
-    console.log(bsNodes);
     bsNodes = new vis.DataSet([]);
     bsEdges = new vis.DataSet([]);
     abNodes = new vis.DataSet([]);
@@ -49,7 +48,7 @@ function drawGraph() {
         },
         groups: {},
         interaction: {
-            dragNodes: false,
+            dragNodes: true,
             dragView: true,
             hideEdgesOnDrag: false,
             hideNodesOnDrag: false,
@@ -119,6 +118,9 @@ function drawGraph() {
     getAllCommits(function (commits) {
         processGraph(commits);
     });
+    network.on("stabilizationIterationsDone", function () {
+        network.setOptions({ physics: false });
+    });
     network.on("doubleClick", function (callback) {
         if (callback.nodes[0] === undefined) {
             return;
@@ -164,6 +166,14 @@ function drawGraph() {
             network.setData(bsData);
             flag = 'basic';
             network.fit(moveOptions);
+        }
+    }, false);
+    network.on('dragEnd', function (callback) {
+        var fromNode = callback.nodes[0];
+        var toNode = network.getNodeAt(callback.pointer.DOM);
+        if (fromNode !== toNode && commitList[fromNode - 1]['branch'] && commitList[toNode - 1]['branch']) {
+            console.log(fromNode + "!!!!!!!" + toNode);
+            mergeCommits(fromNode, toNode);
         }
     }, false);
 }

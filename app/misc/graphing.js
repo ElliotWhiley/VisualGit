@@ -14,10 +14,12 @@ var parentCount = {};
 var columns = [];
 var abstractCount = 0;
 var basicCount = 0;
+var numOfCommits = 0;
 var githubUsername = require('github-username');
 var avatarUrls = {};
 function processGraph(commits) {
     commitHistory = [];
+    numOfCommits = commits.length;
     sortCommits(commits);
     populateCommits();
 }
@@ -59,7 +61,6 @@ function populateCommits() {
     parentCount = {};
     columns = [];
     for (var i = 0; i < commitHistory.length; i++) {
-        console.log(i + " / " + commitHistory.length);
         var parents = commitHistory[i].parents();
         var nodeColumn = void 0;
         for (var j = 0; j < parents.length; j++) {
@@ -113,19 +114,10 @@ function populateCommits() {
                 nodeColumn = nextFreeColumn(desiredColumn);
             }
         }
-        console.log(Object.keys(bsNodes).length + "????");
         makeNode(commitHistory[i], nodeColumn);
-        makeAbsNode(commitHistory[i], nodeColumn);
-        makeBasicNode(commitHistory[i], nodeColumn);
     }
     for (var i = 0; i < commitHistory.length; i++) {
         addEdges(commitHistory[i]);
-    }
-    for (var i = 0; i < abstractList.length; i++) {
-        addAbsEdge(abstractList[i]);
-    }
-    for (var i = 0; i < basicList.length; i++) {
-        addBasicEdge(basicList[i]);
     }
     commitList = commitList.sort(timeCompare);
     reCenter();
@@ -200,20 +192,21 @@ function makeBasicNode(c, column) {
         }
     }
     else if (c.parents().length === 2) {
-        console.log(email + "?????");
     }
     if (flag) {
-        var id = basicNodeId++;
-        var title = "Number of Commits: " + count;
-        bsNodes.add({
-            id: id,
-            shape: "circularImage",
-            title: title,
-            image: imageForUser(name),
-            physics: false,
-            fixed: (id === 1),
-            x: (column - 1) * spacingX,
-            y: (id - 1) * spacingY,
+        var id_1 = basicNodeId++;
+        var title_1 = "Number of Commits: " + count;
+        imageForUser(name, email, function (pic) {
+            bsNodes.add({
+                id: id_1,
+                shape: "circularImage",
+                title: title_1,
+                image: pic,
+                physics: false,
+                fixed: (id_1 === 1),
+                x: (column - 1) * spacingX,
+                y: (id_1 - 1) * spacingY,
+            });
         });
         var shaList = [];
         shaList.push(c.toString());
@@ -221,7 +214,7 @@ function makeBasicNode(c, column) {
         emailList.push(email);
         basicList.push({
             sha: shaList,
-            id: id,
+            id: id_1,
             time: c.timeMs(),
             column: column,
             email: emailList,
@@ -253,23 +246,25 @@ function makeAbsNode(c, column) {
         }
     }
     if (flag) {
-        var id = absNodeId++;
-        var title = "Author: " + email + "<br>" + "Number of Commits: " + count;
-        abNodes.add({
-            id: id,
-            shape: "circularImage",
-            title: title,
-            image: imageForUser(name),
-            physics: false,
-            fixed: (id === 1),
-            x: (column - 1) * spacingX,
-            y: (id - 1) * spacingY,
+        var id_2 = absNodeId++;
+        var title_2 = "Author: " + email + "<br>" + "Number of Commits: " + count;
+        imageForUser(name, email, function (pic) {
+            abNodes.add({
+                id: id_2,
+                shape: "circularImage",
+                title: title_2,
+                image: pic,
+                physics: false,
+                fixed: (id_2 === 1),
+                x: (column - 1) * spacingX,
+                y: (id_2 - 1) * spacingY,
+            });
         });
         var shaList = [];
         shaList.push(c.toString());
         abstractList.push({
             sha: shaList,
-            id: id,
+            id: id_2,
             time: c.timeMs(),
             column: column,
             email: email,
@@ -286,16 +281,37 @@ function makeNode(c, column) {
     var stringer = c.author().toString().replace(/</, "%").replace(/>/, "%");
     var email = stringer.split("%")[1];
     var title = "Author: " + email + "<br>" + "Message: " + c.message();
-    nodes.add({
-        id: id,
-        shape: "circularImage",
-        title: title,
-        image: imageForUser(name),
-        physics: false,
-        fixed: (id === 1),
-        x: (column - 1) * spacingX,
-        y: (id - 1) * spacingY,
+    var flag = false;
+    imageForUser(name, email, function (pic) {
+        nodes.add({
+            id: id,
+            shape: "circularImage",
+            title: title,
+            image: pic,
+            physics: false,
+            fixed: (id === 1),
+            x: (column - 1) * spacingX,
+            y: (id - 1) * spacingY,
+        });
     });
+    if (c.toString() in bname) {
+        var branchName = bname[c.toString()];
+        nodes.add({
+            id: id + numOfCommits,
+            shape: "box",
+            title: title,
+            label: branchName,
+            physics: false,
+            fixed: (id === 1),
+            x: (column - 0.6) * spacingX,
+            y: (id - 0.3) * spacingY,
+        });
+        edges.add({
+            from: id + numOfCommits,
+            to: id
+        });
+        flag = true;
+    }
     commitList.push({
         sha: c.sha(),
         id: id,
@@ -303,6 +319,7 @@ function makeNode(c, column) {
         column: column,
         email: email,
         reference: reference,
+        branch: flag,
     });
 }
 function makeEdge(sha, parentSha) {

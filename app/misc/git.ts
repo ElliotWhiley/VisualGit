@@ -55,7 +55,7 @@ function addAndCommit() {
     return repository.createCommit("HEAD", sign, sign, commitMessage, oid, [parent]);
   })
   .then(function(oid) {
-    console.log("Commit successful: " + oid.tostrS())
+    console.log("Commit successful: " + oid.tostrS());
 
     hideDiffPanel();
     clearModifiedFilesList();
@@ -232,7 +232,66 @@ function mergeLocalBranches(element) {
     console.log(text);
     updateModalText(text);
     refreshAll(repos);
+  });
+}
+
+function mergeCommits(from:number, to:number) {
+  let repos;
+  let fromSha = commitList[from-1]['sha'];
+  let toSha = commitList[to-1]['sha'];
+  Git.Repository.open(repoFullPath)
+  .then(function(repo) {
+    repos = repo;
+    //return repos.getCommit(fromSha);
+    return repos.mergeBranches(toSha,
+       fromSha,
+       repos.defaultSignature(),
+       Git.Merge.PREFERENCE.NONE,
+       null);
   })
+  .then(function(index) {
+    let text;
+    console.log(index);
+    if (index instanceof Git.Index) {
+      text = "Conflicts Exist";
+    } else {
+      text = "Merge Successfully";
+    }
+    console.log(text);
+    updateModalText(text);
+    refreshAll(repos);
+  });
+  // .then(function(fromC) {
+  //   fromCommit = fromC;
+  //   return repos.getCommit(toSha);
+  // })
+  // .then(function(toC) {
+  //   toCommit = toC;
+  //   console.log(toCommit.id().tostrS() + '     ' + toSha);
+  //   //return Git.Merge.commits(repos, toCommit, fromCommit);
+  //  })
+  // // Merging returns an index that isn't backed by the repository.
+  // // You have to manually check for merge conflicts. If there are none
+  // // you just have to write the index. You do have to write it to
+  // // the repository instead of just writing it.
+  // .then(function(index) {
+  //   if (!index.hasConflicts()) {
+  //     return index.write()
+  //       .then(function() {
+  //         return index.writeTreeTo(repos);
+  //       });
+  //   }
+  // })
+  // // Create our merge commit back on our branch
+  // .then(function(oid) {
+  //   return repos.createCommit(ourBranch.name(), ourSignature,
+  //     ourSignature, "we merged their commit", oid, [ourCommit, theirCommit]);
+  // })
+  // .done(function(commitId) {
+  //   // We never changed the HEAD after the initial commit;
+  //   // it should still be the same as master.
+  //   console.log("New Commit: ", commitId);
+  // });
 }
 
 function displayModifiedFiles() {

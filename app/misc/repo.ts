@@ -2,6 +2,7 @@ let Git = require("nodegit");
 let $ = require('jQuery');
 let repoFullPath;
 let repoLocalPath;
+let bname = {};
 let repoCurrentBranch = "master";
 let modal;
 let span;
@@ -77,6 +78,29 @@ function refreshAll(repository) {
     console.log(err + "?????"); // TODO show error on screen
   })
   .then(function() {
+    return repository.getReferenceNames(Git.Reference.TYPE.LISTALL);
+  })
+  .then(function(branchList) {
+    let count = 0;
+    clearBranchElement();
+    for (let i = 0; i < branchList.length; i++) {
+      console.log(branchList[i] + "!!!!");
+      let bp = branchList[i].split("/");
+      if (bp[1] !== "remotes") {
+        displayBranch(bp[bp.length - 1], "branch-dropdown", "checkoutLocalBranch(this)");
+        Git.Reference.nameToId(repository, branchList[i]).then(function(oid) {
+          // Use oid
+          count++;
+          console.log(oid + "  TTTTTTTT");
+          bname[oid.tostrS()] = branchList[i];
+        }, function(err) {
+          count++;
+          console.log(err + "?????????");
+        });
+      }
+    }
+  })
+  .then(function() {
     console.log("Updating the graph and the labels");
     drawGraph();
     document.getElementById("repo-name").innerHTML = repoLocalPath;
@@ -85,19 +109,26 @@ function refreshAll(repository) {
 }
 
 function getAllBranches() {
+  let repos;
   Git.Repository.open(repoFullPath)
   .then(function(repo) {
+    repos = repo;
     return repo.getReferenceNames(Git.Reference.TYPE.LISTALL);
   })
   .then(function(branchList) {
     clearBranchElement();
     for (let i = 0; i < branchList.length; i++) {
+      console.log(branchList[i] + "!!!!");
       let bp = branchList[i].split("/");
       if (bp[1] !== "remotes") {
         displayBranch(bp[bp.length - 1], "branch-dropdown", "checkoutLocalBranch(this)");
       }
+      Git.Reference.nameToId(repos, branchList[i]).then(function(oid) {
+        // Use oid
+        console.log(oid + "  TTTTTTTT");
+      });
     }
-  })
+  });
 }
 
 function getOtherBranches() {

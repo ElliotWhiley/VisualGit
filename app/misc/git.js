@@ -190,6 +190,29 @@ function mergeLocalBranches(element) {
         refreshAll(repos);
     });
 }
+function mergeCommits(from, to) {
+    var repos;
+    var fromSha = commitList[from - 1]['sha'];
+    var toSha = commitList[to - 1]['sha'];
+    Git.Repository.open(repoFullPath)
+        .then(function (repo) {
+        repos = repo;
+        return repos.mergeBranches(toSha, fromSha, repos.defaultSignature(), Git.Merge.PREFERENCE.NONE, null);
+    })
+        .then(function (index) {
+        var text;
+        console.log(index);
+        if (index instanceof Git.Index) {
+            text = "Conflicts Exist";
+        }
+        else {
+            text = "Merge Successfully";
+        }
+        console.log(text);
+        updateModalText(text);
+        refreshAll(repos);
+    });
+}
 function displayModifiedFiles() {
     var modifiedFiles = [];
     Git.Repository.open(repoFullPath)

@@ -25,7 +25,7 @@ import { GraphService } from "../services/graph.service";
               </button>
             </li>
             <li class="branch-name dropdown">
-              <button class="btn btn-inverse dropdown-toggle btn-sm" id="branch-name" onclick="getAllBranches()" data-toggle="dropdown">
+              <button class="btn btn-inverse dropdown-toggle btn-sm" id="branch-name" data-toggle="dropdown">
                 branch
                 <span class="caret"></span>
               </button>

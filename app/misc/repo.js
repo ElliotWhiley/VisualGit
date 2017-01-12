@@ -2,6 +2,7 @@ var Git = require("nodegit");
 var $ = require('jQuery');
 var repoFullPath;
 var repoLocalPath;
+var bname = {};
 var repoCurrentBranch = "master";
 var modal;
 var span;
@@ -65,6 +66,31 @@ function refreshAll(repository) {
         console.log(err + "?????");
     })
         .then(function () {
+        return repository.getReferenceNames(Git.Reference.TYPE.LISTALL);
+    })
+        .then(function (branchList) {
+        var count = 0;
+        clearBranchElement();
+        var _loop_1 = function (i) {
+            console.log(branchList[i] + "!!!!");
+            var bp = branchList[i].split("/");
+            if (bp[1] !== "remotes") {
+                displayBranch(bp[bp.length - 1], "branch-dropdown", "checkoutLocalBranch(this)");
+                Git.Reference.nameToId(repository, branchList[i]).then(function (oid) {
+                    count++;
+                    console.log(oid + "  TTTTTTTT");
+                    bname[oid.tostrS()] = branchList[i];
+                }, function (err) {
+                    count++;
+                    console.log(err + "?????????");
+                });
+            }
+        };
+        for (var i = 0; i < branchList.length; i++) {
+            _loop_1(i);
+        }
+    })
+        .then(function () {
         console.log("Updating the graph and the labels");
         drawGraph();
         document.getElementById("repo-name").innerHTML = repoLocalPath;
@@ -72,17 +98,23 @@ function refreshAll(repository) {
     });
 }
 function getAllBranches() {
+    var repos;
     Git.Repository.open(repoFullPath)
         .then(function (repo) {
+        repos = repo;
         return repo.getReferenceNames(Git.Reference.TYPE.LISTALL);
     })
         .then(function (branchList) {
         clearBranchElement();
         for (var i = 0; i < branchList.length; i++) {
+            console.log(branchList[i] + "!!!!");
             var bp = branchList[i].split("/");
             if (bp[1] !== "remotes") {
                 displayBranch(bp[bp.length - 1], "branch-dropdown", "checkoutLocalBranch(this)");
             }
+            Git.Reference.nameToId(repos, branchList[i]).then(function (oid) {
+                console.log(oid + "  TTTTTTTT");
+            });
         }
     });
 }

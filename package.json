@@ -44,7 +44,8 @@
     "octonode": "0.7.7",
     "github-username": "3.0.0",
     "font-awesome": "4.7.0",
-    "material-letter-icons": "1.0.7"
+    "material-letter-icons": "1.0.7",
+    "github-avatar-url": "1.0.0"
   },
   "devDependencies": {
     "devtron": "1.1.0",

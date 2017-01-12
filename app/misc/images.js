@@ -1,14 +1,22 @@
 var images = {};
 var imageFiles = ["jarjar.jpg", "yoda.png", "obiwan.jpg"];
 var imageCount = 0;
+var githubAvatarUrl = require('github-avatar-url');
 function getName(author) {
     var name = author.split("<")[0];
-    console.log(name);
     return name;
 }
-function imageForUser(email) {
-    var first = email.trim().charAt(0).toUpperCase();
-    var pic = "node_modules/material-letter-icons/dist/png/" + first + ".png";
-    console.log(pic);
-    return pic;
+function imageForUser(name, email, callback) {
+    var pic;
+    githubAvatarUrl(email, { token: 'foo' }, function (err, avatarURL) {
+        if (!err) {
+            console.log(avatarURL);
+            pic = avatarURL;
+        }
+        else {
+            var first = name.trim().charAt(0).toUpperCase();
+            pic = "node_modules/material-letter-icons/dist/png/" + first + ".png";
+        }
+        callback(pic);
+    });
 }
