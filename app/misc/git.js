@@ -9,9 +9,11 @@ function addAndCommit() {
     Git.Repository.open(repoFullPath)
         .then(function (repoResult) {
         repository = repoResult;
+        console.log("1.0");
         return repository.refreshIndex();
     })
         .then(function (indexResult) {
+        console.log("2.0");
         index = indexResult;
         var filesToStage = [];
         var fileElements = document.getElementsByClassName('file');
@@ -22,27 +24,41 @@ function addAndCommit() {
                 filesToAdd.push(fileElementChildren[0].innerHTML);
             }
         }
+        console.log("2.1");
         return index.addAll(filesToStage);
     })
         .then(function () {
+        console.log("3.0");
         return index.write();
     })
         .then(function () {
+        console.log("4.0");
         return index.writeTree();
     })
         .then(function (oidResult) {
+        console.log("5.0");
         oid = oidResult;
         return Git.Reference.nameToId(repository, "HEAD");
     })
         .then(function (head) {
+        console.log("6.0");
         return repository.getCommit(head);
     })
         .then(function (parent) {
-        var sign = Git.Signature.default(repository);
+        console.log("7.0");
+        var sign;
+        if (username !== null && password !== null) {
+            sign = Git.Signature.now(username, password);
+        }
+        else {
+            sign = Git.Signature.default(repository);
+        }
         commitMessage = document.getElementById('commit-message-input').value;
+        console.log(sign.toString());
         return repository.createCommit("HEAD", sign, sign, commitMessage, oid, [parent]);
     })
         .then(function (oid) {
+        console.log("8.0");
         console.log("Commit successful: " + oid.tostrS());
         hideDiffPanel();
         clearModifiedFilesList();
@@ -53,6 +69,9 @@ function addAndCommit() {
         }
         addCommand('git commit -m "' + commitMessage + '"');
         refreshAll(repository);
+    }, function (err) {
+        console.log(err);
+        updateModalText("Oops, error occours! If u haven't login, please login and try again.");
     });
 }
 function clearModifiedFilesList() {
@@ -87,6 +106,7 @@ function getAllCommits(callback) {
 }
 function pullFromRemote() {
     var repository;
+    var branch = document.getElementById("branch-name").innerText;
     Git.Repository.open(repoFullPath)
         .then(function (repo) {
         repository = repo;
@@ -105,7 +125,7 @@ function pullFromRemote() {
         });
     })
         .then(function () {
-        repository.mergeBranches("master", "origin/master")
+        repository.mergeBranches(branch, "origin/" + branch)
             .then(function () {
             refreshAll(repository);
             console.log("Pull successful");
@@ -114,7 +134,7 @@ function pullFromRemote() {
     });
 }
 function pushToRemote() {
-    var branch = repoCurrentBranch;
+    var branch = document.getElementById("branch-name").innerText;
     Git.Repository.open(repoFullPath)
         .then(function (repo) {
         console.log("Pushing changes to remote");
@@ -192,14 +212,14 @@ function mergeLocalBranches(element) {
 }
 function mergeCommits(from, to) {
     var repos;
-    var fromSha = commitList[from - 1]['sha'];
-    var toSha = commitList[to - 1]['sha'];
     Git.Repository.open(repoFullPath)
         .then(function (repo) {
         repos = repo;
-        return repos.mergeBranches(toSha, fromSha, repos.defaultSignature(), Git.Merge.PREFERENCE.NONE, null);
+        console.log("2.0");
+        return repos.mergeBranches(to, from, repos.defaultSignature(), Git.Merge.PREFERENCE.NONE, null);
     })
         .then(function (index) {
+        console.log("3.0");
         var text;
         console.log(index);
         if (index instanceof Git.Index) {
@@ -211,6 +231,8 @@ function mergeCommits(from, to) {
         console.log(text);
         updateModalText(text);
         refreshAll(repos);
+    }, function (err) {
+        console.log(err);
     });
 }
 function displayModifiedFiles() {

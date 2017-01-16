@@ -6,6 +6,12 @@ function getName(author) {
     var name = author.split("<")[0];
     return name;
 }
+function img4User(name) {
+    var pic;
+    var first = name.trim().charAt(0).toUpperCase();
+    pic = "node_modules/material-letter-icons/dist/png/" + first + ".png";
+    return pic;
+}
 function imageForUser(name, email, callback) {
     var pic;
     githubAvatarUrl(email, { token: 'foo' }, function (err, avatarURL) {

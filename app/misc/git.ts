@@ -14,10 +14,12 @@ function addAndCommit() {
   Git.Repository.open(repoFullPath)
   .then(function(repoResult) {
     repository = repoResult;
-     return repository.refreshIndex();
+    console.log("1.0");
+    return repository.refreshIndex();
   })
 
   .then(function(indexResult) {
+    console.log("2.0");
     index = indexResult;
     let filesToStage = [];
     let fileElements = document.getElementsByClassName('file');
@@ -28,33 +30,45 @@ function addAndCommit() {
         filesToAdd.push(fileElementChildren[0].innerHTML)
       }
     }
+    console.log("2.1");
     return index.addAll(filesToStage);
   })
 
   .then(function() {
+    console.log("3.0");
     return index.write();
   })
 
   .then(function() {
+    console.log("4.0");
     return index.writeTree();
   })
 
   .then(function(oidResult) {
+    console.log("5.0");
     oid = oidResult;
     return Git.Reference.nameToId(repository, "HEAD");
   })
 
   .then(function(head) {
+    console.log("6.0");
     return repository.getCommit(head);
   })
 
   .then(function(parent) {
-    let sign = Git.Signature.default(repository);
+    console.log("7.0");
+    let sign;
+    if (username !== null && password !== null) {
+      sign = Git.Signature.now(username, password);
+    } else {
+      sign = Git.Signature.default(repository);
+    }
     commitMessage = document.getElementById('commit-message-input').value;
-
+    console.log(sign.toString());
     return repository.createCommit("HEAD", sign, sign, commitMessage, oid, [parent]);
   })
   .then(function(oid) {
+    console.log("8.0");
     console.log("Commit successful: " + oid.tostrS());
 
     hideDiffPanel();
@@ -66,6 +80,9 @@ function addAndCommit() {
     }
     addCommand('git commit -m "' + commitMessage + '"');
     refreshAll(repository);
+  }, function(err) {
+    console.log(err);
+    updateModalText("Oops, error occours! If u haven't login, please login and try again.");
   });
 }
 
@@ -108,6 +125,7 @@ function getAllCommits(callback) {
 
 function pullFromRemote() {
   let repository;
+  let branch = document.getElementById("branch-name").innerText;
   Git.Repository.open(repoFullPath)
   .then(function(repo) {
     repository = repo;
@@ -129,7 +147,7 @@ function pullFromRemote() {
   // Now that we're finished fetching, go ahead and merge our local branch
   // with the new one
   .then(function() {
-    repository.mergeBranches("master", "origin/master")
+    repository.mergeBranches(branch, "origin/" + branch)
     .then(function() {
         refreshAll(repository);
         console.log("Pull successful");
@@ -143,8 +161,7 @@ function pullFromRemote() {
 }
 
 function pushToRemote() {
-  let branch = repoCurrentBranch;
-
+  let branch = document.getElementById("branch-name").innerText;
   Git.Repository.open(repoFullPath)
   .then(function(repo) {
     console.log("Pushing changes to remote")
@@ -237,19 +254,19 @@ function mergeLocalBranches(element) {
 
 function mergeCommits(from:number, to:number) {
   let repos;
-  let fromSha = commitList[from-1]['sha'];
-  let toSha = commitList[to-1]['sha'];
   Git.Repository.open(repoFullPath)
   .then(function(repo) {
     repos = repo;
     //return repos.getCommit(fromSha);
-    return repos.mergeBranches(toSha,
-       fromSha,
+    console.log("2.0");
+    return repos.mergeBranches(to,
+       from,
        repos.defaultSignature(),
        Git.Merge.PREFERENCE.NONE,
        null);
   })
   .then(function(index) {
+    console.log("3.0");
     let text;
     console.log(index);
     if (index instanceof Git.Index) {
@@ -260,6 +277,8 @@ function mergeCommits(from:number, to:number) {
     console.log(text);
     updateModalText(text);
     refreshAll(repos);
+  }, function(err) {
+    console.log(err);
   });
   // .then(function(fromC) {
   //   fromCommit = fromC;

@@ -76,7 +76,7 @@ function drawGraph() {
         speed: {x: 10, y: 10, zoom: 0.02},
         bindToWindow: true
       },
-      multiselect: false,
+      multiselect: true,
       navigationButtons: false,
       selectable: true,
       selectConnectedEdges: false,
@@ -200,9 +200,11 @@ function drawGraph() {
   network.on('dragEnd', function(callback) {
     let fromNode = callback.nodes[0];
     let toNode = network.getNodeAt(callback.pointer.DOM);
-    if (fromNode !== toNode && commitList[fromNode-1]['branch'] && commitList[toNode-1]['branch']) {
-      console.log(fromNode + "!!!!!!!" + toNode);
-      mergeCommits(fromNode, toNode);
+    console.log(fromNode + "!!!!!!!" + toNode + "!!!!!!!!!" + commitList.length);
+
+    if (fromNode !== toNode && commitList[fromNode-commitList.length-1]['branch'] && commitList[toNode-commitList.length-1]['branch']) {
+      console.log(nodes.get(fromNode)['title'] + "      " + nodes.get(toNode)['title']);
+      mergeCommits(nodes.get(fromNode)['title'], nodes.get(toNode)['title']);
     }
   }, false);
 }

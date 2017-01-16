@@ -3,6 +3,8 @@ var $ = require('jQuery');
 var repoFullPath;
 var repoLocalPath;
 var bname = {};
+var remoteName = {};
+var localBranches = [];
 var repoCurrentBranch = "master";
 var modal;
 var span;
@@ -26,7 +28,7 @@ function downloadFunc(cloneURL, localPath) {
         }
     };
     console.log("cloning into " + fullLocalPath);
-    var repository = Git.Clone(cloneURL, fullLocalPath, options)
+    var repository = Git.Clone.clone(cloneURL, fullLocalPath, options)
         .then(function (repository) {
         console.log("Repo successfully cloned");
         updateModalText("Clone Successful, repository saved under: " + fullLocalPath);
@@ -57,6 +59,7 @@ function openRepository() {
 }
 function refreshAll(repository) {
     var branch;
+    bname = [];
     repository.getCurrentBranch()
         .then(function (reference) {
         var branchParts = reference.name().split("/");
@@ -66,24 +69,39 @@ function refreshAll(repository) {
         console.log(err + "?????");
     })
         .then(function () {
-        return repository.getReferenceNames(Git.Reference.TYPE.LISTALL);
+        return repository.getReferences(Git.Reference.TYPE.LISTALL);
     })
         .then(function (branchList) {
         var count = 0;
         clearBranchElement();
         var _loop_1 = function (i) {
-            console.log(branchList[i] + "!!!!");
-            var bp = branchList[i].split("/");
-            if (bp[1] !== "remotes") {
+            console.log(branchList[i].name() + "!!!!");
+            var bp = branchList[i].name().split("/");
+            Git.Reference.nameToId(repository, branchList[i].name()).then(function (oid) {
+                console.log(oid + "  TTTTTTTT");
+                if (branchList[i].isRemote()) {
+                    remoteName[bp[bp.length - 1]] = oid;
+                }
+                else {
+                    console.log(bp[bp.length - 1] + "--------" + oid.tostrS());
+                    if (oid.tostrS() in bname) {
+                        bname[oid.tostrS()].push(branchList[i]);
+                    }
+                    else {
+                        bname[oid.tostrS()] = [branchList[i]];
+                    }
+                }
+            }, function (err) {
+                console.log(err + "?????????");
+            });
+            if (branchList[i].isRemote()) {
+                if (localBranches.indexOf(bp[bp.length - 1]) < 0) {
+                    displayBranch(bp[bp.length - 1], "branch-dropdown", "checkoutRemoteBranch(this)");
+                }
+            }
+            else {
+                localBranches.push(bp[bp.length - 1]);
                 displayBranch(bp[bp.length - 1], "branch-dropdown", "checkoutLocalBranch(this)");
-                Git.Reference.nameToId(repository, branchList[i]).then(function (oid) {
-                    count++;
-                    console.log(oid + "  TTTTTTTT");
-                    bname[oid.tostrS()] = branchList[i];
-                }, function (err) {
-                    count++;
-                    console.log(err + "?????????");
-                });
             }
         };
         for (var i = 0; i < branchList.length; i++) {
@@ -169,7 +187,6 @@ function displayBranch(name, id, onclick) {
 }
 function checkoutLocalBranch(element) {
     var bn = element.innerHTML;
-    repoCurrentBranch = bn;
     console.log(bn + ">>>>>>>>");
     Git.Repository.open(repoFullPath)
         .then(function (repo) {
@@ -178,6 +195,30 @@ function checkoutLocalBranch(element) {
             refreshAll(repo);
         }, function (err) {
             console.log(err + "<<<<<<<");
+        });
+    });
+}
+function checkoutRemoteBranch(element) {
+    var bn = element.innerHTML;
+    var repos;
+    Git.Repository.open(repoFullPath)
+        .then(function (repo) {
+        repos = repo;
+        var cid = remoteName[bn];
+        return Git.Commit.lookup(repo, cid);
+    })
+        .then(function (commit) {
+        return Git.Branch.create(repos, bn, commit, 0);
+    })
+        .then(function (branch) {
+        return Git.Branch.setUpstream(branch, "refs/remote/origin/" + bn);
+    })
+        .then(function (code) {
+        console.log(bn + "PPPPPPP");
+        repos.mergeBranches(bn, "origin/" + bn)
+            .then(function () {
+            refreshAll(repos);
+            console.log("Pull successful");
         });
     });
 }

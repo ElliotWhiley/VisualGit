@@ -6,7 +6,7 @@ import { GraphService } from "../services/graph.service";
   selector: "app-header",
   template: `
     <nav class="navbar navbar-inverse" role="navigation">
-      <div class="container-fluid">
+      <div class="container-fluid row">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
             <span class="sr-only">Toggle navigation</span>
@@ -16,16 +16,16 @@ import { GraphService } from "../services/graph.service";
           </button>
         </div>
         <div class="collapse navbar-collapse" id="navbar">
-          <ul class="nav navbar-nav">
+          <ul class="nav navbar-nav col-md-5 hidden-xs">
             <li><img src="./assets/AddRepositoryFolder.svg" (click)="promptUserToAddRepository()" class="add-repository-button" title="Add Repository"></li>
             <li class="repo-name dropdown">
-              <button class="btn btn-inverse dropdown-toggle btn-sm" id="repo-name" data-toggle="modal" data-target="#repo-modal">
+              <button class="btn btn-inverse dropdown-toggle btn-sm navbar-btn" id="repo-name" data-toggle="modal" data-target="#repo-modal">
                 repository
                 <span class="caret"></span>
               </button>
             </li>
             <li class="branch-name dropdown">
-              <button class="btn btn-inverse dropdown-toggle btn-sm" id="branch-name" data-toggle="dropdown">
+              <button class="btn btn-inverse dropdown-toggle btn-sm navbar-btn" id="branch-name" data-toggle="dropdown">
                 branch
                 <span class="caret"></span>
               </button>
@@ -41,17 +41,21 @@ import { GraphService } from "../services/graph.service";
               </ul>
             </li>
             <li class="merge dropdown">
-              <button href="#" class="btn btn-inverse dropdown-toggle btn-sm" id="merge-name" onclick="getOtherBranches()" data-toggle="dropdown">
+              <button href="#" class="btn btn-inverse dropdown-toggle btn-sm navbar-btn" id="merge-name" onclick="getOtherBranches()" data-toggle="dropdown">
                 update from
                 <span class="caret"></span>
               </button>
               <ul class="dropdown-menu" id="merge-dropdown" role="menu" >
               </ul>
             </li>
-            <li class="upload"><i class="fa fa-cloud-upload fa-2x" aria-hidden="true" style="color:white" onclick="pushToRemote()" title="Push"></i></li>
-            <li class="download"><i class="fa fa-cloud-download fa-2x" aria-hidden="true" style="color:white" onclick="pullFromRemote()" title="Pull"></i></li>
           </ul>
-          <ul class="navbar-nav navbar-right">
+
+          <ul class="navbar-nav col-md-4 hidden-xs">
+            <li class="upload"><i class="fa fa-cloud-upload fa-2x col-md-2" aria-hidden="true" style="color:white" onclick="pushToRemote()" title="Push"></i></li>
+            <li class="download"><i class="fa fa-cloud-download fa-2x col-md-2" aria-hidden="true" style="color:white" onclick="pullFromRemote()" title="Pull"></i></li>
+          </ul>
+
+          <ul class="navbar-nav navbar-right hidden-xs">
             <li>
               <a id="avater" class="dropdown-toggle" data-toggle="dropdown">
                 <i class="fa fa-github fa-2x" aria-hidden="true" style="color:white"></i>
@@ -66,6 +70,43 @@ import { GraphService } from "../services/graph.service";
               </ul>
             </li>
           </ul>
+
+          <ul class="nav navbar-nav visible-xs">
+            <li (click)="promptUserToAddRepository()"><a>&nbsp;&nbsp;add repository</a></li>
+            <li class="dropdown">
+              <a id="repo-name" data-toggle="modal" data-target="#repo-modal" href="#">
+                &nbsp;&nbsp;repository
+                <span class="caret"></span>
+              </a>
+            </li>
+            <li class="dropdown">
+              <a id="branch-name" data-toggle="dropdown" href="#">
+                &nbsp;&nbsp;branch
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" id="branch-dropdown" role="menu" aria-labelledby="branch-name">
+                <li role="presentation" id="create-branch">
+                  <div class="input-group menuitem">
+                    <input type="text" id="branchName" class="form-control" placeholder="Search or create branch">
+                    <span class="input-group-btn">
+                      <button class="btn btn-default" type="button" onclick="createBranch()">OK</button>
+                    </span>
+                  </div>
+                </li>
+              </ul>
+            </li>
+            <li class="dropdown">
+              <a id="merge-name" onclick="getOtherBranches()" data-toggle="dropdown" href="#">
+                &nbsp;&nbsp;update from
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" id="merge-dropdown" role="menu" >
+              </ul>
+            </li>
+            <li class="upload" onclick="pushToRemote()"><a href="#">&nbsp;&nbsp;pull</a></li>
+            <li class="download"onclick="pullFromRemote()"><a href="#">&nbsp;&nbsp;push</a></li>
+          </ul>
+
         </div>
       </div>
     </nav>

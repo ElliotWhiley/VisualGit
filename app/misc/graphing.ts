@@ -127,8 +127,8 @@ function populateCommits() {
     //console.log(Object.keys(bsNodes).length + "????");
 
     makeNode(commitHistory[i], nodeColumn);
-    //makeAbsNode(commitHistory[i], nodeColumn);
-    //makeBasicNode(commitHistory[i], nodeColumn);
+    makeAbsNode(commitHistory[i], nodeColumn);
+    makeBasicNode(commitHistory[i], nodeColumn);
   }
 
   // Add edges
@@ -136,13 +136,13 @@ function populateCommits() {
     addEdges(commitHistory[i]);
   }
 
-  // for (let i = 0; i < abstractList.length; i++) {
-  //   addAbsEdge(abstractList[i]);
-  // }
-  //
-  // for (let i = 0; i < basicList.length; i++) {
-  //   addBasicEdge(basicList[i]);
-  // }
+  for (let i = 0; i < abstractList.length; i++) {
+    addAbsEdge(abstractList[i]);
+  }
+
+  for (let i = 0; i < basicList.length; i++) {
+    addBasicEdge(basicList[i]);
+  }
 
   commitList = commitList.sort(timeCompare);
   reCenter();
@@ -230,17 +230,15 @@ function makeBasicNode(c, column: number) {
   if (flag) {
     let id = basicNodeId++;
     let title = "Number of Commits: " + count;
-    imageForUser(name, email, function(pic) {
-      bsNodes.add({
-        id: id,
-        shape: "circularImage",
-        title: title,
-        image: pic,
-        physics: false,
-        fixed: (id === 1),
-        x: (column - 1) * spacingX,
-        y: (id - 1) * spacingY,
-      });
+    bsNodes.add({
+      id: id,
+      shape: "circularImage",
+      title: title,
+      image: img4User(name),
+      physics: false,
+      fixed: (id === 1),
+      x: (column - 1) * spacingX,
+      y: (id - 1) * spacingY,
     });
 
     let shaList = [];
@@ -287,17 +285,16 @@ function makeAbsNode(c, column: number) {
   if (flag) {
     let id = absNodeId++;
     let title = "Author: " + email + "<br>" + "Number of Commits: " + count;
-    imageForUser(name, email, function(pic) {
-      abNodes.add({
-        id: id,
-        shape: "circularImage",
-        title: title,
-        image: pic,
-        physics: false,
-        fixed: (id === 1),
-        x: (column - 1) * spacingX,
-        y: (id - 1) * spacingY,
-      });
+
+    abNodes.add({
+      id: id,
+      shape: "circularImage",
+      title: title,
+      image: img4User(name),
+      physics: false,
+      fixed: (id === 1),
+      x: (column - 1) * spacingX,
+      y: (id - 1) * spacingY,
     });
 
     let shaList = [];
@@ -324,37 +321,42 @@ function makeNode(c, column: number) {
   let email = stringer.split("%")[1];
   let title = "Author: " + email + "<br>" + "Message: " + c.message();
   let flag = false;
-  imageForUser(name, email, function(pic) {
-    nodes.add({
-      id: id,
-      shape: "circularImage",
-      title: title,
-      image: pic,
-      physics: false,
-      fixed: (id === 1),
-      x: (column - 1) * spacingX,
-      y: (id - 1) * spacingY,
-    });
+  nodes.add({
+    id: id,
+    shape: "circularImage",
+    title: title,
+    image: img4User(name),
+    physics: false,
+    fixed: true,
+    x: (column - 1) * spacingX,
+    y: (id - 1) * spacingY,
   });
 
   if (c.toString() in bname) {
-    let branchName = bname[c.toString()];
-    nodes.add({
-      id: id + numOfCommits,
-      shape: "box",
-      title: title,
-      label: branchName,
-      physics: false,
-      fixed: (id === 1),
-      x: (column - 0.6) * spacingX,
-      y: (id - 0.3) * spacingY,
-    });
+    for (let i = 0; i < bname[c.toString()].length; i++) {
+      let branchName = bname[c.toString()][i];
+      let bp = branchName.name().split("/");
+      let shortName = bp[bp.length - 1];
+      console.log(shortName + "   " + branchName.isHead().toString());
+      if (branchName.isHead()) {
+        shortName = "*" + shortName;
+      }
+      nodes.add({
+        id: id + numOfCommits * (i + 1),
+        shape: "box",
+        title: branchName,
+        label: shortName,
+        physics: false,
+        fixed: false,
+        x: (column - 0.6 * (i + 1)) * spacingX,
+        y: (id - 0.3) * spacingY,
+      });
 
-    edges.add({
-      from: id + numOfCommits,
-      to: id
-    });
-
+      edges.add({
+        from: id + numOfCommits * (i + 1),
+        to: id
+      });
+    }
     flag = true;
   }
 
@@ -367,6 +369,8 @@ function makeNode(c, column: number) {
     reference: reference,
     branch: flag,
   });
+
+  console.log("sha: " + c.sha());
 
   //console.log(commitList[id-1]['id'] + '   ' + id);
 }

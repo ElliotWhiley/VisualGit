@@ -9,6 +9,13 @@ function getName(author: string) {
   return name;
 }
 
+function img4User(name:string) {
+  let pic;
+  let first = name.trim().charAt(0).toUpperCase();
+  pic =  "node_modules/material-letter-icons/dist/png/" + first + ".png";
+  return pic;
+}
+
 function imageForUser(name: string, email: string, callback) {
   let pic;
   githubAvatarUrl(email, {token:'foo'}, function(err,avatarURL){
