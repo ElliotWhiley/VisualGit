@@ -5,6 +5,7 @@ let repoLocalPath;
 let bname = {};
 let remoteName = {};
 let localBranches = [];
+let readFile = require("fs-sync");
 let repoCurrentBranch = "master";
 let modal;
 let span;
@@ -58,6 +59,10 @@ function openRepository() {
   Git.Repository.open(fullLocalPath).then(function(repository) {
     repoFullPath = fullLocalPath;
     repoLocalPath = localPath;
+    if (readFile.exists(repoFullPath + "/.git/MERGE_HEAD")) {
+      let tid = readFile.read(repoFullPath + "/.git/MERGE_HEAD", null);
+      console.log("theirComit: " + tid);
+    }
     refreshAll(repository);
     console.log("Repo successfully opened");
     updateModalText("Repository successfully opened");
@@ -257,10 +262,6 @@ function checkoutRemoteBranch(element) {
     console.log("3.0");
     return Git.Branch.create(repos, bn, commit, 0);
   })
-  .then(function(branch) {
-    console.log("4.0");
-    return Git.Branch.setUpstream(branch, "refs/remote/origin/" + bn);
-  })
   .then(function(code) {
     console.log(bn + "PPPPPPP");
     repos.mergeBranches(bn, "origin/" + bn)
@@ -268,6 +269,8 @@ function checkoutRemoteBranch(element) {
         refreshAll(repos);
         console.log("Pull successful");
     });
+  }, function(err) {
+    console.log(err);
   })
 }
 

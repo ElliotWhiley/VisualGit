@@ -51,7 +51,7 @@
     "bootstrap-submenu": "2.0.4",
     "jquery-contextmenu": "2.4.2",
     "opn": "4.0.2",
-    "read-each-line-sync": "1.0.4"
+    "fs-sync": "1.0.3"
   },
   "devDependencies": {
     "devtron": "1.1.0",

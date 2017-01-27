@@ -70,6 +70,26 @@ $('#repo-modal').on('hidden.bs.modal', function (e) {
   butt.setAttribute('class', 'btn btn-primary disabled');
  });
 
+ $.contextMenu({
+   selector: ".file",
+   build: function($trigger) {
+     let branch;
+     var options = {
+       items: {
+         "edit": {
+           name: "Edit",
+           icon: "edit",
+           callback: function(itemKey, opt) {
+             let content = $trigger.text();
+             console.log(repoFullPath + "/" + content);
+             opn(repoFullPath + "/" + content);
+           }
+         }
+       }
+     }
+     return options;
+   }
+ });
 
 $.contextMenu({
   selector: ".network",

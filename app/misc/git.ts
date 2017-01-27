@@ -6,7 +6,7 @@ let $ = require("jquery");
 let Git = require("nodegit");
 let fs = require("fs");
 let async = require("async");
-let readLine = require("read-each-line-sync");
+let readFile = require("fs-sync");
 let green = "#84db00";
 let repo, index, oid, remote, commitMessage;
 let filesToAdd = [];
@@ -70,9 +70,13 @@ function addAndCommit() {
     }
     commitMessage = document.getElementById('commit-message-input').value;
     //console.log(sign.toString());
-    if (theirCommit !== null) {
-      return repository.createCommit("HEAD", sign, sign, commitMessage, oid, [parent, theirCommit]);
+    if (readFile.exists(repoFullPath + "/.git/MERGE_HEAD")) {
+      let tid = readFile.read(repoFullPath + "/.git/MERGE_HEAD", null);
+      console.log("theirComit: " + tid);
+      console.log("ourCommit: " + parent.id.toString());
+      return repository.createCommit("HEAD", sign, sign, commitMessage, oid, [parent.id().toString(), tid.trim()]);
     } else {
+      console.log('no other commit');
       return repository.createCommit("HEAD", sign, sign, commitMessage, oid, [parent]);
     }
   })
@@ -512,21 +516,3 @@ function displayModifiedFiles() {
     console.log("waiting for repo to be initialised");
   });
 }
-
-let content;
-$.contextMenu({
-  slector: ".file",
-  callback: function(key, options) {
-    content = $(this).text();
-    console.log("You clicked on: " + content);
-  },
-  items: {
-    "edit": {
-      name: "Edit",
-      icon: "edit",
-      callback: function(itemKey, opt) {
-        opn(repoFullPath + "/" + content);
-      }
-    }
-  },
-})
