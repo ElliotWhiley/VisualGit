@@ -1,6 +1,5 @@
 var cred;
 function switchToMainPanel() {
-    console.log("lolololol");
     hideAuthenticatePanel();
     hideAddRepositoryPanel();
     displayFilePanel();
@@ -11,6 +10,13 @@ function switchToAddRepositoryPanel() {
     hideFilePanel();
     hideGraphPanel();
     displayAddRepositoryPanel();
+}
+function wait(ms) {
+    var start = new Date().getTime();
+    var end = start;
+    while (end < start + ms) {
+        end = new Date().getTime();
+    }
 }
 function displayMinimisePanel() {
     document.getElementById("diff-panel-minimise").style.visibility = "visible";

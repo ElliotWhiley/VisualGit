@@ -370,8 +370,6 @@ function makeNode(c, column: number) {
     branch: flag,
   });
 
-  console.log("sha: " + c.sha());
-
   //console.log(commitList[id-1]['id'] + '   ' + id);
 }
 

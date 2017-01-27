@@ -1,13 +1,15 @@
 <!doctype html>
 
 <html>
-  <head>
+  <head lang="en">
     <title>VisualGit</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="stylesheets/styles.css">
     <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.css" crossorigin="anonymous">
     <link rel="stylesheet" href="node_modules/font-awesome/css/font-awesome.css" type="text/css">
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap-theme.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="node_modules/jquery-contextmenu/dist/jquery.contextMenu.min.css" type="text/css">
     <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
     <script src="app/misc/checkbox.js"></script>
     <script src="app/misc/gitCommands.js"></script>
@@ -25,6 +27,8 @@
     <script src="node_modules/zone.js/dist/zone.js"></script>
     <script src="node_modules/reflect-metadata/Reflect.js"></script>
     <script src="node_modules/systemjs/dist/system.src.js"></script>
+    <script src="node_modules/jquery-contextmenu/dist/jquery.contextMenu.min.js"></script>
+    <script src="node_modules/jquery-contextmenu/dist/jquery.ui.position.min.js"></script>
     <script>if (window.module) module = window.module;</script>
     <script src="systemjs.config.js"></script>
     <script>
@@ -65,4 +69,50 @@ $('#repo-modal').on('hidden.bs.modal', function (e) {
   butt.innerHTML = 'Clone';
   butt.setAttribute('class', 'btn btn-primary disabled');
  });
+
+
+$.contextMenu({
+  selector: ".network",
+
+  build: function($trigger) {
+    let branch;
+    var options = {
+      callback: function(key, options) {
+        var m = "clicked: " + key;
+        console.log(m + "??????");
+      },
+      items: {
+        "checkout this branch": {
+          name: "checkout this branch",
+          callback: function(itemKey, opt) {
+            checkoutLocalBranch(branch);
+            return true;
+          }
+        },
+
+        "merge to HEAD": {
+          name: "merge to HEAD"
+        }
+      }
+    };
+
+    console.log(localBranches.length + "------------------");
+
+    if (toNode !== undefined) {
+      branch = nodes.get(toNode)['label'];
+      if (branch.substring(0, 1) === '*') {
+        branch = branch.substring(1, branch.length);
+      }
+      options.items['merge to HEAD'].callback = function(itemKey, opt) {
+        console.log("lolololol");
+        mergeInMenu(branch);
+      };
+    } else {
+      $('.network').data('contextMenuRoot').$('trigger').contextMenu('hide')
+    }
+    toNode = undefined;
+
+    return options;
+  }
+});
 </script>

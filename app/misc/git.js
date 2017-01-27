@@ -1,9 +1,14 @@
 "use strict";
+var opn = require('opn');
+var $ = require("jquery");
 var Git = require("nodegit");
 var fs = require("fs");
+var async = require("async");
+var readLine = require("read-each-line-sync");
 var green = "#84db00";
 var repo, index, oid, remote, commitMessage;
 var filesToAdd = [];
+var theirCommit = null;
 function addAndCommit() {
     var repository;
     Git.Repository.open(repoFullPath)
@@ -16,6 +21,7 @@ function addAndCommit() {
         console.log("2.0");
         index = indexResult;
         var filesToStage = [];
+        filesToAdd = [];
         var fileElements = document.getElementsByClassName('file');
         for (var i = 0; i < fileElements.length; i++) {
             var fileElementChildren = fileElements[i].childNodes;
@@ -54,11 +60,15 @@ function addAndCommit() {
             sign = Git.Signature.default(repository);
         }
         commitMessage = document.getElementById('commit-message-input').value;
-        console.log(sign.toString());
-        return repository.createCommit("HEAD", sign, sign, commitMessage, oid, [parent]);
+        if (theirCommit !== null) {
+            return repository.createCommit("HEAD", sign, sign, commitMessage, oid, [parent, theirCommit]);
+        }
+        else {
+            return repository.createCommit("HEAD", sign, sign, commitMessage, oid, [parent]);
+        }
     })
         .then(function (oid) {
-        console.log("8.0");
+        theirCommit = null;
         console.log("Commit successful: " + oid.tostrS());
         hideDiffPanel();
         clearModifiedFilesList();
@@ -92,16 +102,50 @@ function clearSelectAllCheckbox() {
     document.getElementById('select-all-checkbox').checked = false;
 }
 function getAllCommits(callback) {
+    var repos;
+    var allCommits = [];
+    var aclist = [];
+    console.log("1.0");
     Git.Repository.open(repoFullPath)
         .then(function (repo) {
-        return repo.getMasterCommit();
+        repos = repo;
+        console.log("2.0");
+        return repo.getReferences(Git.Reference.TYPE.LISTALL);
     })
-        .then(function (firstCommitOnMaster) {
-        var history = firstCommitOnMaster.history(Git.Revwalk.SORT.Time);
-        history.on("end", function (commits) {
-            callback(commits);
+        .then(function (refs) {
+        var count = 0;
+        console.log("3.0    " + refs.length);
+        async.whilst(function () {
+            return count < refs.length;
+        }, function (cb) {
+            if (!refs[count].isRemote()) {
+                console.log("4.0");
+                repos.getReferenceCommit(refs[count])
+                    .then(function (commit) {
+                    var history = commit.history(Git.Revwalk.SORT.Time);
+                    history.on("end", function (commits) {
+                        for (var i = 0; i < commits.length; i++) {
+                            if (aclist.indexOf(commits[i].toString()) < 0) {
+                                allCommits.push(commits[i]);
+                                aclist.push(commits[i].toString());
+                            }
+                        }
+                        count++;
+                        console.log(count + "-------" + allCommits.length);
+                        cb();
+                    });
+                    history.start();
+                });
+            }
+            else {
+                console.log('lalalalalalala');
+                count++;
+                cb();
+            }
+        }, function (err) {
+            console.log(err);
+            callback(allCommits);
         });
-        history.start();
     });
 }
 function pullFromRemote() {
@@ -210,35 +254,49 @@ function mergeLocalBranches(element) {
         refreshAll(repos);
     });
 }
-function mergeCommits(from, to) {
+function mergeCommits(from) {
     var repos;
+    var index;
     Git.Repository.open(repoFullPath)
         .then(function (repo) {
         repos = repo;
-        console.log("2.0");
-        return repos.mergeBranches(to, from, repos.defaultSignature(), Git.Merge.PREFERENCE.NONE, null);
+        console.log("2.0  " + from);
+        return Git.Reference.nameToId(repos, 'refs/heads/' + from);
     })
-        .then(function (index) {
-        console.log("3.0");
-        var text;
-        console.log(index);
-        if (index instanceof Git.Index) {
-            text = "Conflicts Exist";
+        .then(function (oid) {
+        console.log("3.0  " + oid);
+        return Git.AnnotatedCommit.lookup(repos, oid);
+    })
+        .then(function (annotated) {
+        console.log("4.0  " + annotated);
+        Git.Merge.merge(repos, annotated, null, {
+            checkoutStrategy: Git.Checkout.STRATEGY.FORCE,
+        });
+        theirCommit = annotated;
+    })
+        .then(function () {
+        if (fs.existsSync(repoFullPath + "/.git/MERGE_MSG")) {
+            updateModalText("Conflicts exists! Please check files list on right side and solve conflicts before you commit again!");
+            refreshAll(repos);
         }
         else {
-            text = "Merge Successfully";
+            updateModalText("Successfully Merged!");
+            refreshAll(repos);
         }
-        console.log(text);
-        updateModalText(text);
-        refreshAll(repos);
-    }, function (err) {
-        console.log(err);
     });
+}
+function mergeInMenu(from) {
+    var p1 = document.getElementById("fromMerge");
+    var p3 = document.getElementById("mergeModalBody");
+    p1.innerHTML = from;
+    p3.innerHTML = "Do you want to merge branch " + from + " to HEAD ?";
+    $("#mergeModal").modal('show');
 }
 function displayModifiedFiles() {
     var modifiedFiles = [];
     Git.Repository.open(repoFullPath)
         .then(function (repo) {
+        console.log(repo.isMerging() + "ojoijnkbunmm");
         repo.getStatus().then(function (statuses) {
             statuses.forEach(addModifiedFile);
             if (modifiedFiles.length !== 0) {
@@ -379,3 +437,20 @@ function displayModifiedFiles() {
         console.log("waiting for repo to be initialised");
     });
 }
+var content;
+$.contextMenu({
+    slector: ".file",
+    callback: function (key, options) {
+        content = $(this).text();
+        console.log("You clicked on: " + content);
+    },
+    items: {
+        "edit": {
+            name: "Edit",
+            icon: "edit",
+            callback: function (itemKey, opt) {
+                opn(repoFullPath + "/" + content);
+            }
+        }
+    },
+});

@@ -3,6 +3,11 @@ p, h1 {
   font-family: 'Montserrat', sans-serif;
 }
 
+#branchOptions {
+  position: absolute;
+  display:none;
+}
+
 body {
   margin: 0;
   width: 100vw;

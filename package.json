@@ -1,5 +1,6 @@
 {
   "name": "VisualGit",
+  "displayName": "VisualGit",
   "version": "1.0.0",
   "description": "A visually-oriented Git client",
   "main": "index.js",
@@ -45,7 +46,12 @@
     "github-username": "3.0.0",
     "font-awesome": "4.7.0",
     "material-letter-icons": "1.0.7",
-    "github-avatar-url": "1.0.0"
+    "github-avatar-url": "1.0.0",
+    "async": "2.1.4",
+    "bootstrap-submenu": "2.0.4",
+    "jquery-contextmenu": "2.4.2",
+    "opn": "4.0.2",
+    "read-each-line-sync": "1.0.4"
   },
   "devDependencies": {
     "devtron": "1.1.0",

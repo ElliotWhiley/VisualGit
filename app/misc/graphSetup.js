@@ -1,5 +1,7 @@
 var vis = require("vis");
+var $ = require("jquery");
 var options, bsNodes, bsEdges, abNodes, abEdges, nodes, edges, network;
+var startP, secP = null, fromNode = null, toNode;
 function drawGraph() {
     bsNodes = new vis.DataSet([]);
     bsEdges = new vis.DataSet([]);
@@ -59,7 +61,7 @@ function drawGraph() {
                 speed: { x: 10, y: 10, zoom: 0.02 },
                 bindToWindow: true
             },
-            multiselect: true,
+            multiselect: false,
             navigationButtons: false,
             selectable: true,
             selectConnectedEdges: false,
@@ -168,13 +170,34 @@ function drawGraph() {
             network.fit(moveOptions);
         }
     }, false);
-    network.on('dragEnd', function (callback) {
-        var fromNode = callback.nodes[0];
-        var toNode = network.getNodeAt(callback.pointer.DOM);
-        console.log(fromNode + "!!!!!!!" + toNode + "!!!!!!!!!" + commitList.length);
-        if (fromNode !== toNode && commitList[fromNode - commitList.length - 1]['branch'] && commitList[toNode - commitList.length - 1]['branch']) {
-            console.log(nodes.get(fromNode)['title'] + "      " + nodes.get(toNode)['title']);
-            mergeCommits(nodes.get(fromNode)['title'], nodes.get(toNode)['title']);
-        }
+    network.on('dragStart', function (callback) {
+        startP = callback.pointer.canvas;
+    });
+    network.on('dragEnd', function (cb) {
+        console.log("!!!!!");
+        fromNode = cb.nodes[0];
+        network.moveNode(fromNode, startP.x, startP.y);
+        secP = cb.pointer.DOM;
     }, false);
+    network.on("animationFinished", function () {
+        console.log("lalalalala");
+        if (fromNode !== null && secP !== null) {
+            console.log(fromNode + '   ' + secP);
+            var toNode_1 = network.getNodeAt(secP);
+            console.log(fromNode + "!!!!!!!" + toNode_1 + "!!!!!!!!!" + commitList.length);
+            if (fromNode !== toNode_1 && (nodes.get(fromNode)['shape'] === 'box') && (nodes.get(toNode_1)['shape'] === 'box')) {
+                console.log(nodes.get(fromNode)['title'] + "      " + nodes.get(toNode_1)['title']);
+                mergeCommits(nodes.get(fromNode)['title']);
+            }
+        }
+        fromNode = null;
+        secP = null;
+    });
+    network.on('oncontext', function (callback) {
+        toNode = network.getNodeAt(callback.pointer.DOM);
+        if (nodes.get(toNode)['shape'] !== 'box') {
+            toNode = undefined;
+        }
+        console.log("toNode:  " + toNode);
+    });
 }

@@ -331,7 +331,6 @@ function makeNode(c, column) {
         reference: reference,
         branch: flag,
     });
-    console.log("sha: " + c.sha());
 }
 function makeEdge(sha, parentSha) {
     var fromNode = getNodeId(parentSha.toString());

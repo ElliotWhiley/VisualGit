@@ -17,11 +17,12 @@ function onClosed() {
 
 function createMainWindow() {
 	const win = new electron.BrowserWindow({
-		backgroundColor: "#000"
+		backgroundColor : "#000"
 	});
 
 	win.maximize();
 
+	win.setTitle(require('./package.json').name);
 	win.loadURL(`file://${__dirname}/index.html`);
 	win.on('closed', onClosed);
 

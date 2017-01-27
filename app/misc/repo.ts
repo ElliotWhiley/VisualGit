@@ -68,6 +68,23 @@ function openRepository() {
   });
 }
 
+function addBranchestoNode(thisB: string) {
+  let elem = document.getElementById("otherBranches");
+  elem.innerHTML = '';
+  for (let i = 0; i < localBranches.length; i++) {
+    if (localBranches[i] !== thisB) {
+      console.log("lalalala   " + localBranches[i]);
+      let li = document.createElement("li");
+      let a = document.createElement("a");
+      a.appendChild(document.createTextNode(localBranches[i]));
+      a.setAttribute("tabindex", "0");
+      a.setAttribute("href", "#");
+      li.appendChild(a);
+      elem.appendChild(li);
+    }
+  }
+}
+
 function refreshAll(repository) {
   let branch;
   bname = [];
@@ -86,11 +103,11 @@ function refreshAll(repository) {
     let count = 0;
     clearBranchElement();
     for (let i = 0; i < branchList.length; i++) {
-      console.log(branchList[i].name() + "!!!!");
+      //console.log(branchList[i].name() + "!!!!");
       let bp = branchList[i].name().split("/");
       Git.Reference.nameToId(repository, branchList[i].name()).then(function(oid) {
         // Use oid
-        console.log(oid + "  TTTTTTTT");
+        //console.log(oid + "  TTTTTTTT");
         if (branchList[i].isRemote()) {
           remoteName[bp[bp.length-1]] = oid;
         } else {
@@ -201,7 +218,13 @@ function displayBranch(name, id, onclick) {
 }
 
 function checkoutLocalBranch(element) {
-  let bn = element.innerHTML;
+  let bn;
+  console.log(typeof element + "UUUUUUUUU");
+  if (typeof element === "string") {
+    bn = element;
+  } else {
+    bn = element.innerHTML;
+  }
   console.log(bn + ">>>>>>>>");
   Git.Repository.open(repoFullPath)
   .then(function(repo) {
@@ -215,18 +238,27 @@ function checkoutLocalBranch(element) {
 }
 
 function checkoutRemoteBranch(element) {
-  let bn = element.innerHTML;
+  let bn;
+  if (typeof element === "string") {
+    bn = element;
+  } else {
+    bn = element.innerHTML;
+  }
+  console.log("1.0  " + bn);
   let repos;
   Git.Repository.open(repoFullPath)
   .then(function(repo) {
     repos = repo;
     let cid = remoteName[bn];
+    console.log("2.0  " + cid);
     return Git.Commit.lookup(repo, cid);
   })
   .then(function(commit) {
+    console.log("3.0");
     return Git.Branch.create(repos, bn, commit, 0);
   })
   .then(function(branch) {
+    console.log("4.0");
     return Git.Branch.setUpstream(branch, "refs/remote/origin/" + bn);
   })
   .then(function(code) {

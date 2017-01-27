@@ -1,6 +1,8 @@
 let vis = require("vis");
-
+let $ = require("jquery");
 let options, bsNodes, bsEdges, abNodes, abEdges, nodes, edges, network;
+let startP, secP = null, fromNode = null, toNode;
+
 
 function drawGraph() {
 
@@ -76,7 +78,7 @@ function drawGraph() {
         speed: {x: 10, y: 10, zoom: 0.02},
         bindToWindow: true
       },
-      multiselect: true,
+      multiselect: false,
       navigationButtons: false,
       selectable: true,
       selectConnectedEdges: false,
@@ -197,14 +199,48 @@ function drawGraph() {
     }
   }, false);
 
-  network.on('dragEnd', function(callback) {
-    let fromNode = callback.nodes[0];
-    let toNode = network.getNodeAt(callback.pointer.DOM);
-    console.log(fromNode + "!!!!!!!" + toNode + "!!!!!!!!!" + commitList.length);
+  network.on('dragStart', function(callback) {
+    startP = callback.pointer.canvas;
+  });
 
-    if (fromNode !== toNode && commitList[fromNode-commitList.length-1]['branch'] && commitList[toNode-commitList.length-1]['branch']) {
-      console.log(nodes.get(fromNode)['title'] + "      " + nodes.get(toNode)['title']);
-      mergeCommits(nodes.get(fromNode)['title'], nodes.get(toNode)['title']);
-    }
+  network.on('dragEnd', function(cb) {
+    console.log("!!!!!");
+    fromNode = cb.nodes[0];
+    network.moveNode(fromNode, startP.x, startP.y);
+    secP = cb.pointer.DOM;
   }, false);
+
+  network.on("animationFinished", function() {
+    console.log("lalalalala");
+    if (fromNode !== null && secP !== null) {
+      console.log(fromNode + '   ' + secP);
+      let toNode = network.getNodeAt(secP);
+      console.log(fromNode + "!!!!!!!" + toNode + "!!!!!!!!!" + commitList.length);
+
+      if (fromNode !== toNode && (nodes.get(fromNode)['shape'] === 'box') && (nodes.get(toNode)['shape'] === 'box')) {
+        console.log(nodes.get(fromNode)['title'] + "      " + nodes.get(toNode)['title']);
+        mergeCommits(nodes.get(fromNode)['title']);
+      }
+    }
+    fromNode = null;
+    secP = null;
+  });
+
+  network.on('oncontext', function(callback) {
+    toNode = network.getNodeAt(callback.pointer.DOM);
+    if (nodes.get(toNode)['shape'] !== 'box') {
+      toNode = undefined;
+    }
+    console.log("toNode:  " + toNode);
+  //   if (toNode !== undefined) {
+  //     console.log("clicked !!!!!!!!")
+  //     network.selectNodes([toNode], [false]);
+  //     addBranchestoNode(nodes.get(toNode)['label']);
+  //     $("#branchOptions").css({
+  //     display: "block",
+  //     left: callback.pointer.DOM.x,
+  //     top: callback.pointer.DOM.y
+  //  });
+  //   }
+  });
 }
