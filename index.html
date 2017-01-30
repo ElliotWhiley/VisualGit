@@ -119,7 +119,7 @@ $.contextMenu({
     console.log(localBranches.length + "------------------");
 
     if (toNode !== undefined) {
-      branch = nodes.get(toNode)['label'];
+      branch = toNode['label'];
       if (branch.substring(0, 1) === '*') {
         branch = branch.substring(1, branch.length);
       }

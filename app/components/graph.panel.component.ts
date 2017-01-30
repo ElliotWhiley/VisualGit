@@ -25,7 +25,7 @@ import { Component } from "@angular/core";
           </div>
           <p class="invisible" id="fromMerge"></p>
           <div class="modal-footer">
-            <button type="button" class="btn btn-primary" (click)="mergeBranches()">Yes</button>
+            <button type="button" class="btn btn-primary" (click)="mergeBranches()" data-dismiss="modal">Yes</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
           </div>
         </div><!-- /.modal-content -->

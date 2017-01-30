@@ -182,8 +182,12 @@ function makeBasicNode(c, column) {
     var email = stringer.split("%")[1];
     var flag = true;
     var count = 1;
-    if (c.parents().length === 1) {
+    if (c.toString() in bname) {
+        console.log("result: " + bname[c.toString()]);
+    }
+    else if (c.parents().length === 1) {
         var cp = c.parents()[0].toString();
+        console.log("cid2: " + c.toString());
         for (var i = 0; i < basicList.length; i++) {
             var index = basicList[i]['sha'].indexOf(cp);
             if (index > -1 && basicList[i]['column'] === column) {
@@ -214,6 +218,31 @@ function makeBasicNode(c, column) {
             x: (column - 1) * spacingX,
             y: (id - 1) * spacingY,
         });
+        if (c.toString() in bname) {
+            for (var i = 0; i < bname[c.toString()].length; i++) {
+                var branchName = bname[c.toString()][i];
+                var bp = branchName.name().split("/");
+                var shortName = bp[bp.length - 1];
+                console.log(shortName + "   " + branchName.isHead().toString());
+                if (branchName.isHead()) {
+                    shortName = "*" + shortName;
+                }
+                bsNodes.add({
+                    id: id + numOfCommits * (i + 1),
+                    shape: "box",
+                    title: branchName,
+                    label: shortName,
+                    physics: false,
+                    fixed: false,
+                    x: (column - 0.6 * (i + 1)) * spacingX,
+                    y: (id - 0.3) * spacingY,
+                });
+                bsEdges.add({
+                    from: id + numOfCommits * (i + 1),
+                    to: id
+                });
+            }
+        }
         var shaList = [];
         shaList.push(c.toString());
         var emailList = [];
@@ -241,7 +270,7 @@ function makeAbsNode(c, column) {
         var cp = c.parents()[0].toString();
         for (var i = 0; i < abstractList.length; i++) {
             var index = abstractList[i]['sha'].indexOf(cp);
-            if (index > -1 && abstractList[i]['email'] === email && abstractList[i]['column'] === column) {
+            if (index > -1 && abstractList[i]['email'] === email && abstractList[i]['column'] === column && !(c.toString() in bname)) {
                 flag = false;
                 abstractList[i]['count'] += 1;
                 count = abstractList[i]['count'];
@@ -264,6 +293,31 @@ function makeAbsNode(c, column) {
             x: (column - 1) * spacingX,
             y: (id - 1) * spacingY,
         });
+        if (c.toString() in bname) {
+            for (var i = 0; i < bname[c.toString()].length; i++) {
+                var branchName = bname[c.toString()][i];
+                var bp = branchName.name().split("/");
+                var shortName = bp[bp.length - 1];
+                console.log(shortName + "   " + branchName.isHead().toString());
+                if (branchName.isHead()) {
+                    shortName = "*" + shortName;
+                }
+                abNodes.add({
+                    id: id + numOfCommits * (i + 1),
+                    shape: "box",
+                    title: branchName,
+                    label: shortName,
+                    physics: false,
+                    fixed: false,
+                    x: (column - 0.6 * (i + 1)) * spacingX,
+                    y: (id - 0.3) * spacingY,
+                });
+                abEdges.add({
+                    from: id + numOfCommits * (i + 1),
+                    to: id
+                });
+            }
+        }
         var shaList = [];
         shaList.push(c.toString());
         abstractList.push({

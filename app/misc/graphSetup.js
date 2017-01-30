@@ -195,7 +195,16 @@ function drawGraph() {
     });
     network.on('oncontext', function (callback) {
         toNode = network.getNodeAt(callback.pointer.DOM);
-        if (nodes.get(toNode)['shape'] !== 'box') {
+        if (flag === 'node' && nodes.get(toNode)['shape'] === 'box') {
+            toNode = nodes.get(toNode);
+        }
+        else if (flag === 'abstract' && abNodes.get(toNode)['shape'] === 'box') {
+            toNode = abNodes.get(toNode);
+        }
+        else if (flag === 'basic' && bsNodes.get(toNode)['shape'] === 'box') {
+            toNode = bsNodes.get(toNode);
+        }
+        else {
             toNode = undefined;
         }
         console.log("toNode:  " + toNode);
