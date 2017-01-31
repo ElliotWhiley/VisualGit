@@ -187,7 +187,6 @@ function makeBasicNode(c, column) {
     }
     else if (c.parents().length === 1) {
         var cp = c.parents()[0].toString();
-        console.log("cid2: " + c.toString());
         for (var i = 0; i < basicList.length; i++) {
             var index = basicList[i]['sha'].indexOf(cp);
             if (index > -1 && basicList[i]['column'] === column) {
