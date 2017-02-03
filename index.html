@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('diff-panel-minimise').addEventListener("click", function () {
       hideDiffPanel();
     });
-  }, 3000);
+  }, 2000);
 
   // Update modified files on left file panel every X seconds
   setInterval(function() {
@@ -116,8 +116,6 @@ $.contextMenu({
         }
       }
     };
-
-    console.log(localBranches.length + "------------------");
 
     if (toNode !== undefined) {
       branch = toNode['label'];

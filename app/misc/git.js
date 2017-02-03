@@ -9,6 +9,7 @@ var green = "#84db00";
 var repo, index, oid, remote, commitMessage;
 var filesToAdd = [];
 var theirCommit = null;
+var modifiedFiles;
 function addAndCommit() {
     var repository;
     Git.Repository.open(repoFullPath)
@@ -155,6 +156,9 @@ function getAllCommits(callback) {
 function pullFromRemote() {
     var repository;
     var branch = document.getElementById("branch-name").innerText;
+    if (modifiedFiles.length > 0) {
+        updateModalText("Please commit before pulling from remote!");
+    }
     Git.Repository.open(repoFullPath)
         .then(function (repo) {
         repository = repo;
@@ -173,12 +177,30 @@ function pullFromRemote() {
         });
     })
         .then(function () {
-        repository.mergeBranches(branch, "origin/" + branch)
-            .then(function () {
-            refreshAll(repository);
-            console.log("Pull successful");
-            updateModalText("Pull successful");
+        return Git.Reference.nameToId(repository, "refs/remotes/origin/" + branch);
+    })
+        .then(function (oid) {
+        console.log("3.0  " + oid);
+        return Git.AnnotatedCommit.lookup(repository, oid);
+    }, function (err) {
+        console.log(err);
+    })
+        .then(function (annotated) {
+        console.log("4.0  " + annotated);
+        Git.Merge.merge(repository, annotated, null, {
+            checkoutStrategy: Git.Checkout.STRATEGY.FORCE,
         });
+        theirCommit = annotated;
+    })
+        .then(function () {
+        if (fs.existsSync(repoFullPath + "/.git/MERGE_MSG")) {
+            updateModalText("Conflicts exists! Please check files list on right side and solve conflicts before you commit again!");
+            refreshAll(repository);
+        }
+        else {
+            updateModalText("Successfully pulled from remote branch " + branch + "!");
+            refreshAll(repository);
+        }
     });
 }
 function pushToRemote() {
@@ -297,7 +319,7 @@ function mergeInMenu(from) {
     $("#mergeModal").modal('show');
 }
 function displayModifiedFiles() {
-    var modifiedFiles = [];
+    modifiedFiles = [];
     Git.Repository.open(repoFullPath)
         .then(function (repo) {
         console.log(repo.isMerging() + "ojoijnkbunmm");

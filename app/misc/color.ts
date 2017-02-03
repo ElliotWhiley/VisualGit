@@ -22,6 +22,7 @@ function changeColor(color) {
   let arp = document.getElementById('add-repository-panel');
   let auth = document.getElementById('authenticate');
   if (color === 'white') {
+    before = 'white';
     for (let i = 0; i < head.length; i++) {
       console.log(head[i]);
       head[i].className = 'navbar navbar-white';

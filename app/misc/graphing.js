@@ -6,21 +6,25 @@ var absNodeId = 1;
 var basicNodeId = 1;
 var abstractList = [];
 var basicList = [];
+var bDict = {};
 var commitHistory = [];
 var commitList = [];
 var spacingY = 100;
 var spacingX = 80;
 var parentCount = {};
 var columns = [];
+var edgeDic = {};
 var abstractCount = 0;
 var basicCount = 0;
 var numOfCommits = 0;
 var githubUsername = require('github-username');
 var avatarUrls = {};
+var branchIds = {};
 function processGraph(commits) {
     commitHistory = [];
     numOfCommits = commits.length;
     sortCommits(commits);
+    makeBranchColor();
     populateCommits();
 }
 function sortCommits(commits) {
@@ -127,6 +131,7 @@ function populateCommits() {
     for (var i = 0; i < basicList.length; i++) {
         addBasicEdge(basicList[i]);
     }
+    sortBasicGraph();
     commitList = commitList.sort(timeCompare);
     reCenter();
 }
@@ -163,14 +168,93 @@ function addAbsEdge(c) {
     }
 }
 function addBasicEdge(c) {
+    var flag = true;
     var parents = c['parents'];
+    edgeDic[c['id']] = [];
+    console.log(edgeDic[c['id']].length);
     for (var i = 0; i < parents.length; i++) {
         for (var j = 0; j < basicList.length; j++) {
-            if (basicList[j]['sha'].indexOf(parents[i].toString()) > -1) {
+            if (basicList[j]['sha'].indexOf(parents[i].toString()) > -1 && basicList[j] !== c) {
+                flag = false;
                 bsEdges.add({
                     from: basicList[j]['id'],
                     to: c['id']
                 });
+                edgeDic[c['id']].push(basicList[j]['id']);
+            }
+        }
+    }
+}
+function sortBasicGraph() {
+    var tmp = basicList;
+    var idList = [];
+    while (tmp.length > 0) {
+        var n = tmp.shift();
+        var ta = edgeDic[n.id];
+        var count = 0;
+        console.log(idList.length + '   ' + ta.length);
+        for (var i = 0; i < ta.length; i++) {
+            for (var j = 0; j < idList.length; j++) {
+                console.log(idList[j] + '   ' + ta[i]);
+                if (idList[j].toString() === ta[i].toString()) {
+                    count++;
+                }
+            }
+            if (count < i + 1) {
+                break;
+            }
+        }
+        if (count === ta.length) {
+            idList.push(n.id);
+        }
+        else {
+            tmp.push(n);
+        }
+    }
+    for (var i = 0; i < idList.length; i++) {
+        bsNodes.update({ id: idList[i], y: i * spacingY });
+        if (idList[i] in branchIds) {
+            bsNodes.update({ id: branchIds[idList[i]], y: (i + 0.5) * spacingY });
+        }
+    }
+}
+function makeBranchColor() {
+    var bcList = [];
+    var count = 0;
+    for (var i = 0; i < commitHistory.length; i++) {
+        if (commitHistory[i].toString() in bname) {
+            console.log(commitHistory[i]);
+            bcList.push({
+                oid: commitHistory[i],
+                cid: i
+            });
+            console.log(commitHistory[i]);
+        }
+    }
+    count = 0;
+    while (bcList.length > 0) {
+        console.log(count++);
+        var commit = bcList.pop();
+        console.log(commit.oid);
+        var oid = commit.oid.toString();
+        var cid = commit.cid;
+        if (oid in bDict) {
+            bDict[oid].push(cid);
+        }
+        else {
+            console.log(oid + '  22  ' + cid);
+            bDict[oid] = [cid];
+        }
+        var parents = commit.oid.parents();
+        for (var i = 0; i < parents.length; i++) {
+            console.log("parents!!!!!!");
+            for (var j = 0; j < commitHistory.length; j++) {
+                if (commitHistory[j].toString() === parents[i].toString()) {
+                    bcList.push({
+                        oid: commitHistory[j],
+                        cid: cid
+                    });
+                }
             }
         }
     }
@@ -182,30 +266,23 @@ function makeBasicNode(c, column) {
     var email = stringer.split("%")[1];
     var flag = true;
     var count = 1;
-    if (c.toString() in bname) {
-        console.log("result: " + bname[c.toString()]);
-    }
-    else if (c.parents().length === 1) {
-        var cp = c.parents()[0].toString();
-        for (var i = 0; i < basicList.length; i++) {
-            var index = basicList[i]['sha'].indexOf(cp);
-            if (index > -1 && basicList[i]['column'] === column) {
-                flag = false;
-                if (basicList[i]['email'].indexOf(email) < 0) {
-                    basicList[i]['email'].push(email);
-                }
-                basicList[i]['count'] += 1;
-                count = basicList[i]['count'];
-                bsNodes.update({ id: i + 1, title: "Number of Commits: " + count });
-                basicList[i]['sha'].push(c.toString());
-                break;
-            }
+    var id;
+    var colors1 = JSON.stringify(bDict[c.toString()]);
+    for (var i = 0; i < basicList.length; i++) {
+        var colors2 = JSON.stringify(basicList[i]['colors']);
+        if (colors1 === colors2) {
+            flag = false;
+            id = basicList[i]['id'];
+            basicList[i]['count'] += 1;
+            count = basicList[i]['count'];
+            bsNodes.update({ id: i + 1, title: "Number of Commits: " + count });
+            basicList[i]['sha'].push(c.toString());
+            basicList[i]['parents'] = basicList[i]['parents'].concat(c.parents());
+            break;
         }
     }
-    else if (c.parents().length === 2) {
-    }
     if (flag) {
-        var id = basicNodeId++;
+        id = basicNodeId++;
         var title = "Number of Commits: " + count;
         bsNodes.add({
             id: id,
@@ -217,45 +294,44 @@ function makeBasicNode(c, column) {
             x: (column - 1) * spacingX,
             y: (id - 1) * spacingY,
         });
-        if (c.toString() in bname) {
-            for (var i = 0; i < bname[c.toString()].length; i++) {
-                var branchName = bname[c.toString()][i];
-                var bp = branchName.name().split("/");
-                var shortName = bp[bp.length - 1];
-                console.log(shortName + "   " + branchName.isHead().toString());
-                if (branchName.isHead()) {
-                    shortName = "*" + shortName;
-                }
-                bsNodes.add({
-                    id: id + numOfCommits * (i + 1),
-                    shape: "box",
-                    title: branchName,
-                    label: shortName,
-                    physics: false,
-                    fixed: false,
-                    x: (column - 0.6 * (i + 1)) * spacingX,
-                    y: (id - 0.3) * spacingY,
-                });
-                bsEdges.add({
-                    from: id + numOfCommits * (i + 1),
-                    to: id
-                });
-            }
-        }
         var shaList = [];
         shaList.push(c.toString());
-        var emailList = [];
-        emailList.push(email);
         basicList.push({
             sha: shaList,
             id: id,
             time: c.timeMs(),
             column: column,
-            email: emailList,
+            colors: bDict[c.toString()],
             reference: reference,
             parents: c.parents(),
             count: 1,
         });
+    }
+    if (c.toString() in bname) {
+        for (var i = 0; i < bname[c.toString()].length; i++) {
+            var branchName = bname[c.toString()][i];
+            var bp = branchName.name().split("/");
+            var shortName = bp[bp.length - 1];
+            console.log(shortName + "   " + branchName.isHead().toString());
+            if (branchName.isHead()) {
+                shortName = "*" + shortName;
+            }
+            bsNodes.add({
+                id: id + numOfCommits * (i + 1),
+                shape: "box",
+                title: branchName,
+                label: shortName,
+                physics: false,
+                fixed: false,
+                x: (column - 0.6 * (i + 1)) * spacingX,
+                y: (id - 0.3) * spacingY,
+            });
+            bsEdges.add({
+                from: id + numOfCommits * (i + 1),
+                to: id
+            });
+            branchIds[id] = id + numOfCommits * (i + 1);
+        }
     }
 }
 function makeAbsNode(c, column) {

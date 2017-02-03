@@ -11,6 +11,7 @@ let green = "#84db00";
 let repo, index, oid, remote, commitMessage;
 let filesToAdd = [];
 let theirCommit = null;
+let modifiedFiles;
 
 function addAndCommit() {
   let repository;
@@ -190,6 +191,9 @@ function getAllCommits(callback) {
 function pullFromRemote() {
   let repository;
   let branch = document.getElementById("branch-name").innerText;
+  if (modifiedFiles.length > 0) {
+    updateModalText("Please commit before pulling from remote!");
+  }
   Git.Repository.open(repoFullPath)
   .then(function(repo) {
     repository = repo;
@@ -211,12 +215,29 @@ function pullFromRemote() {
   // Now that we're finished fetching, go ahead and merge our local branch
   // with the new one
   .then(function() {
-    repository.mergeBranches(branch, "origin/" + branch)
-    .then(function() {
-        refreshAll(repository);
-        console.log("Pull successful");
-        updateModalText("Pull successful");
+    return Git.Reference.nameToId(repository, "refs/remotes/origin/" + branch);
+  })
+  .then(function(oid) {
+    console.log("3.0  " + oid);
+    return Git.AnnotatedCommit.lookup(repository, oid);
+  }, function(err) {
+    console.log(err);
+  })
+  .then(function(annotated) {
+    console.log("4.0  " + annotated);
+    Git.Merge.merge(repository, annotated, null, {
+      checkoutStrategy: Git.Checkout.STRATEGY.FORCE,
     });
+    theirCommit = annotated;
+  })
+  .then(function() {
+    if (fs.existsSync(repoFullPath + "/.git/MERGE_MSG")) {
+      updateModalText("Conflicts exists! Please check files list on right side and solve conflicts before you commit again!");
+      refreshAll(repository);
+    } else {
+      updateModalText("Successfully pulled from remote branch " + branch + "!");
+      refreshAll(repository);
+    }
   });
 //   .then(function(updatedRepository) {
 //     refreshAll(updatedRepository);
@@ -357,7 +378,7 @@ function mergeInMenu(from: string) {
 }
 
 function displayModifiedFiles() {
-  let modifiedFiles = [];
+  modifiedFiles = [];
 
   Git.Repository.open(repoFullPath)
   .then(function(repo) {

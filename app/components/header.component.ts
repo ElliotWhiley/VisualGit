@@ -14,21 +14,19 @@ import { GraphService } from "../services/graph.service";
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
+          <img src="./assets/AddRepositoryFolder.svg" (click)="promptUserToAddRepository()" class="add-repository-button" title="Add Repository">
         </div>
         <div class="collapse navbar-collapse" id="navbar">
           <ul class="nav navbar-nav col-md-5 hidden-xs">
-            <li><img src="./assets/AddRepositoryFolder.svg" (click)="promptUserToAddRepository()" class="add-repository-button" title="Add Repository"></li>
-            <li class="repo-name dropdown">
-              <button class="btn btn-inverse dropdown-toggle btn-sm navbar-btn" id="repo-name" data-toggle="modal" data-target="#repo-modal">
-                repository
-                <span class="caret"></span>
-              </button>
+            <li><img src="./assets/RightArrow.svg" class="right-arrow"></li>
+            <li class="repo-name dropdown-toggle">
+                <a href="#" id="repo-name" data-toggle="modal" data-target="#repo-modal">repository</a>
             </li>
+            <li><img src="./assets/RightArrow.svg" class="right-arrow"></li>
             <li class="branch-name dropdown">
-              <button class="btn btn-inverse dropdown-toggle btn-sm navbar-btn" id="branch-name" data-toggle="dropdown">
-                branch
-                <span class="caret"></span>
-              </button>
+              <a class="dropdown-toggle" id="branch-name" data-toggle="dropdown">
+                branch<span class="caret"></span>
+              </a>
               <ul class="dropdown-menu" id="branch-dropdown" role="menu" aria-labelledby="branch-name">
                 <li role="presentation" id="create-branch">
                   <div class="input-group menuitem">
@@ -38,14 +36,6 @@ import { GraphService } from "../services/graph.service";
                     </span>
                   </div>
                 </li>
-              </ul>
-            </li>
-            <li class="merge dropdown">
-              <button href="#" class="btn btn-inverse dropdown-toggle btn-sm navbar-btn" id="merge-name" onclick="getOtherBranches()" data-toggle="dropdown">
-                update from
-                <span class="caret"></span>
-              </button>
-              <ul class="dropdown-menu" id="merge-dropdown" role="menu" >
               </ul>
             </li>
           </ul>

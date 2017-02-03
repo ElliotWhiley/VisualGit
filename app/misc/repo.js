@@ -3,6 +3,7 @@ var $ = require('jQuery');
 var repoFullPath;
 var repoLocalPath;
 var bname = {};
+var branchCommit = [];
 var remoteName = {};
 var localBranches = [];
 var readFile = require("fs-sync");
@@ -102,6 +103,7 @@ function refreshAll(repository) {
                     remoteName[bp[bp.length - 1]] = oid;
                 }
                 else {
+                    branchCommit.push(branchList[i]);
                     console.log(bp[bp.length - 1] + "--------" + oid.tostrS());
                     if (oid.tostrS() in bname) {
                         bname[oid.tostrS()].push(branchList[i]);

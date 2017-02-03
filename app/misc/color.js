@@ -13,6 +13,7 @@ function changeColor(color) {
     var arp = document.getElementById('add-repository-panel');
     var auth = document.getElementById('authenticate');
     if (color === 'white') {
+        before = 'white';
         for (var i = 0; i < head.length; i++) {
             console.log(head[i]);
             head[i].className = 'navbar navbar-white';

@@ -7,22 +7,26 @@ let absNodeId = 1;
 let basicNodeId = 1;
 let abstractList = [];
 let basicList = [];
+let bDict = {};
 let commitHistory = [];
 let commitList = [];
 let spacingY = 100;
 let spacingX = 80;
 let parentCount = {};
 let columns: boolean[] = [];
+let edgeDic = {};
 let abstractCount = 0;
 let basicCount = 0;
 let numOfCommits = 0;
 let githubUsername = require('github-username');
 let avatarUrls = {};
+let branchIds = {};
 
 function processGraph(commits: nodegit.Commit[]) {
   commitHistory = [];
   numOfCommits = commits.length;
   sortCommits(commits);
+  makeBranchColor();
   populateCommits();
 }
 
@@ -141,8 +145,10 @@ function populateCommits() {
   }
 
   for (let i = 0; i < basicList.length; i++) {
+    //console.log(basicList[i].id + '    ' + basicList[i]['parents']);
     addBasicEdge(basicList[i]);
   }
+  sortBasicGraph();
 
   commitList = commitList.sort(timeCompare);
   reCenter();
@@ -186,15 +192,102 @@ function addAbsEdge(c) {
 }
 
 function addBasicEdge(c) {
+  let flag = true;
   let parents = c['parents'];
+  edgeDic[c['id']] = [];
+  console.log(edgeDic[c['id']].length);
   for (let i = 0; i < parents.length; i++) {
     for (let j = 0; j < basicList.length; j++) {
       //console.log(i + "  " + j + "  " + basicList[j]['sha']);
-      if (basicList[j]['sha'].indexOf(parents[i].toString()) > -1) {
+      if (basicList[j]['sha'].indexOf(parents[i].toString()) > -1 && basicList[j] !== c) {
+        flag = false;
         bsEdges.add({
           from: basicList[j]['id'],
           to: c['id']
         });
+        edgeDic[c['id']].push(basicList[j]['id']);
+      }
+    }
+  }
+}
+
+function sortBasicGraph() {
+  let tmp = basicList;
+  let idList = [];
+  while (tmp.length > 0) {
+
+    let n = tmp.shift();
+    let ta = edgeDic[n.id];
+    let count = 0;
+    console.log(idList.length + '   ' + ta.length);
+    for (let i = 0; i < ta.length; i++) {
+      for (let j = 0; j < idList.length; j++) {
+        console.log(idList[j] + '   ' + ta[i]);
+        if (idList[j].toString() === ta[i].toString()) {
+          count++;
+        }
+      }
+      if (count < i + 1) {
+        break;
+      }
+      // if (idList.indexOf(ta[i].toString()) > 0) {
+      //   count++;
+      //   console.log(ta.length + '   vs   ' + count);
+      // } else {
+      //   break;
+      // }
+    }
+    if (count === ta.length) {
+      idList.push(n.id);
+    } else {
+      tmp.push(n);
+    }
+  }
+  for (let i = 0; i < idList.length; i++) {
+    bsNodes.update({id: idList[i], y: i * spacingY});
+    if (idList[i] in branchIds) {
+      bsNodes.update({id: branchIds[idList[i]], y: (i + 0.5) * spacingY})
+    }
+  }
+}
+
+function makeBranchColor() {
+  let bcList = [];
+  let count = 0;
+  for (let i = 0; i < commitHistory.length; i++) {
+    if (commitHistory[i].toString() in bname) {
+      console.log(commitHistory[i]);
+      bcList.push({
+        oid: commitHistory[i],
+        cid: i
+      });
+      console.log(commitHistory[i]);
+    }
+  }
+  count = 0;
+  while (bcList.length > 0) {
+    console.log(count++);
+    let commit = bcList.pop();
+    console.log(commit.oid);
+    let oid = commit.oid.toString();
+    let cid = commit.cid;
+    if (oid in bDict) {
+      bDict[oid].push(cid);
+    } else {
+      console.log(oid + '  22  ' + cid);
+      bDict[oid] = [cid];
+    }
+    let parents = commit.oid.parents();
+
+    for (let i = 0; i < parents.length; i++) {
+      console.log("parents!!!!!!");
+      for (let j = 0; j < commitHistory.length; j++) {
+        if (commitHistory[j].toString() === parents[i].toString()) {
+          bcList.push({
+            oid: commitHistory[j],
+            cid: cid
+          });
+        }
       }
     }
   }
@@ -207,30 +300,24 @@ function makeBasicNode(c, column: number) {
   let email = stringer.split("%")[1];
   let flag = true;
   let count = 1;
-  if (c.toString() in bname) {
-    console.log("result: " + bname[c.toString()]);
-  } else if (c.parents().length === 1) {
-    let cp = c.parents()[0].toString();
-    for (let i = 0; i < basicList.length; i++) {
-      let index = basicList[i]['sha'].indexOf(cp);
-      if (index > -1 && basicList[i]['column'] === column) {
-        flag = false;
-        if (basicList[i]['email'].indexOf(email) < 0) {
-          basicList[i]['email'].push(email);
-        }
-        basicList[i]['count'] += 1;
-        count = basicList[i]['count'];
-        bsNodes.update({id: i+1, title: "Number of Commits: " + count});
-        basicList[i]['sha'].push(c.toString());
-        break;
-      }
+  let id;
+  let colors1 = JSON.stringify(bDict[c.toString()]);
+  for (let i = 0; i < basicList.length; i++) {
+    let colors2 = JSON.stringify(basicList[i]['colors']);
+    if (colors1 === colors2) {
+      flag = false;
+      id = basicList[i]['id'];
+      basicList[i]['count'] += 1;
+      count = basicList[i]['count'];
+      bsNodes.update({id: i+1, title: "Number of Commits: " + count});
+      basicList[i]['sha'].push(c.toString());
+      basicList[i]['parents'] = basicList[i]['parents'].concat(c.parents());
+      break;
     }
-  } else if (c.parents().length === 2) {
-    //console.log(email + "?????");
   }
 
   if (flag) {
-    let id = basicNodeId++;
+    id = basicNodeId++;
     let title = "Number of Commits: " + count;
     bsNodes.add({
       id: id,
@@ -243,49 +330,48 @@ function makeBasicNode(c, column: number) {
       y: (id - 1) * spacingY,
     });
 
-    if (c.toString() in bname) {
-      for (let i = 0; i < bname[c.toString()].length; i++) {
-        let branchName = bname[c.toString()][i];
-        let bp = branchName.name().split("/");
-        let shortName = bp[bp.length - 1];
-        console.log(shortName + "   " + branchName.isHead().toString());
-        if (branchName.isHead()) {
-          shortName = "*" + shortName;
-        }
-        bsNodes.add({
-          id: id + numOfCommits * (i + 1),
-          shape: "box",
-          title: branchName,
-          label: shortName,
-          physics: false,
-          fixed: false,
-          x: (column - 0.6 * (i + 1)) * spacingX,
-          y: (id - 0.3) * spacingY,
-        });
-
-        bsEdges.add({
-          from: id + numOfCommits * (i + 1),
-          to: id
-        });
-      }
-    }
-
     let shaList = [];
     shaList.push(c.toString());
-
-    let emailList = [];
-    emailList.push(email);
 
     basicList.push({
       sha: shaList,
       id: id,
       time: c.timeMs(),
       column: column,
-      email: emailList,
+      colors: bDict[c.toString()],
       reference: reference,
       parents: c.parents(),
       count: 1,
     });
+  }
+
+  if (c.toString() in bname) {
+    for (let i = 0; i < bname[c.toString()].length; i++) {
+      let branchName = bname[c.toString()][i];
+      let bp = branchName.name().split("/");
+      let shortName = bp[bp.length - 1];
+      console.log(shortName + "   " + branchName.isHead().toString());
+      if (branchName.isHead()) {
+        shortName = "*" + shortName;
+      }
+      bsNodes.add({
+        id: id + numOfCommits * (i + 1),
+        shape: "box",
+        title: branchName,
+        label: shortName,
+        physics: false,
+        fixed: false,
+        x: (column - 0.6 * (i + 1)) * spacingX,
+        y: (id - 0.3) * spacingY,
+      });
+
+      bsEdges.add({
+        from: id + numOfCommits * (i + 1),
+        to: id
+      });
+
+      branchIds[id] = id + numOfCommits * (i + 1);
+    }
   }
 }
 
