@@ -74,7 +74,6 @@ function populateCommits() {
 
   // Plot the graph
   for (let i = 0; i < commitHistory.length; i++) {
-    //console.log(i + " / " + commitHistory.length);
     let parents: string[] = commitHistory[i].parents();
     let nodeColumn;
     for (let j = 0; j < parents.length; j++) {
@@ -128,7 +127,6 @@ function populateCommits() {
       }
     }
 
-    //console.log(Object.keys(bsNodes).length + "????");
 
     makeNode(commitHistory[i], nodeColumn);
     makeAbsNode(commitHistory[i], nodeColumn);
@@ -145,7 +143,6 @@ function populateCommits() {
   }
 
   for (let i = 0; i < basicList.length; i++) {
-    //console.log(basicList[i].id + '    ' + basicList[i]['parents']);
     addBasicEdge(basicList[i]);
   }
   sortBasicGraph();
@@ -180,7 +177,6 @@ function addAbsEdge(c) {
   let parents = c['parents'];
   for (let i = 0; i < parents.length; i++) {
     for (let j = 0; j < abstractList.length; j++) {
-      //console.log(i + "  " + j + "  " + abstractList[j]['sha']);
       if (abstractList[j]['sha'].indexOf(parents[i].toString()) > -1) {
         abEdges.add({
           from: abstractList[j]['id'],
@@ -195,10 +191,8 @@ function addBasicEdge(c) {
   let flag = true;
   let parents = c['parents'];
   edgeDic[c['id']] = [];
-  console.log(edgeDic[c['id']].length);
   for (let i = 0; i < parents.length; i++) {
     for (let j = 0; j < basicList.length; j++) {
-      //console.log(i + "  " + j + "  " + basicList[j]['sha']);
       if (basicList[j]['sha'].indexOf(parents[i].toString()) > -1 && basicList[j] !== c) {
         flag = false;
         bsEdges.add({
@@ -219,10 +213,8 @@ function sortBasicGraph() {
     let n = tmp.shift();
     let ta = edgeDic[n.id];
     let count = 0;
-    console.log(idList.length + '   ' + ta.length);
     for (let i = 0; i < ta.length; i++) {
       for (let j = 0; j < idList.length; j++) {
-        console.log(idList[j] + '   ' + ta[i]);
         if (idList[j].toString() === ta[i].toString()) {
           count++;
         }
@@ -230,12 +222,6 @@ function sortBasicGraph() {
       if (count < i + 1) {
         break;
       }
-      // if (idList.indexOf(ta[i].toString()) > 0) {
-      //   count++;
-      //   console.log(ta.length + '   vs   ' + count);
-      // } else {
-      //   break;
-      // }
     }
     if (count === ta.length) {
       idList.push(n.id);
@@ -256,31 +242,25 @@ function makeBranchColor() {
   let count = 0;
   for (let i = 0; i < commitHistory.length; i++) {
     if (commitHistory[i].toString() in bname) {
-      console.log(commitHistory[i]);
       bcList.push({
         oid: commitHistory[i],
         cid: i
       });
-      console.log(commitHistory[i]);
     }
   }
   count = 0;
   while (bcList.length > 0) {
-    console.log(count++);
     let commit = bcList.pop();
-    console.log(commit.oid);
     let oid = commit.oid.toString();
     let cid = commit.cid;
     if (oid in bDict) {
       bDict[oid].push(cid);
     } else {
-      console.log(oid + '  22  ' + cid);
       bDict[oid] = [cid];
     }
     let parents = commit.oid.parents();
 
     for (let i = 0; i < parents.length; i++) {
-      console.log("parents!!!!!!");
       for (let j = 0; j < commitHistory.length; j++) {
         if (commitHistory[j].toString() === parents[i].toString()) {
           bcList.push({

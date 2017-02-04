@@ -171,7 +171,6 @@ function addBasicEdge(c) {
     var flag = true;
     var parents = c['parents'];
     edgeDic[c['id']] = [];
-    console.log(edgeDic[c['id']].length);
     for (var i = 0; i < parents.length; i++) {
         for (var j = 0; j < basicList.length; j++) {
             if (basicList[j]['sha'].indexOf(parents[i].toString()) > -1 && basicList[j] !== c) {
@@ -192,10 +191,8 @@ function sortBasicGraph() {
         var n = tmp.shift();
         var ta = edgeDic[n.id];
         var count = 0;
-        console.log(idList.length + '   ' + ta.length);
         for (var i = 0; i < ta.length; i++) {
             for (var j = 0; j < idList.length; j++) {
-                console.log(idList[j] + '   ' + ta[i]);
                 if (idList[j].toString() === ta[i].toString()) {
                     count++;
                 }
@@ -223,31 +220,25 @@ function makeBranchColor() {
     var count = 0;
     for (var i = 0; i < commitHistory.length; i++) {
         if (commitHistory[i].toString() in bname) {
-            console.log(commitHistory[i]);
             bcList.push({
                 oid: commitHistory[i],
                 cid: i
             });
-            console.log(commitHistory[i]);
         }
     }
     count = 0;
     while (bcList.length > 0) {
-        console.log(count++);
         var commit = bcList.pop();
-        console.log(commit.oid);
         var oid = commit.oid.toString();
         var cid = commit.cid;
         if (oid in bDict) {
             bDict[oid].push(cid);
         }
         else {
-            console.log(oid + '  22  ' + cid);
             bDict[oid] = [cid];
         }
         var parents = commit.oid.parents();
         for (var i = 0; i < parents.length; i++) {
-            console.log("parents!!!!!!");
             for (var j = 0; j < commitHistory.length; j++) {
                 if (commitHistory[j].toString() === parents[i].toString()) {
                     bcList.push({

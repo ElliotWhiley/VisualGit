@@ -377,6 +377,39 @@ function mergeInMenu(from: string) {
   $("#mergeModal").modal('show');
 }
 
+function revertCommit(name: string) {
+  let repos;
+  Git.Repository.open(repoFullPath)
+  .then(function(repo) {
+    repos = repo;
+    console.log(1.0);
+    return Git.Reference.nameToId(repo, name);
+  })
+  .then(function(id) {
+    console.log('2.0' + id);
+    return Git.Commit.lookup(repos, id);
+  })
+  .then(function(commit) {
+    console.log('3.0');
+    let revertOptions = new Git.RevertOptions();
+    if (commit.parents().length > 1) {
+      revertOptions.mainline = 1;
+    }
+    return Git.Revert.revert(repos, commit, revertOptions);
+  })
+  .then(function(number) {
+    console.log(number);
+    if (number === -1) {
+      updateModalText("Revert failed, please check if you have pushed the commit.");
+    } else {
+      updateModalText("Revert successfully.");
+    }
+    refreshAll(repos);
+  }, function(err) {
+    updateModalText(err);
+  });
+}
+
 function displayModifiedFiles() {
   modifiedFiles = [];
 

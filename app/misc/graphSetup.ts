@@ -204,21 +204,16 @@ function drawGraph() {
   });
 
   network.on('dragEnd', function(cb) {
-    console.log("!!!!!");
     fromNode = cb.nodes[0];
     network.moveNode(fromNode, startP.x, startP.y);
     secP = cb.pointer.DOM;
   }, false);
 
   network.on("animationFinished", function() {
-    console.log("lalalalala");
     if (fromNode !== null && secP !== null) {
-      console.log(fromNode + '   ' + secP);
       let toNode = network.getNodeAt(secP);
-      console.log(fromNode + "!!!!!!!" + toNode + "!!!!!!!!!" + commitList.length);
 
       if (fromNode !== toNode && (nodes.get(fromNode)['shape'] === 'box') && (nodes.get(toNode)['shape'] === 'box')) {
-        console.log(nodes.get(fromNode)['title'] + "      " + nodes.get(toNode)['title']);
         mergeCommits(nodes.get(fromNode)['title']);
       }
     }

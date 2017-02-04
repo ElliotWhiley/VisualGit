@@ -113,6 +113,13 @@ $.contextMenu({
 
         "merge to HEAD": {
           name: "merge to HEAD"
+        },
+
+        "revert to previous": {
+          name: "revert to previous",
+          callback: function(itemKey, opt) {
+            revertCommit("refs/heads/" + branch);
+          }
         }
       }
     };
