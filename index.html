@@ -5,11 +5,11 @@
     <title>VisualGit</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="stylesheets/styles.css">
     <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.css" crossorigin="anonymous">
     <link rel="stylesheet" href="node_modules/font-awesome/css/font-awesome.css" type="text/css">
     <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap-theme.min.css" crossorigin="anonymous">
     <link rel="stylesheet" href="node_modules/jquery-contextmenu/dist/jquery.contextMenu.min.css" type="text/css">
+    <link rel="stylesheet" href="stylesheets/styles.css">
     <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
     <script src="app/misc/checkbox.js"></script>
     <script src="app/misc/gitCommands.js"></script>
@@ -51,10 +51,6 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('commit-button').addEventListener("click", function() {
       console.log("clicked");
       addAndCommit();
-    });
-    // Add click event to minimise diff panel
-    document.getElementById('diff-panel-minimise').addEventListener("click", function () {
-      hideDiffPanel();
     });
   }, 2000);
 
@@ -119,6 +115,13 @@ $.contextMenu({
           name: "revert to previous",
           callback: function(itemKey, opt) {
             revertCommit("refs/heads/" + branch);
+          }
+        },
+
+        "reset commit": {
+          name: "reset commit",
+          callback: function(itemKey, opt) {
+            resetCommit("refs/heads/" + branch);
           }
         }
       }

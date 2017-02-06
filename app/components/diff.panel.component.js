@@ -12,13 +12,13 @@ var core_1 = require("@angular/core");
 var DiffPanelComponent = (function () {
     function DiffPanelComponent() {
     }
-    DiffPanelComponent = __decorate([
-        core_1.Component({
-            selector: "diff-panel",
-            template: "\n  <div class=\"diff-panel\" id=\"diff-panel\">\n    <div class=\"diff-panel-body\" id=\"diff-panel-body\"></div>\n    <div class=\"diff-panel-minimise\" id=\"diff-panel-minimise\">\n      <img src=\"./assets/Minimise.svg\" class=\"minimise\">\n    </div>\n  </div>\n  "
-        }), 
-        __metadata('design:paramtypes', [])
-    ], DiffPanelComponent);
     return DiffPanelComponent;
 }());
+DiffPanelComponent = __decorate([
+    core_1.Component({
+        selector: "diff-panel",
+        template: "\n  <div class=\"diff-panel\" id=\"diff-panel\">\n    <div class=\"diff-panel-body\" id=\"diff-panel-body\"></div>\n  </div>\n  "
+    }),
+    __metadata("design:paramtypes", [])
+], DiffPanelComponent);
 exports.DiffPanelComponent = DiffPanelComponent;

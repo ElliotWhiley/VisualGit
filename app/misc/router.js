@@ -18,12 +18,6 @@ function wait(ms) {
         end = new Date().getTime();
     }
 }
-function displayMinimisePanel() {
-    document.getElementById("diff-panel-minimise").style.visibility = "visible";
-}
-function hideMinimisePanel() {
-    document.getElementById("diff-panel-minimise").style.visibility = "hidden";
-}
 function displayFilePanel() {
     document.getElementById("file-panel").style.zIndex = "10";
 }
@@ -43,14 +37,12 @@ function hideAddRepositoryPanel() {
     document.getElementById("add-repository-panel").style.zIndex = "-10";
 }
 function displayDiffPanel() {
-    document.getElementById("graph-panel").style.width = "50%";
-    document.getElementById("diff-panel").style.width = "50%";
-    displayMinimisePanel();
+    document.getElementById("graph-panel").style.width = "60%";
+    document.getElementById("diff-panel").style.width = "40%";
 }
 function hideDiffPanel() {
     document.getElementById("diff-panel").style.width = "0";
     document.getElementById("graph-panel").style.width = "100%";
-    hideMinimisePanel();
 }
 function hideAuthenticatePanel() {
     document.getElementById("authenticate").style.zIndex = "-20";

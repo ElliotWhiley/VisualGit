@@ -3,8 +3,52 @@ p, h1 {
   font-family: 'Montserrat', sans-serif;
 }
 
+.btn:focus {
+  outline: 0;
+}
+
+.btn.btn-circle {
+  border-radius: 50px;
+}
+.btn.btn-outline {
+  background-color: transparent;
+}
+
+/*http://bootsnipp.com/snippets/ZkpRl*/
+.navbar-nav.navbar-right .btn {
+  position: relative; z-index: 2;
+  padding: 4px 20px;
+  margin: 10px auto;
+}
+
+.navbar .navbar-collapse {
+  position: relative;
+}
+.navbar .navbar-collapse .navbar-right > li:last-child {
+  padding-left: 22px;
+}
+.navbar .nav-collapse {
+  position: absolute;
+  z-index: 1;
+  top: 0; left: 0;
+  right: 0;
+  bottom: 0;
+  margin: 0;
+  padding-right: 120px;
+  padding-left: 80px;
+  width: 100%;
+}
+@media screen and (max-width: 767px) {
+    .navbar .navbar-collapse .navbar-right > li:last-child { padding-left: 15px; padding-right: 15px; }
+
+    .navbar .nav-collapse { margin: 7.5px auto; padding: 0; }
+    .navbar .nav-collapse .navbar-form { margin: 0; }
+    .nav-collapse>li { float: none; }
+}
+
 .navbar-white {
-    background-color: #E3E3E3;
+  background-color: #E3E3E3;
+  border-bottom: 2px solid #181818;
 }
 
 #branchOptions {
@@ -22,7 +66,7 @@ body .header {
   width: 100%;
   height: 10vh;
   background-color: #282828;
-  border-bottom: 1px solid #181818;
+  border-bottom: 2px solid #181818;
   /* Modal Content/Box */
 }
 
@@ -55,22 +99,17 @@ body .navbar .dropdown-menu a {
   margin-left: 20px;
 }*/
 
-/*body .navbar .upload {
-  margin-left: 70px;
+body .navbar .fa-cloud-upload {
+  margin-top: 8px;
 }
 
-body .navbar .download {
-  margin-left: 30px;
+body .navbar .fa-cloud-download {
+  margin-top: 8px;
 }
-
+/*
 body .navbar .dropdown-toggle {
   margin-top: 10px;
 }*/
-
-
-body .container-fluid {
-  padding-top: 10px;
-}
 
 
 body .file-panel {
@@ -164,7 +203,7 @@ body .body-panel .diff-panel {
 }
 
 body .body-panel .diff-panel .diff-panel-body {
-  width: 90%;
+  width: 100%;
   height: 80vh;
   float: left;
   background-color: #282828;
@@ -177,17 +216,6 @@ body .body-panel .diff-panel .diff-panel-body div {
   padding: 1px 5px 1px 5px;
   white-space: pre;
   font-family: monospace;
-}
-
-body .body-panel .diff-panel .diff-panel-minimise {
-  width: 10%;
-  float: right;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #282828;
-  visibility: hidden;
 }
 
 body .body-panel .diff-panel .diff-panel-minimise:hover {
@@ -325,7 +353,7 @@ body .footer {
   width: 100%;
   height: 15vh;
   background-color: #282828;
-  border-top: 1px solid #181818;
+  border-top: 2px solid #181818;
   position: fixed;
   bottom: 0;
   overflow-y: scroll;

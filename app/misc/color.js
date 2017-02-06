@@ -1,4 +1,5 @@
 var cs = require('color-scheme');
+var before;
 function changeColor(color) {
     console.log(color + '   ' + (color === 'white'));
     var head = document.getElementsByClassName('navbar');
@@ -23,9 +24,9 @@ function changeColor(color) {
             headButton[i].classList.add('btn-default');
         }
         for (var i = 0; i < fa.length; i++) {
-            fa[i].setAttribute('style', 'color:black');
+            fa[i].setAttribute('style', 'color:#a8abaf');
         }
-        fp.setAttribute('style', 'background-color:#D1D1D1');
+        fp.setAttribute('style', 'background-color:#E3E3E3');
         for (var i = 0; i < p.length; i++) {
             p[i].style.color = 'black';
         }
@@ -35,7 +36,7 @@ function changeColor(color) {
         diffp.style.color = '#D2D3D4';
         diffp.style.backgroundColor = '#616161';
         network.style.backgroundColor = '#D6D6D6';
-        footer.style.backgroundColor = '#EDEDED';
+        footer.style.backgroundColor = '#E3E3E3';
         arp.style.backgroundColor = '#D1D1D1';
         auth.style.backgroundColor = '#D6D6D6';
     }

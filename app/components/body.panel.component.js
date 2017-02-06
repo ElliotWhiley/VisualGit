@@ -14,14 +14,14 @@ var graph_panel_component_1 = require("./graph.panel.component");
 var BodyPanelComponent = (function () {
     function BodyPanelComponent() {
     }
-    BodyPanelComponent = __decorate([
-        core_1.Component({
-            selector: "body-panel",
-            template: "\n  <div class=\"body-panel\" id=\"body-panel\">\n    <diff-panel></diff-panel>\n    <graph-panel></graph-panel>\n  </div>\n  ",
-            directives: [diff_panel_component_1.DiffPanelComponent, graph_panel_component_1.GraphPanelComponent]
-        }), 
-        __metadata('design:paramtypes', [])
-    ], BodyPanelComponent);
     return BodyPanelComponent;
 }());
+BodyPanelComponent = __decorate([
+    core_1.Component({
+        selector: "body-panel",
+        template: "\n  <div class=\"body-panel\" id=\"body-panel\">\n    <diff-panel></diff-panel>\n    <graph-panel></graph-panel>\n  </div>\n  ",
+        directives: [diff_panel_component_1.DiffPanelComponent, graph_panel_component_1.GraphPanelComponent]
+    }),
+    __metadata("design:paramtypes", [])
+], BodyPanelComponent);
 exports.BodyPanelComponent = BodyPanelComponent;

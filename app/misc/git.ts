@@ -377,6 +377,35 @@ function mergeInMenu(from: string) {
   $("#mergeModal").modal('show');
 }
 
+function resetCommit(name: string) {
+  let repos;
+  Git.Repository.open(repoFullPath)
+  .then(function(repo) {
+    repos = repo;
+    console.log(1.0);
+    return Git.Reference.nameToId(repo, name);
+  })
+  .then(function(id) {
+    console.log('2.0' + id);
+    return Git.AnnotatedCommit.lookup(repos, id);
+  })
+  .then(function(commit) {
+    let checkoutOptions = new Git.CheckoutOptions();
+    return Git.Reset.fromAnnotated(repos, commit, Git.Reset.TYPE.HARD, checkoutOptions);
+  })
+  .then(function(number) {
+    console.log(number);
+    if (number !== 0) {
+      updateModalText("Reset failed, please check if you have pushed the commit.");
+    } else {
+      updateModalText("Reset successfully.");
+    }
+    refreshAll(repos);
+  }, function(err) {
+    updateModalText(err);
+  });
+}
+
 function revertCommit(name: string) {
   let repos;
   Git.Repository.open(repoFullPath)
@@ -489,13 +518,19 @@ function displayModifiedFiles() {
         document.getElementById("files-changed").appendChild(fileElement);
 
         fileElement.onclick = function() {
-          displayDiffPanel();
-          document.getElementById("diff-panel-body").innerHTML = "";
+          let doc = document.getElementById("diff-panel");
+          console.log(doc.style.width + 'oooooo');
+          if (doc.style.width === '0px' || doc.style.width === '') {
+            displayDiffPanel();
+            document.getElementById("diff-panel-body").innerHTML = "";
 
-          if (fileElement.className === "file file-created") {
-            printNewFile(file.filePath);
+            if (fileElement.className === "file file-created") {
+              printNewFile(file.filePath);
+            } else {
+              printFileDiff(file.filePath)；
+            }
           } else {
-            printFileDiff(file.filePath)
+            hideDiffPanel();
           }
         };
       }

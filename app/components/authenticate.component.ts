@@ -44,6 +44,6 @@ import { Component } from "@angular/core";
 
 export class AuthenticateComponent {
   switchToMainPanel(): void {
-    getUserInfo(switchToMainPanel);
+    signInPage(switchToMainPanel);
   }
 }

@@ -47,19 +47,22 @@ import { GraphService } from "../services/graph.service";
 
           <ul class="navbar-nav navbar-right hidden-xs">
             <li>
-              <a id="avater" class="dropdown-toggle" data-toggle="dropdown">
-                <i class="fa fa-github fa-2x" aria-hidden="true" style="color:white"></i>
-                <span class="caret"></span>
-              </a>
-              <ul class="dropdown-menu" id="user-dropdown" role="menu" >
-                <li role="presentation">
-                  <a href="#" id="log" class="list-group-item" onclick="displayAuthenticatePanel()">
-                    sign in
-                  </a>
-                </li>
-              </ul>
+              <a class="btn btn-default btn-outline btn-circle"  id="avatar" data-toggle="collapse" href="#nav-collapse1" aria-expanded="false" aria-controls="nav-collapse1">Sign in</a>
             </li>
           </ul>
+          <div class="collapse nav navbar-nav nav-collapse" id="nav-collapse1">
+            <form class="navbar-form navbar-right form-inline" role="form">
+              <div class="form-group">
+                <label class="sr-only" for="Email">User name</label>
+                <input type="text" class="form-control" id="Email1" placeholder="Email" autofocus required />
+              </div>
+              <div class="form-group">
+                <label class="sr-only" for="Password">Password</label>
+                <input type="password" class="form-control" id="Password1" placeholder="Password" required />
+              </div>
+              <button type="submit" class="btn btn-success" (click)="switchToMainPanel()">Sign in</button>
+            </form>
+          </div>
 
           <ul class="nav navbar-nav visible-xs">
             <li (click)="promptUserToAddRepository()"><a>&nbsp;&nbsp;add repository</a></li>
@@ -96,7 +99,6 @@ import { GraphService } from "../services/graph.service";
             <li class="upload" onclick="pushToRemote()"><a href="#">&nbsp;&nbsp;pull</a></li>
             <li class="download"onclick="pullFromRemote()"><a href="#">&nbsp;&nbsp;push</a></li>
           </ul>
-
         </div>
       </div>
     </nav>
@@ -140,5 +142,9 @@ export class HeaderComponent   {
 
   promptUserToAddRepository(): void {
     switchToAddRepositoryPanel();
+  }
+
+  switchToMainPanel(): void {
+    signInHead(switchToMainPanel);
   }
 }

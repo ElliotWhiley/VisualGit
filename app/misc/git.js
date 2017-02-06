@@ -318,6 +318,35 @@ function mergeInMenu(from) {
     p3.innerHTML = "Do you want to merge branch " + from + " to HEAD ?";
     $("#mergeModal").modal('show');
 }
+function resetCommit(name) {
+    var repos;
+    Git.Repository.open(repoFullPath)
+        .then(function (repo) {
+        repos = repo;
+        console.log(1.0);
+        return Git.Reference.nameToId(repo, name);
+    })
+        .then(function (id) {
+        console.log('2.0' + id);
+        return Git.AnnotatedCommit.lookup(repos, id);
+    })
+        .then(function (commit) {
+        var checkoutOptions = new Git.CheckoutOptions();
+        return Git.Reset.fromAnnotated(repos, commit, Git.Reset.TYPE.HARD, checkoutOptions);
+    })
+        .then(function (number) {
+        console.log(number);
+        if (number !== 0) {
+            updateModalText("Reset failed, please check if you have pushed the commit.");
+        }
+        else {
+            updateModalText("Reset successfully.");
+        }
+        refreshAll(repos);
+    }, function (err) {
+        updateModalText(err);
+    });
+}
 function revertCommit(name) {
     var repos;
     Git.Repository.open(repoFullPath)
@@ -423,13 +452,20 @@ function displayModifiedFiles() {
                 fileElement.appendChild(checkbox);
                 document.getElementById("files-changed").appendChild(fileElement);
                 fileElement.onclick = function () {
-                    displayDiffPanel();
-                    document.getElementById("diff-panel-body").innerHTML = "";
-                    if (fileElement.className === "file file-created") {
-                        printNewFile(file.filePath);
+                    var doc = document.getElementById("diff-panel");
+                    console.log(doc.style.width + 'oooooo');
+                    if (doc.style.width === '0px' || doc.style.width === '') {
+                        displayDiffPanel();
+                        document.getElementById("diff-panel-body").innerHTML = "";
+                        if (fileElement.className === "file file-created") {
+                            printNewFile(file.filePath);
+                        }
+                        else {
+                            printFileDiff(file.filePath);
+                        }
                     }
                     else {
-                        printFileDiff(file.filePath);
+                        hideDiffPanel();
                     }
                 };
             }

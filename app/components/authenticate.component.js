@@ -13,7 +13,7 @@ var AuthenticateComponent = (function () {
     function AuthenticateComponent() {
     }
     AuthenticateComponent.prototype.switchToMainPanel = function () {
-        getUserInfo(switchToMainPanel);
+        signInPage(switchToMainPanel);
     };
     return AuthenticateComponent;
 }());
