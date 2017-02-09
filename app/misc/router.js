@@ -1,4 +1,7 @@
 var cred;
+function collpaseSignPanel() {
+    $('#nav-collapse1').collapse('hide');
+}
 function switchToMainPanel() {
     hideAuthenticatePanel();
     hideAddRepositoryPanel();
@@ -6,6 +9,7 @@ function switchToMainPanel() {
     displayGraphPanel();
 }
 function switchToAddRepositoryPanel() {
+    console.log("1111111");
     hideAuthenticatePanel();
     hideFilePanel();
     hideGraphPanel();

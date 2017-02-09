@@ -218,6 +218,7 @@ function checkoutLocalBranch(element) {
     console.log(bn + ">>>>>>>>");
     Git.Repository.open(repoFullPath)
         .then(function (repo) {
+        addCommand("git checkout " + bn);
         repo.checkoutBranch("refs/heads/" + bn)
             .then(function () {
             refreshAll(repo);
@@ -239,6 +240,8 @@ function checkoutRemoteBranch(element) {
     Git.Repository.open(repoFullPath)
         .then(function (repo) {
         repos = repo;
+        addCommand("git fetch");
+        addCommand("git checkout -b " + bn);
         var cid = remoteName[bn];
         console.log("2.0  " + cid);
         return Git.Commit.lookup(repo, cid);

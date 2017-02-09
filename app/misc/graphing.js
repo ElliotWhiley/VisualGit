@@ -211,7 +211,7 @@ function sortBasicGraph() {
     for (var i = 0; i < idList.length; i++) {
         bsNodes.update({ id: idList[i], y: i * spacingY });
         if (idList[i] in branchIds) {
-            bsNodes.update({ id: branchIds[idList[i]], y: (i + 0.5) * spacingY });
+            bsNodes.update({ id: branchIds[idList[i]], y: (i + 0.7) * spacingY });
         }
     }
 }

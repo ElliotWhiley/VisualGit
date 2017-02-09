@@ -232,9 +232,12 @@ function pushToRemote() {
 }
 function createBranch() {
     var branchName = document.getElementById("branchName").value;
+    var repos;
     console.log(branchName + "!!!!!!");
     Git.Repository.open(repoFullPath)
         .then(function (repo) {
+        repos = repo;
+        addCommand("git branch " + branchName);
         return repo.getHeadCommit()
             .then(function (commit) {
             return repo.createBranch(branchName, commit, 0, repo.defaultSignature(), "Created new-branch on HEAD");
@@ -242,6 +245,7 @@ function createBranch() {
             console.log(err + "LLLLLL");
         });
     }).done(function () {
+        refreshAll(repos);
         console.log("All done!");
     });
 }
@@ -254,7 +258,7 @@ function mergeLocalBranches(element) {
         repos = repo;
     })
         .then(function () {
-        console.log("??????");
+        addCommand("git merge " + bn);
         return repos.getBranch("refs/heads/" + bn);
     })
         .then(function (branch) {
@@ -286,7 +290,7 @@ function mergeCommits(from) {
     Git.Repository.open(repoFullPath)
         .then(function (repo) {
         repos = repo;
-        console.log("2.0  " + from);
+        addCommand("git merge " + from);
         return Git.Reference.nameToId(repos, 'refs/heads/' + from);
     })
         .then(function (oid) {
@@ -323,7 +327,7 @@ function resetCommit(name) {
     Git.Repository.open(repoFullPath)
         .then(function (repo) {
         repos = repo;
-        console.log(1.0);
+        addCommand("git reset --hard");
         return Git.Reference.nameToId(repo, name);
     })
         .then(function (id) {
@@ -353,6 +357,7 @@ function revertCommit(name) {
         .then(function (repo) {
         repos = repo;
         console.log(1.0);
+        addCommand("git revert " + name + "~1");
         return Git.Reference.nameToId(repo, name);
     })
         .then(function (id) {
@@ -360,7 +365,6 @@ function revertCommit(name) {
         return Git.Commit.lookup(repos, id);
     })
         .then(function (commit) {
-        console.log('3.0');
         var revertOptions = new Git.RevertOptions();
         if (commit.parents().length > 1) {
             revertOptions.mainline = 1;

@@ -14,7 +14,7 @@ import { GraphService } from "../services/graph.service";
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <img src="./assets/AddRepositoryFolder.svg" (click)="promptUserToAddRepository()" class="add-repository-button" title="Add Repository">
+          <img src="./assets/AddRepositoryFolder.svg" onclick="switchToAddRepositoryPanel()" class="add-repository-button" title="Add Repository">
         </div>
         <div class="collapse navbar-collapse" id="navbar">
           <ul class="nav navbar-nav col-md-5 hidden-xs">
@@ -145,6 +145,6 @@ export class HeaderComponent   {
   }
 
   switchToMainPanel(): void {
-    signInHead(switchToMainPanel);
+    signInHead(collpaseSignPanel);
   }
 }

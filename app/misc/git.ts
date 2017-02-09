@@ -278,10 +278,13 @@ function pushToRemote() {
 
 function createBranch() {
   let branchName = document.getElementById("branchName").value;
+  let repos;
   console.log(branchName + "!!!!!!");
   Git.Repository.open(repoFullPath)
   .then(function(repo) {
     // Create a new branch on head
+    repos = repo;
+    addCommand("git branch " + branchName);
     return repo.getHeadCommit()
     .then(function(commit) {
       return repo.createBranch(
@@ -294,6 +297,7 @@ function createBranch() {
       console.log(err + "LLLLLL");
     });
   }).done(function() {
+    refreshAll(repos);
     console.log("All done!");
   });
 }
@@ -307,7 +311,7 @@ function mergeLocalBranches(element) {
     repos = repo;
   })
   .then(function() {
-    console.log("??????");
+    addCommand("git merge " + bn);
     return repos.getBranch("refs/heads/" + bn);
   })
   .then(function(branch) {
@@ -344,7 +348,7 @@ function mergeCommits(from) {
   .then(function(repo) {
     repos = repo;
     //return repos.getCommit(fromSha);
-    console.log("2.0  " + from);
+    addCommand("git merge " + from);
     return Git.Reference.nameToId(repos, 'refs/heads/' + from);
   })
   .then(function(oid) {
@@ -382,7 +386,7 @@ function resetCommit(name: string) {
   Git.Repository.open(repoFullPath)
   .then(function(repo) {
     repos = repo;
-    console.log(1.0);
+    addCommand("git reset --hard");
     return Git.Reference.nameToId(repo, name);
   })
   .then(function(id) {
@@ -412,6 +416,7 @@ function revertCommit(name: string) {
   .then(function(repo) {
     repos = repo;
     console.log(1.0);
+    addCommand("git revert " + name + "~1");
     return Git.Reference.nameToId(repo, name);
   })
   .then(function(id) {
@@ -419,7 +424,6 @@ function revertCommit(name: string) {
     return Git.Commit.lookup(repos, id);
   })
   .then(function(commit) {
-    console.log('3.0');
     let revertOptions = new Git.RevertOptions();
     if (commit.parents().length > 1) {
       revertOptions.mainline = 1;

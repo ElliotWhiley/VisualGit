@@ -7,6 +7,11 @@ p, h1 {
   outline: 0;
 }
 
+.add-repository-button {
+  position: relative;
+  z-index: 2;
+}
+
 .btn.btn-circle {
   border-radius: 50px;
 }
@@ -38,6 +43,15 @@ p, h1 {
   padding-left: 80px;
   width: 100%;
 }
+
+#Email1 {
+  width: 100px;
+}
+
+#Password1 {
+  width: 100px;
+}
+
 @media screen and (max-width: 767px) {
     .navbar .navbar-collapse .navbar-right > li:last-child { padding-left: 15px; padding-right: 15px; }
 
