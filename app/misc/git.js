@@ -315,6 +315,50 @@ function mergeCommits(from) {
         }
     });
 }
+function rebaseCommits(from, to) {
+    var repos;
+    var index;
+    var branch;
+    Git.Repository.open(repoFullPath)
+        .then(function (repo) {
+        repos = repo;
+        addCommand("git rebase " + to);
+        return Git.Reference.nameToId(repos, 'refs/heads/' + from);
+    })
+        .then(function (oid) {
+        console.log("3.0  " + oid);
+        return Git.AnnotatedCommit.lookup(repos, oid);
+    })
+        .then(function (annotated) {
+        console.log("4.0  " + annotated);
+        branch = annotated;
+        return Git.Reference.nameToId(repos, 'refs/heads/' + to);
+    })
+        .then(function (oid) {
+        console.log("5.0  " + oid);
+        return Git.AnnotatedCommit.lookup(repos, oid);
+    })
+        .then(function (annotated) {
+        console.log("6.0");
+        return Git.Rebase.init(repos, branch, annotated, null, null);
+    })
+        .then(function (rebase) {
+        console.log("7.0");
+        return rebase.next();
+    })
+        .then(function (operation) {
+        refreshAll(repos);
+    });
+}
+function rebaseInMenu(from, to) {
+    var p1 = document.getElementById("fromRebase");
+    var p2 = document.getElementById("toRebase");
+    var p3 = document.getElementById("rebaseModalBody");
+    p1.innerHTML = from;
+    p2.innerHTML = to;
+    p3.innerHTML = "Do you want to rebase branch " + from + " to " + to + " ?";
+    $("#rebaseModal").modal('show');
+}
 function mergeInMenu(from) {
     var p1 = document.getElementById("fromMerge");
     var p3 = document.getElementById("mergeModalBody");

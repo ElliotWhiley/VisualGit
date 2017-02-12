@@ -373,6 +373,53 @@ function mergeCommits(from) {
   });
 }
 
+function rebaseCommits(from: string, to: string) {
+  let repos;
+  let index;
+  let branch;
+  Git.Repository.open(repoFullPath)
+  .then(function(repo) {
+    repos = repo;
+    //return repos.getCommit(fromSha);
+    addCommand("git rebase " + to);
+    return Git.Reference.nameToId(repos, 'refs/heads/' + from);
+  })
+  .then(function(oid) {
+    console.log("3.0  " + oid);
+    return Git.AnnotatedCommit.lookup(repos, oid);
+  })
+  .then(function(annotated) {
+    console.log("4.0  " + annotated);
+    branch = annotated;
+    return Git.Reference.nameToId(repos, 'refs/heads/' + to);
+  })
+  .then(function(oid) {
+    console.log("5.0  " + oid);
+    return Git.AnnotatedCommit.lookup(repos, oid);
+  })
+  .then(function(annotated) {
+    console.log("6.0");
+    return Git.Rebase.init(repos, branch, annotated, null, null);
+  })
+  .then(function(rebase) {
+    console.log("7.0");
+    return rebase.next();
+  })
+  .then(function(operation) {
+    refreshAll(repos);
+  });
+}
+
+function rebaseInMenu(from: string, to: string) {
+  let p1 = document.getElementById("fromRebase");
+  let p2 = document.getElementById("toRebase");
+  let p3 = document.getElementById("rebaseModalBody");
+  p1.innerHTML = from;
+  p2.innerHTML = to;
+  p3.innerHTML = "Do you want to rebase branch " + from + " to " + to + " ?";
+  $("#rebaseModal").modal('show');
+}
+
 function mergeInMenu(from: string) {
   let p1 = document.getElementById("fromMerge");
   let p3 = document.getElementById("mergeModalBody");

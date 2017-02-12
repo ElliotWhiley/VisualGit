@@ -13,6 +13,7 @@ import { Component } from "@angular/core";
           </button>
           <ul class="dropdown-menu" id="color-dropdown" role="menu" aria-labelledby="branch-name">
             <li class="white" onclick="changeColor('white')">white</li>
+            <li class="default" onclick="changeColor('default')">default</li>
           </ul>
         </div>
       </nav>

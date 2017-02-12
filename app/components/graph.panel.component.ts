@@ -31,6 +31,25 @@ import { Component } from "@angular/core";
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->
     </div>
+    <div class="modal fade" id="rebaseModal" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Rebase branches</h4>
+          </div>
+          <div class="modal-body">
+            <p id="rebaseModalBody"></p>
+          </div>
+          <p class="invisible" id="fromRebase"></p>
+          <p class="invisible" id="toRebase"></p>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" (click)="mergeBranches()" data-dismiss="modal">Yes</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div>
   </div>
   `
 })
@@ -38,7 +57,12 @@ import { Component } from "@angular/core";
 export class GraphPanelComponent {
   mergeBranches(): void {
     let p1 = document.getElementById('fromMerge').innerHTML;
-    console.log(p1 + '   -----------------');
     mergeCommits(p1);
+  }
+
+  rebaseBranches(): void {
+    let p1 = document.getElementById('fromRebase').innerHTML;
+    let p2 = document.getElementById('toRebase').innerHTML;
+    rebaseCommits(p1, p2);
   }
 }
