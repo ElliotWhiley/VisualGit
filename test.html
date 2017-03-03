@@ -1,11 +1,30 @@
-import { Component } from "@angular/core";
-import { RepositoryService } from "../services/repository.service";
-import { GraphService } from "../services/graph.service";
+<!DOCTYPE html>
+<html lang="en">
+<head lang="en">
+  <title>VisualGit</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
-@Component({
-  selector: "app-header",
-  template: `
-    <nav class="navbar navbar-inverse" role="navigation">
+  <!-- Optional theme -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <!-- Latest compiled and minified JavaScript -->
+  <link rel="stylesheet" href="stylesheets/styles.css">
+  <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+  <script src="app/misc/checkbox.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  <script>if (window.module) module = window.module;</script>
+  <script src="systemjs.config.js"></script>
+  <script>
+    System.import('app').catch(function(error) {
+      console.error(error);
+    });
+  </script>
+</head>
+  <body>
+    <nav class="navbar navbar-default" role="navigation">
       <div class="container-fluid row">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
@@ -14,7 +33,7 @@ import { GraphService } from "../services/graph.service";
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <img src="./assets/AddRepositoryFolder.svg" onclick="switchToAddRepositoryPanel()" class="add-repository-button" title="Add Repository">
+          <img src="./assets/AddRepositoryFolder.svg" class="add-repository-button" title="Add Repository">
         </div>
         <div class="collapse navbar-collapse" id="navbar">
           <ul class="nav navbar-nav col-md-5 hidden-xs">
@@ -32,7 +51,7 @@ import { GraphService } from "../services/graph.service";
                   <div class="input-group menuitem">
                     <input type="text" id="branchName" class="form-control" placeholder="Search or create branch">
                     <span class="input-group-btn">
-                      <button class="btn btn-default" type="button" onclick="createBranch()">OK</button>
+                      <button class="btn btn-default" type="button">OK</button>
                     </span>
                   </div>
                 </li>
@@ -41,8 +60,8 @@ import { GraphService } from "../services/graph.service";
           </ul>
 
           <ul class="navbar-nav col-md-4 hidden-xs">
-            <li class="upload"><i class="fa fa-cloud-upload fa-2x col-md-2" aria-hidden="true" style="color:white" onclick="pushToRemote()" title="Push"></i></li>
-            <li class="download"><i class="fa fa-cloud-download fa-2x col-md-2" aria-hidden="true" style="color:white" onclick="pullFromRemote()" title="Pull"></i></li>
+            <li class="upload"><i class="fa fa-cloud-upload fa-2x col-md-2" aria-hidden="true" style="color:white" title="Push"></i></li>
+            <li class="download"><i class="fa fa-cloud-download fa-2x col-md-2" aria-hidden="true" style="color:white" title="Pull"></i></li>
           </ul>
 
           <ul class="navbar-nav navbar-right hidden-xs">
@@ -60,12 +79,12 @@ import { GraphService } from "../services/graph.service";
                 <label class="sr-only" for="Password">Password</label>
                 <input type="password" class="form-control" id="Password1" placeholder="Password" required />
               </div>
-              <button type="submit" class="btn btn-success" (click)="switchToMainPanel()">Sign in</button>
+              <button type="submit" class="btn btn-success">Sign in</button>
             </form>
           </div>
 
           <ul class="nav navbar-nav visible-xs">
-            <li (click)="promptUserToAddRepository()"><a>&nbsp;&nbsp;add repository</a></li>
+            <li><a>&nbsp;&nbsp;add repository</a></li>
             <li class="dropdown">
               <a id="repo-name" data-toggle="modal" data-target="#repo-modal" href="#">
                 &nbsp;&nbsp;repository
@@ -82,69 +101,26 @@ import { GraphService } from "../services/graph.service";
                   <div class="input-group menuitem">
                     <input type="text" id="branchName" class="form-control" placeholder="Search or create branch">
                     <span class="input-group-btn">
-                      <button class="btn btn-default" type="button" onclick="createBranch()">OK</button>
+                      <button class="btn btn-default" type="button">OK</button>
                     </span>
                   </div>
                 </li>
               </ul>
             </li>
             <li class="dropdown">
-              <a id="merge-name" onclick="getOtherBranches()" data-toggle="dropdown" href="#">
+              <a id="merge-name" data-toggle="dropdown" href="#">
                 &nbsp;&nbsp;update from
                 <span class="caret"></span>
               </a>
               <ul class="dropdown-menu" id="merge-dropdown" role="menu" >
               </ul>
             </li>
-            <li class="upload" onclick="pushToRemote()"><a href="#">&nbsp;&nbsp;pull</a></li>
-            <li class="download"onclick="pullFromRemote()"><a href="#">&nbsp;&nbsp;push</a></li>
+            <li class="upload"><a href="#">&nbsp;&nbsp;pull</a></li>
+            <li class="download"><a href="#">&nbsp;&nbsp;push</a></li>
           </ul>
+
         </div>
       </div>
     </nav>
-    <div id="modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-            <h4 class="modal-title">Info</h4>
-          </div>
-          <div class="modal-body" id="modal-text-box">
-            unset
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div id="repo-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <ul class="list-group"id="repo-dropdown" role="menu" aria-labelledby="repo-name">
-          </ul>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-primary disabled" id="cloneButton" onclick="cloneRepo()">Clone</button>
-          </div>
-        </div><!-- /.modal-content -->
-      </div><!-- /.modal-dialog -->
-    </div>
-  `,
-  providers: [RepositoryService, GraphService]
-})
-
-export class HeaderComponent   {
-  repoName: string = "Repo name";
-  repoBranch: string = "Repo branch";
-  repository: any;
-
-  promptUserToAddRepository(): void {
-    switchToAddRepositoryPanel();
-  }
-
-  switchToMainPanel(): void {
-    signInHead(collpaseSignPanel);
-  }
-}
+  </body>
+</html>

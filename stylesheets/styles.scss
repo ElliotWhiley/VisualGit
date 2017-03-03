@@ -288,6 +288,15 @@ body {
     }
   }
 
+  .user-auth {
+    position: absolute;
+    height: 75vh;
+    width: 100%;
+    background-color: $darker-grey;
+    z-index: 20;
+    box-sizing: border-box;
+  }
+
   .add-repository-panel {
     position: absolute;
     height: 75vh;

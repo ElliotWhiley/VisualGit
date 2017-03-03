@@ -3,6 +3,73 @@ p, h1 {
   font-family: 'Montserrat', sans-serif;
 }
 
+.btn:focus {
+  outline: 0;
+}
+
+.add-repository-button {
+  position: relative;
+  z-index: 2;
+}
+
+.btn.btn-circle {
+  border-radius: 50px;
+}
+.btn.btn-outline {
+  background-color: transparent;
+}
+
+/*http://bootsnipp.com/snippets/ZkpRl*/
+.navbar-nav.navbar-right .btn {
+  position: relative; z-index: 2;
+  padding: 4px 20px;
+  margin: 10px auto;
+}
+
+.navbar .navbar-collapse {
+  position: relative;
+}
+.navbar .navbar-collapse .navbar-right > li:last-child {
+  padding-left: 22px;
+}
+.navbar .nav-collapse {
+  position: absolute;
+  z-index: 1;
+  top: 0; left: 0;
+  right: 0;
+  bottom: 0;
+  margin: 0;
+  padding-right: 120px;
+  padding-left: 80px;
+  width: 100%;
+}
+
+#Email1 {
+  width: 100px;
+}
+
+#Password1 {
+  width: 100px;
+}
+
+@media screen and (max-width: 767px) {
+    .navbar .navbar-collapse .navbar-right > li:last-child { padding-left: 15px; padding-right: 15px; }
+
+    .navbar .nav-collapse { margin: 7.5px auto; padding: 0; }
+    .navbar .nav-collapse .navbar-form { margin: 0; }
+    .nav-collapse>li { float: none; }
+}
+
+.navbar-white {
+  background-color: #E3E3E3;
+  border-bottom: 2px solid #181818;
+}
+
+#branchOptions {
+  position: absolute;
+  display:none;
+}
+
 body {
   margin: 0;
   width: 100vw;
@@ -13,132 +80,58 @@ body .header {
   width: 100%;
   height: 10vh;
   background-color: #282828;
-  border-bottom: 1px solid #181818;
+  border-bottom: 2px solid #181818;
   /* Modal Content/Box */
 }
 
-body .header .modal {
-  display: none;
-  position: fixed;
+body .navbar {
+  margin-bottom: 0px;
+  font-size: 20px;
   z-index: 1;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: black;
-  background-color: rgba(0, 0, 0, 0.4);
 }
 
-body .header .modal:hover {
-  opacity: 1;
-}
-
-body .header .modal-content {
+body .navbar .dropdown-menu {
+  z-index: 300;
   background-color: #282828;
-  margin: 30% auto;
-  padding: 20px;
-  border: 3px solid #39c0ba;
-  width: 40%;
-  border-radius: 10px;
+  width: 250px;
+  color: #ffffff;
 }
 
-body .header .modal-content .close {
-  opacity: 0.7;
+body .navbar .dropdown-menu a {
+  color: #000;
 }
 
-body .header .modal-content .close:hover {
-  opacity: 1;
+/*body .navbar .repo-name {
+  margin-left: 30px;
+}*/
+
+/*body .navbar .branch-name {
+  margin-left: 15px;
+}*/
+
+/*body .navbar .merge {
+  margin-left: 20px;
+}*/
+
+body .navbar .fa-cloud-upload {
+  margin-top: 8px;
 }
 
-body .header .modal-content p {
-  font-size: 16px;
-  line-height: 130%;
-  padding-left: 0px;
-  display: inline-block;
+body .navbar .fa-cloud-download {
+  margin-top: 8px;
 }
+/*
+body .navbar .dropdown-toggle {
+  margin-top: 10px;
+}*/
 
-body .header .close {
-  color: #aaa;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-}
-
-body .header .close:hover, body .header .close:focus {
-  color: black;
-  text-decoration: none;
-  cursor: pointer;
-}
-
-body .header p {
-  margin: 0;
-  line-height: 10vh;
-  font-size: 25px;
-  display: inline-block;
-}
-
-body .header .add-repository-button {
-  margin-left: 40px;
-  vertical-align: middle;
-  margin-bottom: 10px;
-  opacity: 0.7;
-}
-
-body .header .add-repository-button:hover {
-  opacity: 1;
-}
-
-body .header .right-arrow {
-  padding-left: 10px;
-  padding-bottom: 5px;
-  opacity: 0.7;
-  vertical-align: middle;
-}
-
-body .header .pull-button {
-  position: absolute;
-  left: 60%;
-  margin-left: -40px;
-  opacity: 0.7;
-  padding-top: 5px;
-  width: 80px;
-  height: 60px;
-  display: inline-block;
-}
-
-body .header .pull-button:hover {
-  opacity: 1.0;
-}
-
-body .header .pull-button:active {
-  -webkit-filter: brightness(30%);
-}
-
-body .header .push-button {
-  position: absolute;
-  left: 50%;
-  margin-left: -40px;
-  opacity: 0.7;
-  padding-top: 5px;
-  width: 80px;
-  height: 60px;
-  display: inline-block;
-}
-
-body .header .push-button:hover {
-  opacity: 1.0;
-}
-
-body .header .push-button:active {
-  -webkit-filter: brightness(30%);
-}
 
 body .file-panel {
   width: 20%;
-  height: 75vh;
+  height: 80vh;
   background-color: #282828;
   float: left;
+  z-index: 0;
 }
 
 body .file-panel .modified-files-header .select-all-message {
@@ -212,9 +205,10 @@ body .file-panel .commit-panel .commit-button:hover {
 
 body .body-panel {
   width: 80%;
-  height: 80%;
   float: right;
+  z-index: 0;
 }
+
 
 body .body-panel .diff-panel {
   width: 0;
@@ -223,8 +217,8 @@ body .body-panel .diff-panel {
 }
 
 body .body-panel .diff-panel .diff-panel-body {
-  width: 90%;
-  height: 75vh;
+  width: 100%;
+  height: 80vh;
   float: left;
   background-color: #282828;
   color: #fff;
@@ -238,17 +232,6 @@ body .body-panel .diff-panel .diff-panel-body div {
   font-family: monospace;
 }
 
-body .body-panel .diff-panel .diff-panel-minimise {
-  width: 10%;
-  float: right;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #282828;
-  visibility: hidden;
-}
-
 body .body-panel .diff-panel .diff-panel-minimise:hover {
   background-color: #404040;
 }
@@ -260,15 +243,31 @@ body .body-panel .graph-panel {
 
 body .body-panel .graph-panel .network {
   width: 100%;
-  height: 75vh;
+  height: 80vh;
   margin: 0;
   padding: 0;
   background-color: #181818;
 }
 
+body .authenticate {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  background-color: #181818;
+  z-index: 30;
+  box-sizing: border-box;
+  color: #fff;
+}
+
+body .authenticate .input-group {
+  margin-left: auto;
+  margin-right:auto;
+  text-align: center;
+}
+
 body .add-repository-panel {
   position: absolute;
-  height: 75vh;
+  height: 80vh;
   width: 100%;
   background-color: #181818;
   z-index: -10;
@@ -368,7 +367,7 @@ body .footer {
   width: 100%;
   height: 15vh;
   background-color: #282828;
-  border-top: 1px solid #181818;
+  border-top: 2px solid #181818;
   position: fixed;
   bottom: 0;
   overflow-y: scroll;
